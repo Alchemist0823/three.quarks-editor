@@ -3,16 +3,16 @@
   "description": "A Editor for three.quarks",
   "version": "0.1.0",
   "private": false,
-  "homepage": "http://Alchemist0823.github.io/three.quarks",
+  "homepage": "http://Alchemist0823.github.io/three.quarks-editor",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Alchemist0823/three.quarks.git"
+    "url": "https://github.com/Alchemist0823/three.quarks-editor.git"
   },
-  "keywords": ["three.js", "particle", "vfx", "graphics", "js", "ts"],
+  "keywords": ["three.js", "particle", "vfx", "graphics", "js", "ts", "three.quarks"],
   "author": "Forrest Sun <the.forrest.sun@gmail.com> (https://github.com/Alchemist0823)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Alchemist0823/three.quarks/issues"
+    "url": "https://github.com/Alchemist0823/three.quarks-editor/issues"
   },
   "scripts": {
     "start": "react-scripts start",
