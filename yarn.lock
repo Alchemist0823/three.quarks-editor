@@ -866,6 +866,13 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
+"@babel/runtime@^7.5.0":
+  version "7.5.5"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.5.5.tgz#74fba56d35efbeca444091c7850ccd494fd2f132"
+  integrity sha512-28QvEGyQyNkB0/m2B4FU7IEZGK2NUrcMtT6BZEFALTguLk+AUT6ofsHtPk5QyjAdUkpMJ+/Em+quwz4HOt30AQ==
+  dependencies:
+    regenerator-runtime "^0.13.2"
+
 "@babel/template@^7.1.0", "@babel/template@^7.4.0", "@babel/template@^7.4.4":
   version "7.4.4"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.4.4.tgz#f4b88d1225689a08f5bc3a17483545be9e4ed237"
@@ -9843,6 +9850,14 @@ text-table@0.2.0, text-table@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
+
+three.quarks@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/three.quarks/-/three.quarks-0.1.0.tgz#91729d410540eaa8219656e32a16efead4d72d31"
+  integrity sha512-H7Iz9DEV/oB6hr7oEwMoglmlMEs43P1/vcPC/nhModO3Sv77N+x48hNnhHcm+kbPBG2/4RW34032J7a+7AjBSQ==
+  dependencies:
+    "@babel/runtime" "^7.5.0"
+    three "^0.106.2"
 
 three@^0.106.2:
   version "0.106.2"
