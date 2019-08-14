@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as THREE from "three";
 import {Object3D} from "three";
-import {ParticleEmitter} from "three.quarks";
+import {ParticleEmitter, QuarksLoader} from "three.quarks";
 import {Application} from "./Application";
 import {TextureLoader} from "three";
 import {ParticleSystem} from "three.quarks";
@@ -30,6 +30,7 @@ export interface AppContext {
     selection: Array<Object3D>;
     actions: {
         onSaveAs: ()=>void;
+        onImport: (files: FileList)=>void;
         select: (object: Object3D) => void;
         selectAddition: (object: Object3D) => void;
         addObject3d: (type: string, parent: Object3D) => void;
@@ -81,6 +82,18 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                     a.href = URL.createObjectURL(file);
                     a.download = "scene.json";
                     a.click();
+                },
+                onImport: (files: FileList) => {
+                    const nFiles = files.length;
+                    for (let nFileId = 0; nFileId < nFiles; nFileId++) {
+                        let jsonURL = URL.createObjectURL( files[nFileId] );
+
+                        let loader = new QuarksLoader();
+                        loader.setCrossOrigin("");
+                        loader.load(jsonURL, (object3D: Object3D)=>{
+                            scene.add(object3D);
+                        }, ()=>{}, ()=>{});
+                    }
                 },
                 select: object => {
                     this.setState({selection: [object]});

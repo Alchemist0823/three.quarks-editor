@@ -25,7 +25,7 @@ export class Application extends React.Component<ApplicationProps> {
                     <div className="main-menu">
                         <ApplicationContextConsumer>
                             {context => context &&
-                                <MainMenu onSaveAs={context.actions.onSaveAs}></MainMenu>
+                                <MainMenu onSaveAs={context.actions.onSaveAs} onImport={context.actions.onImport}></MainMenu>
                             }
                         </ApplicationContextConsumer>
                     </div>

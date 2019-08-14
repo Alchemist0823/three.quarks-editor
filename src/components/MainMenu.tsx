@@ -3,9 +3,27 @@ import {Dropdown, Grid, Icon, Image, Input, Menu} from "semantic-ui-react";
 
 interface MainMenuProps {
     onSaveAs: ()=>void;
+    onImport: (files: FileList)=>void;
 }
 
 export class MainMenu extends React.PureComponent<MainMenuProps> {
+    private fileRef: React.RefObject<HTMLInputElement>;
+
+    constructor(props: Readonly<MainMenuProps>) {
+        super(props);
+        this.fileRef = React.createRef();
+    }
+
+    openFileDialog = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        if (this.fileRef.current)
+            this.fileRef.current.click();
+    };
+
+    importFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files)
+            this.props.onImport(e.target.files);
+    };
+
     render() {
         return (
             <Menu inverted size="tiny">
@@ -17,7 +35,7 @@ export class MainMenu extends React.PureComponent<MainMenuProps> {
                 <Dropdown item simple text='File'>
                     <Dropdown.Menu>
                         <Dropdown.Item text='New' />
-                        <Dropdown.Item text='Open...' description='ctrl + o' />
+                        <Dropdown.Item text='Open...' description='ctrl + o' onClick={this.openFileDialog}/>
                         <Dropdown.Item text='Save as...' description='ctrl + s' onClick={this.props.onSaveAs} />
                         <Dropdown.Item text='Rename' description='ctrl + r' />
                         <Dropdown.Item text='Make a copy' />
@@ -29,6 +47,9 @@ export class MainMenu extends React.PureComponent<MainMenuProps> {
                         <Dropdown.Item text='E-mail Collaborators' />
                     </Dropdown.Menu>
                 </Dropdown>
+
+                <input ref={this.fileRef} type="file" id="fileElem" multiple accept="application/json" style={{display: "none"}}
+                       onChange={this.importFile} />
 
                 <Dropdown item simple text='Edit'>
                     <Dropdown.Menu>

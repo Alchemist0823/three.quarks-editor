@@ -60,7 +60,7 @@
     "semantic-ui-react": "^0.87.2",
     "stats.js": "^0.17.0",
     "three": "^0.106.2",
-    "three.quarks": "^0.1.0",
+    "three.quarks": "^0.1.1",
     "typescript": "3.5.2"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 import {AdditiveBlending, Group, NormalBlending, TextureLoader, Vector4} from "three";
-import {ParticleSystem} from "three.quarks";
+import {ColorOverLife, ParticleSystem} from "three.quarks";
 import {ConeEmitter} from "three.quarks";
 import {IntervalValue} from "three.quarks";
 import {SizeOverLife} from "three.quarks";
@@ -10,7 +10,6 @@ import {SphereEmitter} from "three.quarks";
 import {RotationOverLife} from "three.quarks";
 import {ConstantValue} from "three.quarks";
 import {Bezier} from "three.quarks";
-import {ColerOverLife} from "three.quarks";
 import {Gradient} from "three.quarks";
 import {RandomColor} from "three.quarks";
 
@@ -137,7 +136,7 @@ export class ToonProjectile extends Group {
             vTileCount: 10,
         });
         this.smoke.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.95, 0.75, 0), 0]])));
-        this.smoke.addBehavior(new ColerOverLife(new ColorRange(new Vector4(1, 0.1509503, 0.07352942, 1), new Vector4(0, 0, 0, 0))));
+        this.smoke.addBehavior(new ColorOverLife(new ColorRange(new Vector4(1, 0.1509503, 0.07352942, 1), new Vector4(0, 0, 0, 0))));
         this.smoke.addBehavior(new RotationOverLife(new IntervalValue(-Math.PI * 2, Math.PI * 2)));
         this.smoke.emitter.renderOrder = -2;
         this.smoke.emitter.name = 'smoke';
