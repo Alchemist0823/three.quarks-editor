@@ -58,6 +58,14 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
 
         this.toonProjectile = new ToonProjectile();
         this.toonProjectile.name = "Toon Projectile";
+        this.toonProjectile.userData = {
+            script:
+                "    this.position.x += delta * 30;\n" +
+                "    if (this.position.x > 20)\n" +
+                "        this.position.x = -20;\n"
+        };
+        this.toonProjectile.userData.func = new Function("delta", this.toonProjectile.userData.script);
+
         scene.add(this.toonProjectile);
 
         const axisHelper = new AxesHelper(100);
@@ -163,9 +171,9 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
 
     update = 0;
     animate = (delta: number) => {
-        this.toonProjectile!.position.x += delta * 30;
+        /*this.toonProjectile!.position.x += delta * 30;
         if (this.toonProjectile!.position.x > 20)
-            this.toonProjectile!.position.x = -20;
+            this.toonProjectile!.position.x = -20;*/
 
         this.update += delta;
         if (this.update > 0.1) {

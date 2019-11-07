@@ -82,6 +82,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
         this.camera.position.set(50, 50, 50);
 
         this.controls = new OrbitControls( this.camera, this.renderer.domElement );
+        this.controls.enableKeys = false;
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.1;
         this.controls.rotateSpeed = 0.2;
@@ -141,6 +142,9 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
             //console.log(this.particleSystem!.emitter.modelViewMatrix);
 
             this.appContext.scene.traverse(object => {
+                if (object.userData && object.userData.func) {
+                    object.userData.func.call(object, delta);
+                }
                 if (object instanceof ParticleEmitter) {
                     object.system.update(delta);
                 }

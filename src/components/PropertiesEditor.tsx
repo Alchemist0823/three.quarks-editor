@@ -10,6 +10,7 @@ import {ParticleEmitter} from "three.quarks";
 import {ParticleSystemProperties} from "./ParticleSystemProperties";
 import {ParticleRendererProperties} from "./ParticleRendererProperties";
 import "./PropertiesEditor.scss";
+import {ScriptProperties} from "./ScriptProperties";
 
 interface PropertiesEditorProps {
     object3d: Object3D
@@ -85,6 +86,23 @@ export class PropertiesEditor extends React.PureComponent<PropertiesEditorProps,
                 }
             });
         }
+
+        panels.push({
+            key: 3,
+            title: {
+                icon: {name: 'dropdown'},
+                content: "Script",
+            },
+            content: {
+                children:
+                    <ApplicationContextConsumer>
+                        {context => context &&
+                            <ScriptProperties object3d={this.props.object3d}
+                                              updateProperties={context.actions.updateProperties}/>
+                        }
+                    </ApplicationContextConsumer>
+            }
+        });
         return (
             <Accordion fluid styled panels={panels} exclusive={false}>
             </Accordion>
