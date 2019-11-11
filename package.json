@@ -51,7 +51,7 @@
     "@types/react-color": "^3.0.1",
     "@types/react-dom": "16.8.4",
     "node-sass": "^4.12.0",
-    "postprocessing": "^6.8.3",
+    "postprocessing": "^6.8.8",
     "prismjs": "^1.17.1",
     "react": "^16.8.6",
     "react-color": "^2.17.3",
@@ -69,8 +69,8 @@
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.87.2",
     "stats.js": "^0.17.0",
-    "three": "^0.107.0",
-    "three.quarks": "^0.1.5",
+    "three": "^0.110.0",
+    "three.quarks": "^0.1.7",
     "typescript": "3.5.2"
   },
   "devDependencies": {
