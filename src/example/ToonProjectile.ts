@@ -1,5 +1,5 @@
 import {AdditiveBlending, Group, NormalBlending, TextureLoader, Vector4} from "three";
-import {ColorOverLife, ParticleSystem} from "three.quarks";
+import {ColorOverLife, ParticleSystem, RenderMode} from "three.quarks";
 import {ConeEmitter} from "three.quarks";
 import {IntervalValue} from "three.quarks";
 import {SizeOverLife} from "three.quarks";
@@ -102,6 +102,8 @@ export class ToonProjectile extends Group {
                 arc: Math.PI * 2,
             }),
             texture: texture,
+            renderMode: RenderMode.StretchedBillBoard,
+            speedFactor: .01,
             blending: NormalBlending,
             startTileIndex: 0,
             uTileCount: 10,
