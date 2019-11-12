@@ -11,6 +11,7 @@ import {ParticleSystemProperties} from "./ParticleSystemProperties";
 import {ParticleRendererProperties} from "./ParticleRendererProperties";
 import "./PropertiesEditor.scss";
 import {ScriptProperties} from "./ScriptProperties";
+import {EmitterShapeProperties} from "./EmitterShapeProperties";
 
 interface PropertiesEditorProps {
     object3d: Object3D
@@ -73,6 +74,23 @@ export class PropertiesEditor extends React.PureComponent<PropertiesEditorProps,
                 key: 2,
                 title: {
                     icon: {name: 'dropdown'},
+                    content: "Emitter Shape",
+                },
+                content: {
+                    children:
+                        <ApplicationContextConsumer>
+                            {context => context &&
+                                <EmitterShapeProperties particleSystem={system}
+                                                        updateProperties={context.actions.updateProperties}/>
+                            }
+                        </ApplicationContextConsumer>
+                }
+            });
+
+            panels.push({
+                key: 3,
+                title: {
+                    icon: {name: 'dropdown'},
                     content: "Particle Renderer",
                 },
                 content: {
@@ -88,7 +106,7 @@ export class PropertiesEditor extends React.PureComponent<PropertiesEditorProps,
         }
 
         panels.push({
-            key: 3,
+            key: 4,
             title: {
                 icon: {name: 'dropdown'},
                 content: "Script",
