@@ -16,7 +16,6 @@ export class Application extends React.Component<ApplicationProps> {
         super(props);
     }
 
-
     render() {
         console.log("render application");
         return (
@@ -25,7 +24,9 @@ export class Application extends React.Component<ApplicationProps> {
                     <div className="main-menu">
                         <ApplicationContextConsumer>
                             {context => context &&
-                                <MainMenu onSaveAs={context.actions.onSaveAs} onImport={context.actions.onImport}></MainMenu>
+                                <MainMenu onSaveAs={context.actions.onSaveAs}
+                                          onImport={context.actions.onImport}
+                                          onOpenDemo={context.actions.onOpenDemo}></MainMenu>
                             }
                         </ApplicationContextConsumer>
                     </div>

@@ -18,6 +18,7 @@ import {Color} from "three";
 import {AxesHelper} from "three";
 import {PointLight} from "three";
 import {AmbientLight} from "three";
+import {BulletMuzzle} from "../example/BulletMuzzle";
 
 
 interface ApplicationContextProps {
@@ -29,6 +30,7 @@ export interface AppContext {
     script: (delta: number) => void;
     selection: Array<Object3D>;
     actions: {
+        onOpenDemo: (index: number)=>void;
         onSaveAs: ()=>void;
         onImport: (files: FileList)=>void;
         select: (object: Object3D) => void;
@@ -47,26 +49,27 @@ export const ApplicationContextConsumer = ApplicationContext.Consumer;
 
 export class ApplicationContextProvider extends React.Component<ApplicationContextProps, AppContext> {
 
-    toonProjectile: ToonProjectile;
-
-    constructor(props: Readonly<ApplicationContextProps>) {
-        super(props);
-
+    createScene(demoIndex: number) {
         const scene = new THREE.Scene();
 
         scene.background = new Color(0x666666);
 
-        this.toonProjectile = new ToonProjectile();
-        this.toonProjectile.name = "Toon Projectile";
-        this.toonProjectile.userData = {
-            script:
-                "    this.position.x += delta * 30;\n" +
-                "    if (this.position.x > 20)\n" +
-                "        this.position.x = -20;\n"
-        };
-        this.toonProjectile.userData.func = new Function("delta", this.toonProjectile.userData.script);
-
-        scene.add(this.toonProjectile);
+        let demoObject;
+        if (demoIndex === 0) {
+            demoObject = new ToonProjectile();
+            demoObject.name = "Toon Projectile";
+            demoObject.userData = {
+                script:
+                    "    this.position.x += delta * 30;\n" +
+                    "    if (this.position.x > 20)\n" +
+                    "        this.position.x = -20;\n"
+            };
+            demoObject.userData.func = new Function("delta", demoObject.userData.script);
+        } else {
+            demoObject = new BulletMuzzle();
+            demoObject.name = "BulletMuzzle";
+        }
+        scene.add(demoObject);
 
         const axisHelper = new AxesHelper(100);
         axisHelper.name = "axisHelper";
@@ -79,14 +82,23 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
         const ambientLight = new AmbientLight(new Color(1, 1, 1), 0.2);
         scene.add(ambientLight);
 
+        return scene;
+    }
+
+    constructor(props: Readonly<ApplicationContextProps>) {
+        super(props);
         const state: AppContext = {
-            scene: scene,
+            scene: this.createScene(0),
             script: this.animate,
             selection: [],
             actions: {
+                onOpenDemo: (index: number) => {
+                    let scene = this.createScene(index);
+                    this.setState({scene: scene});
+                },
                 onSaveAs: () => {
                     const a = document.createElement("a");
-                    const file = new Blob([JSON.stringify(state.scene.toJSON())], {type: "application/json"});
+                    const file = new Blob([JSON.stringify(this.state.scene.toJSON())], {type: "application/json"});
                     a.href = URL.createObjectURL(file);
                     a.download = "scene.json";
                     a.click();
@@ -99,7 +111,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                         let loader = new QuarksLoader();
                         loader.setCrossOrigin("");
                         loader.load(jsonURL, (object3D: Object3D)=>{
-                            scene.add(object3D);
+                            this.state.scene.add(object3D);
                         }, ()=>{}, ()=>{});
                     }
                 },
@@ -107,9 +119,9 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                     this.setState({selection: [object]});
                 },
                 selectAddition: object => {
-                    if (state.selection.indexOf(object) === -1) {
-                        state.selection.push(object);
-                        this.setState({selection: state.selection});
+                    if (this.state.selection.indexOf(object) === -1) {
+                        this.state.selection.push(object);
+                        this.setState({selection: this.state.selection});
                     }
                 },
                 addObject3d: this.addObject3d,
@@ -119,7 +131,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                 updateParticleSystem: () => {
                 },
                 updateProperties: () => {
-                    this.setState({scene: scene});
+                    this.setState({scene: this.state.scene});
                 }
             }
         };

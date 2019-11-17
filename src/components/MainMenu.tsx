@@ -4,6 +4,7 @@ import {Dropdown, Grid, Icon, Image, Input, Menu} from "semantic-ui-react";
 interface MainMenuProps {
     onSaveAs: ()=>void;
     onImport: (files: FileList)=>void;
+    onOpenDemo: (demoIndex: number)=>void;
 }
 
 export class MainMenu extends React.PureComponent<MainMenuProps> {
@@ -24,6 +25,10 @@ export class MainMenu extends React.PureComponent<MainMenuProps> {
             this.props.onImport(e.target.files);
     };
 
+    openDemo = (demoIndex: number) => {
+        this.props.onOpenDemo(demoIndex);
+    };
+
     render() {
         return (
             <Menu inverted size="tiny">
@@ -41,10 +46,12 @@ export class MainMenu extends React.PureComponent<MainMenuProps> {
                         <Dropdown.Item text='Make a copy' />
                         <Dropdown.Item icon='folder' text='Move to folder' />
                         <Dropdown.Item icon='trash' text='Move to trash' />
-                        <Dropdown.Divider />
                         <Dropdown.Item text='Download As...' />
-                        <Dropdown.Item text='Publish To Web' />
-                        <Dropdown.Item text='E-mail Collaborators' />
+                        <Dropdown.Divider />
+                        <Dropdown.Item text='Demo 1' onClick={() => this.openDemo(0)}/>
+                        <Dropdown.Item text='Demo 2' onClick={() => this.openDemo(1)}/>
+                        <Dropdown.Item text='Demo 3' onClick={() => this.openDemo(2)}/>
+                        <Dropdown.Item text='Demo 4' onClick={() => this.openDemo(3)}/>
                     </Dropdown.Menu>
                 </Dropdown>
 

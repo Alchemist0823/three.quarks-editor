@@ -107,7 +107,7 @@ export class ToonExplosion extends Group {
             vTileCount: 10,
         });
         this.particles.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.25, 0.05, 0), 0]])));
-        this.particles.emitter.renderOrder = 2;
+        this.particles.emitter.renderOrder = 0;
         this.particles.emitter.rotateY(-Math.PI/2);
 
         this.add(this.particles.emitter);

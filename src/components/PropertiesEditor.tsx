@@ -12,6 +12,7 @@ import {ParticleRendererProperties} from "./ParticleRendererProperties";
 import "./PropertiesEditor.scss";
 import {ScriptProperties} from "./ScriptProperties";
 import {EmitterShapeProperties} from "./EmitterShapeProperties";
+import {ParticleSystemController} from "./ParticleSystemController";
 
 interface PropertiesEditorProps {
     object3d: Object3D
@@ -51,10 +52,28 @@ export class PropertiesEditor extends React.PureComponent<PropertiesEditorProps,
             }
         });
 
+
+        panels.push({
+            key: 1,
+            title: {
+                icon: {name: 'dropdown'},
+                content: "Particle Controller",
+            },
+            content: {
+                children:
+                    <ApplicationContextConsumer>
+                        {context => context &&
+                            <ParticleSystemController object3d={this.props.object3d}
+                                              updateProperties={context.actions.updateProperties}/>
+                        }
+                    </ApplicationContextConsumer>
+            }
+        });
+
         if (this.props.object3d instanceof ParticleEmitter) {
             const system = this.props.object3d.system;
             panels.push({
-                key: 1,
+                key: 2,
                 title: {
                     icon: {name: 'dropdown'},
                     content: "Particle Emitter",
@@ -71,7 +90,7 @@ export class PropertiesEditor extends React.PureComponent<PropertiesEditorProps,
             });
 
             panels.push({
-                key: 2,
+                key: 3,
                 title: {
                     icon: {name: 'dropdown'},
                     content: "Emitter Shape",
@@ -88,7 +107,7 @@ export class PropertiesEditor extends React.PureComponent<PropertiesEditorProps,
             });
 
             panels.push({
-                key: 3,
+                key: 4,
                 title: {
                     icon: {name: 'dropdown'},
                     content: "Particle Renderer",
@@ -106,7 +125,7 @@ export class PropertiesEditor extends React.PureComponent<PropertiesEditorProps,
         }
 
         panels.push({
-            key: 4,
+            key: 5,
             title: {
                 icon: {name: 'dropdown'},
                 content: "Script",

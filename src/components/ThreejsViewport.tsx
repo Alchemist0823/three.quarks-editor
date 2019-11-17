@@ -146,6 +146,9 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
                     object.userData.func.call(object, delta);
                 }
                 if (object instanceof ParticleEmitter) {
+                    /*if (object.name === 'muzzle1' && object.system.particleNum > 0) {
+                        console.log(object.system.particles);
+                    }*/
                     object.system.update(delta);
                 }
             });

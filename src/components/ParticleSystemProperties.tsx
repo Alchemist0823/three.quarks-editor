@@ -5,7 +5,6 @@ import {ParticleSystem} from "three.quarks";
 import {FunctionValueGenerator, ValueGenerator} from "three.quarks";
 import {ColorGenerator, FunctionColorGenerator} from "three.quarks";
 
-
 interface ParticleSystemPropertiesProps {
     particleSystem: ParticleSystem,
     updateProperties: Function,
@@ -19,7 +18,6 @@ export class ParticleSystemProperties extends React.PureComponent<ParticleSystem
     constructor(props: Readonly<ParticleSystemPropertiesProps>) {
         super(props);
     }
-
     onChangeStartSpeed = (g: GenericGenerator) => {
         console.log("change start speed");
         this.props.particleSystem.startSpeed = g as ValueGenerator | FunctionValueGenerator;
@@ -43,6 +41,11 @@ export class ParticleSystemProperties extends React.PureComponent<ParticleSystem
     OnChangeStartRotation = (g: GenericGenerator) => {
         console.log("change start rotation");
         this.props.particleSystem.startRotation = g as ValueGenerator | FunctionValueGenerator;
+        this.props.updateProperties();
+    };
+    OnChangeEmissionOverTime = (g: GenericGenerator) => {
+        console.log("change start rotation");
+        this.props.particleSystem.emissionOverTime = g as ValueGenerator | FunctionValueGenerator;
         this.props.updateProperties();
     };
 
@@ -90,6 +93,14 @@ export class ParticleSystemProperties extends React.PureComponent<ParticleSystem
                                          allowedType={valueFunctionTypes}
                                          generator={this.props.particleSystem.startRotation}
                                          updateGenerator={this.OnChangeStartRotation}/>
+                    }
+                </ApplicationContextConsumer>
+                <ApplicationContextConsumer>
+                    {context => context &&
+                        <GeneratorEditor name="Emission Over Time"
+                                         allowedType={valueFunctionTypes}
+                                         generator={this.props.particleSystem.emissionOverTime}
+                                         updateGenerator={this.OnChangeEmissionOverTime}/>
                     }
                 </ApplicationContextConsumer>
             </div>
