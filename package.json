@@ -52,7 +52,7 @@
     "@types/react-dom": "16.8.4",
     "node-sass": "^4.12.0",
     "postprocessing": "^6.8.8",
-    "prismjs": "^1.17.1",
+    "prismjs": "^1.21.0",
     "react": "^16.8.6",
     "react-color": "^2.17.3",
     "react-contexify": "^4.1.1",
