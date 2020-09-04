@@ -96,7 +96,9 @@ export class SceneGraphView extends React.Component<SceneGraphViewProps, SceneGr
     onContextMenuExport = ({event, props}: MenuItemEventHandler) => {
         if ((props! as any).object3d) {
             const a = document.createElement("a");
-            const file = new Blob([JSON.stringify((props! as any).object3d.toJSON())], {type: "application/json"});
+            const json = (props! as any).object3d.toJSON();
+            //json.images.forEach((image: any) => image.url = "http://localhost:3000/textures/texture1.png");
+            const file = new Blob([JSON.stringify(json)], {type: "application/json"});
             a.href = URL.createObjectURL(file);
             a.download = "scene.json";
             a.click();

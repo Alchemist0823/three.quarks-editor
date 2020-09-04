@@ -23,6 +23,7 @@ export class ToonProjectile extends Group {
         super();
 
         let texture = new TextureLoader().load( "textures/texture1.png");
+        texture.name = "textures/texture1.png";
 
         this.mainBeam = new ParticleSystem({
             duration: 1,

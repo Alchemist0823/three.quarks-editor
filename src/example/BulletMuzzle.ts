@@ -25,6 +25,7 @@ export class BulletMuzzle extends Group {
         super();
 
         let texture = new TextureLoader().load( "textures/texture1.png");
+        texture.name = "textures/texture1.png";
 
         this.beam = new ParticleSystem({
             duration: 1,

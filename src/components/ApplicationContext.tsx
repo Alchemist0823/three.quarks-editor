@@ -19,6 +19,9 @@ import {AxesHelper} from "three";
 import {PointLight} from "three";
 import {AmbientLight} from "three";
 import {BulletMuzzle} from "../example/BulletMuzzle";
+import {BulletProjectile} from "../example/BulletProjectile";
+import {BulletHit} from "../example/BulletHit";
+import {ToonExplosion} from "../example/ToonExplosion";
 
 
 interface ApplicationContextProps {
@@ -65,9 +68,18 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                     "        this.position.x = -20;\n"
             };
             demoObject.userData.func = new Function("delta", demoObject.userData.script);
-        } else {
+        } else if (demoIndex === 1) {
             demoObject = new BulletMuzzle();
             demoObject.name = "BulletMuzzle";
+        } else if (demoIndex === 2) {
+            demoObject = new BulletProjectile();
+            demoObject.name = "BulletProjectile";
+        } else if (demoIndex === 3) {
+            demoObject = new BulletHit();
+            demoObject.name = "BulletHit";
+        } else {
+            demoObject = new ToonExplosion();
+            demoObject.name = "ToonExplosion";
         }
         scene.add(demoObject);
 

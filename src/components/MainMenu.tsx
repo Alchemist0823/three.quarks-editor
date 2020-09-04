@@ -48,15 +48,21 @@ export class MainMenu extends React.PureComponent<MainMenuProps> {
                         <Dropdown.Item icon='trash' text='Move to trash' />
                         <Dropdown.Item text='Download As...' />
                         <Dropdown.Divider />
-                        <Dropdown.Item text='Demo 1' onClick={() => this.openDemo(0)}/>
-                        <Dropdown.Item text='Demo 2' onClick={() => this.openDemo(1)}/>
-                        <Dropdown.Item text='Demo 3' onClick={() => this.openDemo(2)}/>
-                        <Dropdown.Item text='Demo 4' onClick={() => this.openDemo(3)}/>
                     </Dropdown.Menu>
                 </Dropdown>
 
                 <input ref={this.fileRef} type="file" id="fileElem" multiple accept="application/json" style={{display: "none"}}
                        onChange={this.importFile} />
+
+                <Dropdown item simple text='Demo'>
+                    <Dropdown.Menu>
+                        <Dropdown.Item text='Demo 1' onClick={() => this.openDemo(0)}/>
+                        <Dropdown.Item text='Demo 2' onClick={() => this.openDemo(1)}/>
+                        <Dropdown.Item text='Demo 3' onClick={() => this.openDemo(2)}/>
+                        <Dropdown.Item text='Demo 4' onClick={() => this.openDemo(3)}/>
+                        <Dropdown.Item text='Demo 5' onClick={() => this.openDemo(4)}/>
+                    </Dropdown.Menu>
+                </Dropdown>
 
                 <Dropdown item simple text='Edit'>
                     <Dropdown.Menu>
