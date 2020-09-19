@@ -1,11 +1,12 @@
 import * as React from "react";
-import {MainMenu} from "./MainMenu";
+import MainMenu from "./MainMenu";
 import {ThreejsViewport} from "./ThreejsViewport";
-import {PropertiesEditor} from "./PropertiesEditor";
+import PropertiesEditor from "./PropertiesEditor";
 import {SceneGraphView} from "./SceneGraphView";
 
 import './layout.scss';
 import {ApplicationContextConsumer, ApplicationContextProvider} from "./ApplicationContext";
+import {SceneGraphViewMaterial} from "./SceneGraphViewMaterial";
 
 interface ApplicationProps {
 }
@@ -37,7 +38,7 @@ export class Application extends React.Component<ApplicationProps> {
                         <div className="sidebar">
                             <ApplicationContextConsumer>
                                 {
-                                    context => context && <SceneGraphView context={context} scene={context.scene} />
+                                    context => context && <SceneGraphViewMaterial context={context} scene={context.scene} />
                                 }
                             </ApplicationContextConsumer>
                             <ApplicationContextConsumer>

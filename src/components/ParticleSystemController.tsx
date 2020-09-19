@@ -1,16 +1,13 @@
 import * as React from "react";
 import {ApplicationContextConsumer} from "./ApplicationContext";
-import {GeneratorEditor, GenericGenerator, ValueType} from "./editors/GeneratorEditor";
 import {
     ParticleSystem,
-    FunctionValueGenerator,
-    ValueGenerator,
-    ColorGenerator,
-    FunctionColorGenerator,
     ParticleEmitter
 } from "three.quarks";
-import {Button} from "semantic-ui-react";
 import {Object3D} from "three";
+import {ButtonGroup} from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 interface ParticleSystemControllerProps {
     object3d: Object3D,
@@ -83,14 +80,17 @@ export class ParticleSystemController extends React.PureComponent<ParticleSystem
     render() {
         return (
             <div>
-                <Button.Group>
-                    <ApplicationContextConsumer>
-                        {context => context &&
-                            <Button toggle active={this.checkPause(this.getSystems())} onClick={this.togglePause}>Pause</Button>}
-                    </ApplicationContextConsumer>
-                    <Button onClick={this.onRestart}>Restart</Button>
-                    <Button onClick={this.onStop}>Stop</Button>
-                </Button.Group>
+                <ToggleButtonGroup color="primary" aria-label="primary button group">
+                </ToggleButtonGroup>
+                <ApplicationContextConsumer>
+                    {context => context &&
+                    <ButtonGroup color="primary" aria-label="primary button group">
+                        <Button disabled={!this.checkPause(this.getSystems())} onClick={this.togglePause}>Play</Button>
+                        <Button disabled={this.checkPause(this.getSystems())} onClick={this.togglePause}>Pause</Button>
+                        <Button onClick={this.onRestart}>Restart</Button>
+                        <Button onClick={this.onStop}>Stop</Button>
+                    </ButtonGroup>}
+                </ApplicationContextConsumer>
             </div>
         );
     }

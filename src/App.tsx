@@ -1,8 +1,25 @@
 import React, {useState} from 'react';
 import {PiecewiseBezier} from "three.quarks";
 import {Application} from "./components/Application";
-import 'semantic-ui-css/semantic.min.css';
 import {Bezier} from "three.quarks";
+import blue from "@material-ui/core/colors/blue";
+import red from "@material-ui/core/colors/red";
+import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
+import { ThemeProvider } from '@material-ui/core';
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: blue[500],
+        },
+        secondary: {
+            main: red[500],
+        },
+    },
+    typography: {
+        fontSize: 12,
+    }
+});
 
 const App: React.FC = () => {
 
@@ -13,7 +30,7 @@ const App: React.FC = () => {
       ])
   );
 
-  return (<Application />
+    return (<ThemeProvider theme={theme}><Application /></ThemeProvider>
   );
     /*<div className="App">
         <header className="App-header">

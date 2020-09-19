@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Blending, Texture} from "three";
+import {AdditiveBlending, Blending, NormalBlending, Texture} from "three";
 import {ApplicationContextConsumer} from "./ApplicationContext";
 import {GeneratorEditor, GenericGenerator, ValueType} from "./editors/GeneratorEditor";
 import {ParticleSystem} from "three.quarks";
@@ -51,6 +51,29 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
         this.props.particleSystem.vTileCount = v;
         this.props.updateProperties();
     };
+    onChangeBlending = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        console.log(e.target.value);
+        switch (e.target.value) {
+            case "Normal":
+                this.props.particleSystem.blending = NormalBlending;
+                this.props.particleSystem.emitter.material.blending = NormalBlending;
+                break;
+            case "Additive":
+                this.props.particleSystem.blending = AdditiveBlending;
+                this.props.particleSystem.emitter.material.blending = AdditiveBlending;
+                break;
+        }
+        this.props.updateProperties();
+    }
+
+    getValueOfBlending = (blending: Blending) => {
+        switch (blending) {
+            case NormalBlending:
+                return "Normal"
+            case AdditiveBlending:
+                return "Additive";
+        }
+    }
 
     render() {
         console.log('rendered particleRendererProperties');
@@ -61,6 +84,17 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
                 blending?: Blending;
                 worldSpace?: boolean;
 
+                <ApplicationContextConsumer>
+                    {context => context &&
+                        <div className="property">
+                            <label className="name">Blend Mode</label>
+                            <select className="editor-select" onChange={this.onChangeBlending} value={this.getValueOfBlending(this.props.particleSystem.blending)}>
+                                <option key={0} value="Normal" >Normal</option>
+                                <option key={1} value="Additive" >Additive</option>
+                            </select>
+                        </div>
+                    }
+                </ApplicationContextConsumer>
                 <ApplicationContextConsumer>
                     {context => context &&
                         <div className="property">

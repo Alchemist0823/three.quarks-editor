@@ -1,21 +1,53 @@
 import * as React from "react";
-import {Dropdown, Grid, Icon, Image, Input, Menu} from "semantic-ui-react";
+import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import {createStyles, Theme, Typography, Toolbar} from "@material-ui/core";
+import IconButton from "@material-ui/core/IconButton";
+import AppBar from "@material-ui/core/AppBar";
+import withStyles from "@material-ui/core/styles/withStyles";
+import MenuIcon from '@material-ui/icons/Menu';
 
 interface MainMenuProps {
-    onSaveAs: ()=>void;
-    onImport: (files: FileList)=>void;
-    onOpenDemo: (demoIndex: number)=>void;
+    onSaveAs: () => void;
+    onImport: (files: FileList) => void;
+    onOpenDemo: (demoIndex: number) => void;
+    classes: any
 }
 
-export class MainMenu extends React.PureComponent<MainMenuProps> {
+interface MainMenuState {
+    anchorEl?: Element
+}
+
+const styles = createStyles((theme: Theme) => ({
+    root: {
+        flexGrow: 1,
+    },
+    menuIcon: {
+        marginRight: theme.spacing(2),
+    },
+    menuButton: {
+        marginRight: theme.spacing(1),
+    },
+    title: {
+        marginRight: theme.spacing(1),
+        //flexGrow: 1,
+    },
+}));
+
+class MainMenu extends React.PureComponent<MainMenuProps, MainMenuState> {
     private fileRef: React.RefObject<HTMLInputElement>;
 
     constructor(props: Readonly<MainMenuProps>) {
         super(props);
+        this.state = {
+            anchorEl: undefined
+        }
+
         this.fileRef = React.createRef();
     }
 
-    openFileDialog = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    openFileDialog = (e: React.MouseEvent<Element, MouseEvent>) => {
         if (this.fileRef.current)
             this.fileRef.current.click();
     };
@@ -29,99 +61,70 @@ export class MainMenu extends React.PureComponent<MainMenuProps> {
         this.props.onOpenDemo(demoIndex);
     };
 
+    handleMenuClick = (event: React.MouseEvent<Element, MouseEvent>) => {
+        console.log(event.currentTarget);
+        this.setState({anchorEl: event.currentTarget});
+    };
+
+    handleMenuClose = () => {
+        this.setState({anchorEl: undefined});
+    };
+
     render() {
+        //<Image size='mini' src='/logo.png' style={{ marginRight: '1.5em' }} />
+        //<MenuIcon />
+        //<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+        //</IconButton>
+        const {classes} = this.props;
         return (
-            <Menu inverted size="tiny">
-                <Menu.Item as='a' header>
-                    <Image size='mini' src='/logo.png' style={{ marginRight: '1.5em' }} />
-                    Three.Quarks
-                </Menu.Item>
-
-                <Dropdown item simple text='File'>
-                    <Dropdown.Menu>
-                        <Dropdown.Item text='New' />
-                        <Dropdown.Item text='Open...' description='ctrl + o' onClick={this.openFileDialog}/>
-                        <Dropdown.Item text='Save as...' description='ctrl + s' onClick={this.props.onSaveAs} />
-                        <Dropdown.Item text='Rename' description='ctrl + r' />
-                        <Dropdown.Item text='Make a copy' />
-                        <Dropdown.Item icon='folder' text='Move to folder' />
-                        <Dropdown.Item icon='trash' text='Move to trash' />
-                        <Dropdown.Item text='Download As...' />
-                        <Dropdown.Divider />
-                    </Dropdown.Menu>
-                </Dropdown>
-
-                <input ref={this.fileRef} type="file" id="fileElem" multiple accept="application/json" style={{display: "none"}}
-                       onChange={this.importFile} />
-
-                <Dropdown item simple text='Demo'>
-                    <Dropdown.Menu>
-                        <Dropdown.Item text='Demo 1' onClick={() => this.openDemo(0)}/>
-                        <Dropdown.Item text='Demo 2' onClick={() => this.openDemo(1)}/>
-                        <Dropdown.Item text='Demo 3' onClick={() => this.openDemo(2)}/>
-                        <Dropdown.Item text='Demo 4' onClick={() => this.openDemo(3)}/>
-                        <Dropdown.Item text='Demo 5' onClick={() => this.openDemo(4)}/>
-                    </Dropdown.Menu>
-                </Dropdown>
-
-                <Dropdown item simple text='Edit'>
-                    <Dropdown.Menu>
-                        <Dropdown.Item>
-                            <Input placeholder='Search...' />
-                        </Dropdown.Item>
-
-                        <Dropdown item simple text='Home'>
-                            <Dropdown.Menu>
-                                <Dropdown.Item
-                                    name='search'>
-                                    Search
-                                </Dropdown.Item>
-                                <Dropdown.Item name='add'>
-                                    Add
-                                </Dropdown.Item>
-                                <Dropdown.Item name='about'>
-                                    Remove
-                                </Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-
-                        <Dropdown.Item name='browse'>
-                            <Icon name='grid layout' />
-                            Browse
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                            name='messages'
+            <div className={classes.root}>
+                <AppBar position="static">
+                    <Toolbar variant="dense">
+                        <IconButton edge="start" className={classes.menuIcon} color="inherit" aria-label="menu">
+                            <MenuIcon/>
+                        </IconButton>
+                        <Typography variant="h6" className={classes.title}>
+                            Three.Quarks
+                        </Typography>
+                        <Button color="inherit" className={classes.menuButton} aria-controls="simple-menu"
+                                aria-haspopup="true" onClick={this.handleMenuClick} id="file-button">
+                            File
+                        </Button>
+                        <Menu
+                            id="file-menu"
+                            anchorEl={this.state.anchorEl}
+                            keepMounted
+                            open={Boolean(this.state.anchorEl && this.state.anchorEl.id === "file-button")}
+                            onClose={this.handleMenuClose}
                         >
-                            Messages
-                        </Dropdown.Item>
-
-                        <Dropdown item simple text='More'>
-                            <Dropdown.Menu>
-                                <Dropdown.Item icon='edit' text='Edit Profile' />
-                                <Dropdown.Item icon='globe' text='Choose Language' />
-                                <Dropdown.Item icon='settings' text='Account Settings' />
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </Dropdown.Menu>
-                </Dropdown>
-
-                <Dropdown item simple text='Tools'>
-                    <Dropdown.Menu>
-                        <Dropdown.Item>List Item</Dropdown.Item>
-                        <Dropdown.Item>List Item</Dropdown.Item>
-                        <Dropdown.Divider />
-                        <Dropdown.Header>Header Item</Dropdown.Header>
-                        <Dropdown item simple text='Dropdown'>
-                            <Dropdown.Menu>
-                                <Dropdown.Item>List Item</Dropdown.Item>
-                                <Dropdown.Item>List Item</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                        <Dropdown.Item>List Item</Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
-
-                <Menu.Item as='a'>About</Menu.Item>
-            </Menu>);
+                            <MenuItem>New</MenuItem>
+                            <MenuItem onClick={this.openFileDialog}>Open</MenuItem>
+                            <MenuItem onClick={this.props.onSaveAs}>Download</MenuItem>
+                            <input ref={this.fileRef} type="file" id="fileElem" multiple accept="application/json"
+                                   style={{display: "none"}}
+                                   onChange={this.importFile}/>
+                        </Menu>
+                        <Button color="inherit" className={classes.menuButton} aria-controls="simple-menu"
+                                aria-haspopup="true" onClick={this.handleMenuClick} id="demo-button">
+                            Demo
+                        </Button>
+                        <Menu
+                            id="demo-menu"
+                            anchorEl={this.state.anchorEl}
+                            keepMounted
+                            open={Boolean(this.state.anchorEl && this.state.anchorEl.id === "demo-button")}
+                            onClose={this.handleMenuClose}
+                        >
+                            <MenuItem onClick={() => this.openDemo(0)}>Demo 1</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(1)}>Demo 2</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(2)}>Demo 3</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(3)}>Demo 4</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(4)}>Demo 5</MenuItem>
+                        </Menu>
+                    </Toolbar>
+                </AppBar>
+            </div>);
     }
 }
+
+export default withStyles(styles, {withTheme: true})(MainMenu);

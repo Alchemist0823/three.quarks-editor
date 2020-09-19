@@ -29,6 +29,7 @@ export class BulletMuzzle extends Group {
 
         this.beam = new ParticleSystem({
             duration: 1,
+            looping: false,
             startLife: new IntervalValue(0.1, 0.2),
             startSpeed: new ConstantValue(0),
             startSize: new ConstantValue(4),
@@ -59,6 +60,7 @@ export class BulletMuzzle extends Group {
 
         let muzzle = {
             duration: 1,
+            looping: false,
             startLife: new IntervalValue(0.1, 0.2),
             startSpeed: new ConstantValue(0),
             startSize: new IntervalValue(1, 5),
@@ -105,6 +107,7 @@ export class BulletMuzzle extends Group {
 
         this.flash = new ParticleSystem({
             duration: 1,
+            looping: false,
             startLife: new IntervalValue(0.1, 0.2),
             startSpeed: new ConstantValue(0),
             startSize: new IntervalValue(1, 2.5),
@@ -138,6 +141,7 @@ export class BulletMuzzle extends Group {
 
         this.smoke = new ParticleSystem({
             duration: 2.5,
+            looping: false,
             startLife: new IntervalValue(0.6, 0.8),
             startSpeed: new IntervalValue(0.1, 3),
             startSize: new IntervalValue(0.75, 1.5),
@@ -178,6 +182,7 @@ export class BulletMuzzle extends Group {
 
         this.particles = new ParticleSystem({
             duration: 1,
+            looping: false,
             startLife: new IntervalValue(0.2, 0.6),
             startSpeed: new IntervalValue(1, 15),
             startSize: new IntervalValue(0.1, 0.3),
