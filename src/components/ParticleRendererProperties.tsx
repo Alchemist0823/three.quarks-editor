@@ -23,14 +23,14 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
 
     onChangeTexture = (files: FileList) => {
         console.log("change texture");
-        let image = document.createElement( 'img' );
-        let texture = new Texture( image );
+        const image = document.createElement( 'img' );
+        const texture = new Texture( image );
         image.onload = function()  {
             texture.needsUpdate = true;
         };
 
         if (files && files[0]) {
-            let reader = new FileReader();
+            const reader = new FileReader();
             reader.onload = function (e) {
                 image.src = reader.result as string;
             };

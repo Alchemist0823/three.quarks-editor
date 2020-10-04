@@ -47,7 +47,7 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
 
     constructor(props: Readonly<GeneratorEditorProps>) {
         super(props);
-        let currentEditor = ValueToEditor[props.allowedType[0]][0];
+        const currentEditor = ValueToEditor[props.allowedType[0]][0];
         this.state = {
             open: false,
         }
@@ -138,16 +138,16 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
         console.log('render GeneratorEditor');
         const {name, generator, allowedType} = this.props;
 
-        let editorTypes = [];
-        for (let valueType of allowedType) {
+        const editorTypes = [];
+        for (const valueType of allowedType) {
             console.log(valueType);
             console.log(ValueToEditor[valueType]);
-            for (let editorType of ValueToEditor[valueType]) {
+            for (const editorType of ValueToEditor[valueType]) {
                 editorTypes.push(editorType);
             }
         }
 
-        let currentEditor = this.getEditorType(generator);
+        const currentEditor = this.getEditorType(generator);
 
         let editor;
         switch (currentEditor) {

@@ -78,8 +78,8 @@ export function SceneGraphViewMaterial(props: SceneGraphViewMaterialProps) {
         if (index == 0)
             return object3d;
         index --;
-        for (let child of object3d.children) {
-            let res = countIndex(index, child);
+        for (const child of object3d.children) {
+            const res = countIndex(index, child);
             if (res)
                 return res;
             index --;
@@ -88,8 +88,8 @@ export function SceneGraphViewMaterial(props: SceneGraphViewMaterialProps) {
     }
     const handleSelect = (event: React.ChangeEvent<{}>, nodeIds: string[]) => {
         if (nodeIds.length > 0) {
-            let index = parseInt(nodeIds[0]);
-            let object3d = countIndex(index, props.scene);
+            const index = parseInt(nodeIds[0]);
+            const object3d = countIndex(index, props.scene);
             if (object3d)
                 props.context.actions.select(object3d);
         }
@@ -111,11 +111,11 @@ export function SceneGraphViewMaterial(props: SceneGraphViewMaterialProps) {
     };
 
     const renderObject = (context: AppContext, object3d: THREE.Object3D, index: number): [React.ReactNode, number] => {
-        let items = [];
+        const items = [];
 
-        let originIndex = index;
+        const originIndex = index;
         index ++;
-        for (let child of object3d.children) {
+        for (const child of object3d.children) {
             const result = renderObject(context, child, index);
             items.push(result[0]);
             index = result[1];

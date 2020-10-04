@@ -25,9 +25,6 @@ import {ToonExplosion} from "../example/ToonExplosion";
 import {Explosion} from "../example/Explosion";
 
 
-interface ApplicationContextProps {
-
-}
 
 export interface AppContext {
     scene: THREE.Scene;
@@ -51,7 +48,7 @@ const ApplicationContext = React.createContext<AppContext | null>(null);
 
 export const ApplicationContextConsumer = ApplicationContext.Consumer;
 
-export class ApplicationContextProvider extends React.Component<ApplicationContextProps, AppContext> {
+export class ApplicationContextProvider extends React.Component<{ }, AppContext> {
 
     createScene(demoIndex: number) {
         const scene = new THREE.Scene();
@@ -101,7 +98,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
         return scene;
     }
 
-    constructor(props: Readonly<ApplicationContextProps>) {
+    constructor(props: Readonly<{}>) {
         super(props);
         const state: AppContext = {
             scene: this.createScene(0),
@@ -109,7 +106,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
             selection: [],
             actions: {
                 onOpenDemo: (index: number) => {
-                    let scene = this.createScene(index);
+                    const scene = this.createScene(index);
                     this.setState({scene: scene});
                 },
                 onSaveAs: () => {
@@ -122,9 +119,9 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                 onImport: (files: FileList) => {
                     const nFiles = files.length;
                     for (let nFileId = 0; nFileId < nFiles; nFileId++) {
-                        let jsonURL = URL.createObjectURL( files[nFileId] );
+                        const jsonURL = URL.createObjectURL( files[nFileId] );
 
-                        let loader = new QuarksLoader();
+                        const loader = new QuarksLoader();
                         loader.setCrossOrigin("");
                         loader.load(jsonURL, (object3D: Object3D)=>{
                             this.state.scene.add(object3D);
@@ -165,7 +162,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
         let object;
         switch (type) {
             case 'particle':
-                let texture = new TextureLoader().load("textures/texture1.png");
+                const texture = new TextureLoader().load("textures/texture1.png");
                 const particleSystem = new ParticleSystem({
                     maxParticle: 10000,
                     shape: new ConeEmitter(),

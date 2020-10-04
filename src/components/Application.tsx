@@ -8,12 +8,9 @@ import './layout.scss';
 import {ApplicationContextConsumer, ApplicationContextProvider} from "./ApplicationContext";
 import {SceneGraphViewMaterial} from "./SceneGraphViewMaterial";
 
-interface ApplicationProps {
-}
+export class Application extends React.Component<{}> {
 
-export class Application extends React.Component<ApplicationProps> {
-
-    constructor(props: Readonly<ApplicationProps>) {
+    constructor(props: Readonly<{}>) {
         super(props);
     }
 
@@ -26,8 +23,8 @@ export class Application extends React.Component<ApplicationProps> {
                         <ApplicationContextConsumer>
                             {context => context &&
                                 <MainMenu onSaveAs={context.actions.onSaveAs}
-                                          onImport={context.actions.onImport}
-                                          onOpenDemo={context.actions.onOpenDemo}></MainMenu>
+                                            onImport={context.actions.onImport}
+                                            onOpenDemo={context.actions.onOpenDemo}/>
                             }
                         </ApplicationContextConsumer>
                     </div>

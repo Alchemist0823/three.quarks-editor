@@ -24,7 +24,7 @@ export class ParticleSystemController extends React.PureComponent<ParticleSystem
     }
 
     getSystems = () => {
-        let systems: Array<ParticleSystem> = [];
+        const systems: Array<ParticleSystem> = [];
         if (this.props.object3d instanceof ParticleEmitter) {
             systems.push(this.props.object3d.system);
         }
@@ -47,8 +47,8 @@ export class ParticleSystemController extends React.PureComponent<ParticleSystem
     };
 
     togglePause = () => {
-        let systems: Array<ParticleSystem> = this.getSystems();
-        let paused = this.checkPause(systems);
+        const systems: Array<ParticleSystem> = this.getSystems();
+        const paused = this.checkPause(systems);
 
         if (paused) {
             systems.forEach(system => {

@@ -70,7 +70,7 @@ export class EmitterShapeProperties extends React.PureComponent<EmitterShapeProp
 
     renderShapeProperties() {
         const properties = [];
-        for (let key in this.props.particleSystem.emitterShape) {
+        for (const key in this.props.particleSystem.emitterShape) {
             properties.push(
                 <div key={key} className="property">
                     <label className="name">{key}:</label>

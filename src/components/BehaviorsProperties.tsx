@@ -75,7 +75,7 @@ export function BehaviorsProperties(props: BehaviorsPropertiesProps) {
     };
 
     const onChangeBehaviorFunc = (index: number) => (generator: GenericGenerator) => {
-        let behavior = props.particleSystem.behaviors[index];
+        const behavior = props.particleSystem.behaviors[index];
         switch (behavior.type) {
             case 'ColorOverLife':
                 (behavior as ColorOverLife).func = generator as FunctionColorGenerator;
@@ -157,7 +157,7 @@ export function BehaviorsProperties(props: BehaviorsPropertiesProps) {
 
                                 return (
                                     <ListItem key={index}
-                                              selected={selectedIndex == index}
+                                              selected={selectedIndex === index}
                                               onClick={(event) => handleListItemClick(event, index)}>
                                         <ListItemIcon>
                                             <Checkbox

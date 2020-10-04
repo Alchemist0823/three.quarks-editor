@@ -3,22 +3,11 @@ import Stats from "stats.js";
 import {WEBGL} from "../WebGL";
 import {
     PerspectiveCamera,
-    Scene,
     WebGLRenderer,
     Clock,
-    PointLight,
-    Color,
-    SphereBufferGeometry,
-    Mesh,
-    MeshStandardMaterial, AmbientLight, Vector4, TextureLoader, AdditiveBlending, AxesHelper
 } from "three";
-import {ParticleSystem} from "three.quarks";
 import {RefObject} from "react";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import {ConeEmitter} from "three.quarks";
-import {ConstantColor} from "three.quarks";
-import {ToonProjectile} from "../example/ToonProjectile";
-import {ConstantValue} from "three.quarks";
 import {ParticleEmitter} from "three.quarks";
 import {AppContext, ApplicationContextConsumer} from "./ApplicationContext";
 
@@ -71,8 +60,8 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
             return false;
         }*/
 
-        let width = this.props.width;
-        let height = this.props.height;
+        const width = this.props.width;
+        const height = this.props.height;
 
         this.clock = new Clock();
 
@@ -98,16 +87,16 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
 
         //window.addEventListener( 'resize', this.onWindowResize, false );
 
-        this.onReize(null);
+        this.onResize(null);
 
         return true;
 
     }
 
-    onReize = ( event: any ) => {
+    onResize = (event: any ) => {
 
-        if (this.renderer!.domElement.parentElement!.clientWidth - 10 != this.renderer!.domElement.width ||
-            this.renderer!.domElement.parentElement!.clientHeight - 10 != this.renderer!.domElement.height) {
+        if (this.renderer!.domElement.parentElement!.clientWidth - 10 !== this.renderer!.domElement.width ||
+            this.renderer!.domElement.parentElement!.clientHeight - 10 !== this.renderer!.domElement.height) {
 
             const newWidth = this.renderer!.domElement.parentElement!.clientWidth - 10;
             const newHeight = this.renderer!.domElement.parentElement!.clientHeight - 10;
@@ -123,7 +112,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
     animate = () => {
         requestAnimationFrame( this.animate );
 
-        this.onReize(null);
+        this.onResize(null);
         this.renderScene();
         this.stats!.update();
     };
@@ -131,7 +120,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
     renderScene() {
         if (this.appContext) {
             this.controls!.update();
-            let delta = this.clock!.getDelta();
+            const delta = this.clock!.getDelta();
             //let time = performance.now() * 0.0005;
             //this.particleSystem!.update(this.clock!.getDelta());
             this.appContext.script(delta);

@@ -24,7 +24,7 @@ export const ColorEditor: React.FC<ColorEditorProps> = (props) => {
     };
 
     const colorChange = (colorResult: ColorResult) => {
-        let color = new Vector4();
+        const color = new Vector4();
         color.x = Math.min(255, colorResult.rgb.r) / 255;
         color.y = Math.min(255, colorResult.rgb.g) / 255;
         color.z = Math.min(255, colorResult.rgb.b) / 255;

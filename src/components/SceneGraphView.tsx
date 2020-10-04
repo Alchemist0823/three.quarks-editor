@@ -67,12 +67,12 @@ export class SceneGraphView extends React.Component<SceneGraphViewProps, SceneGr
     }
 
     renderObject(context: AppContext, object3d: THREE.Object3D, index: number, indent: number): [React.ReactNodeArray, number] {
-        let items = [];
+        const items = [];
         items.push(
             <SceneGraphItemView key={object3d.uuid} onClick={()=>this.onClick(context, object3d)} object3d={object3d} selected={context.selection.indexOf(object3d) !== -1} indent={indent}>
             </SceneGraphItemView>);
         index ++;
-        for (let child of object3d.children) {
+        for (const child of object3d.children) {
             const result = this.renderObject(context, child, index, indent + 1);
             items.push(result[0]);
             index = result[1];
