@@ -90,29 +90,39 @@ export class BezierCurvesEditor extends React.Component<BezierCurvesEditorProps,
             let curve = value.getFunction(curveIndex);
 
             if (this.state.down === 0) {
+                let old = curve.p[0];
                 curve.p[0] = (this.props.height - y) / this.props.height;
+                curve.p[1] += curve.p[0] - old;
                 value.setStartX(curveIndex, x / this.props.width);
                 if (curveIndex - 1 >= 0) {
-                    value.getFunction(curveIndex - 1).p[3] = (this.props.height - y) / this.props.height;
+                    let pCurve = value.getFunction(curveIndex - 1);
+                    pCurve.p[3] = (this.props.height - y) / this.props.height;
+                    pCurve.p[2] += curve.p[0] - old;
                     value.setFunction(curveIndex - 1, value.getFunction(curveIndex - 1).clone());
                 }
                 value.setFunction(curveIndex, curve.clone());
             }
             if (this.state.down === 3) {
+                let old = curve.p[3];
                 curve.p[3] = (this.props.height - y) / this.props.height;
+                curve.p[2] += curve.p[3] - old;
                 value.setEndX(curveIndex, x / this.props.width);
                 if (curveIndex + 1 < value.numOfFunctions) {
-                    value.getFunction(curveIndex + 1).p[0] = (this.props.height - y) / this.props.height;
+                    let nCurve = value.getFunction(curveIndex + 1);
+                    nCurve.p[0] = (this.props.height - y) / this.props.height;
+                    nCurve.p[1] += curve.p[3] - old;
                     value.setFunction(curveIndex + 1, value.getFunction(curveIndex + 1).clone());
                 }
                 value.setFunction(curveIndex, curve.clone());
             }
-
-
-            console.log(this.state.down);
-            console.log(y);
-
-
+            if (this.state.down === 1) {
+                curve.p[1] = (this.props.height - y) / this.props.height;
+                value.setFunction(curveIndex, curve.clone());
+            }
+            if (this.state.down === 2) {
+                curve.p[2] = (this.props.height - y) / this.props.height;
+                value.setFunction(curveIndex, curve.clone());
+            }
             //value[i] = this.inversex(x);
             //value[i + 1] = this.inversey(y);
             if (this.props.onChange)
@@ -160,7 +170,7 @@ export class BezierCurvesEditor extends React.Component<BezierCurvesEditorProps,
             height,
             value,
             curveWidth = 1,
-            curveColor = "#fff",
+            curveColor = "#000",
             handleRadius = BezierCurvesEditor.defaultP.handleRadius,
             handleColor = "#f00",
             handleStroke = 1,
@@ -178,8 +188,8 @@ export class BezierCurvesEditor extends React.Component<BezierCurvesEditorProps,
             let x1 = value.getStartX(i);
             let x2 = value.getEndX(i);
             let curve = value.getFunction(i);
-            let slope0 = curve.derivative(0);
-            let slope1 = curve.derivative(1);
+            let slope0 = curve.getSlope(0);
+            let slope1 = curve.getSlope(1);
 
             curves.push(
                 <g key={i}>
@@ -208,8 +218,8 @@ export class BezierCurvesEditor extends React.Component<BezierCurvesEditorProps,
                         onMouseLeave={(e)=>this.onLeaveHandle()}
                         xstart={0}
                         ystart={curve.p[0]}
-                        xval={0.3 / Math.sqrt(slope0 * slope0 + 1)}
-                        yval={0.3 * slope0 / Math.sqrt(slope0 * slope0 + 1) + curve.p[0]}
+                        xval={1.0 / 3}
+                        yval={1.0 / 3 * slope0 + curve.p[0]}
                         handleRadius={handleRadius}
                         handleColor={handleColor}
                         down={curveIndex === i && down === 1}
@@ -224,8 +234,8 @@ export class BezierCurvesEditor extends React.Component<BezierCurvesEditorProps,
                         onMouseLeave={(e)=>this.onLeaveHandle()}
                         xstart={1}
                         ystart={curve.p[3]}
-                        xval={1 - 0.3 / Math.sqrt(slope1 * slope1 + 1)}
-                        yval={curve.p[3] - 0.3 * slope1/ Math.sqrt(slope1 * slope1 + 1)}
+                        xval={1 - 1.0 / 3}
+                        yval={curve.p[3] - 1.0 / 3 * slope1}
                         handleRadius={handleRadius}
                         handleColor={handleColor}
                         down={curveIndex === i && down === 2}

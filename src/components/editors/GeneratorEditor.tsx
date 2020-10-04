@@ -11,6 +11,7 @@ import {Gradient} from "three.quarks";
 import {NumberInput} from "./NumberInput";
 import {ColorEditor} from "./ColorEditor";
 import "./GeneratorEditor.scss";
+import {BezierCurvesEditor} from "./bezier/BezierCurvesEditor";
 
 type EditorType =
     'constant'
@@ -110,6 +111,10 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
         this.props.updateGenerator(new RandomColor(randomColor.a, x));
     };
 
+    changeCurve = (x: PiecewiseBezier) => {
+        this.props.updateGenerator(new PiecewiseBezier(x.functions));
+    }
+
     getEditorType(generator: GenericGenerator): EditorType {
         if (generator instanceof ConstantValue) {
             return 'constant';
@@ -160,7 +165,12 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
                 editor = <React.Fragment>
                     <NumberInput value={(generator as IntervalValue).a}
                                  onChange={this.changeValueA}/>-<NumberInput
-                        value={(generator as IntervalValue).b} onChange={this.changeValueB}/></React.Fragment>;
+                    value={(generator as IntervalValue).b} onChange={this.changeValueB}/></React.Fragment>;
+                break;
+            case "piecewiseBezier":
+                editor = <React.Fragment>
+                    <BezierCurvesEditor height={40} width={240} value={(generator as PiecewiseBezier)} onChange={this.changeCurve}/>
+                </React.Fragment>;
                 break;
             case "colorRange":
                 editor = (<React.Fragment>

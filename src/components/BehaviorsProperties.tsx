@@ -1,10 +1,10 @@
 import * as React from "react";
 import {ApplicationContextConsumer} from "./ApplicationContext";
 import {GeneratorEditor, GenericGenerator, ValueType} from "./editors/GeneratorEditor";
-import {ParticleSystem} from "three.quarks";
+import {ColorOverLife, FrameOverLife, ParticleSystem, RotationOverLife, SizeOverLife} from "three.quarks";
 import {FunctionValueGenerator, ValueGenerator} from "three.quarks";
 import {ColorGenerator, FunctionColorGenerator} from "three.quarks";
-import {ListItem, List, Theme, createStyles, Typography, Toolbar} from "@material-ui/core";
+import {ListItem, List, Theme, createStyles, Typography, Toolbar, ListItemIcon} from "@material-ui/core";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -41,6 +41,10 @@ const useStyles = makeStyles((theme: Theme) =>
 export function BehaviorsProperties(props: BehaviorsPropertiesProps) {
     const classes = useStyles();
     const [checked, setChecked] = React.useState([0, 1, 2, 3]);
+    const [selectedIndex, setSelectedIndex] = React.useState(1);
+    const handleListItemClick = (event: any, index: number) => {
+        setSelectedIndex(index);
+    };
 
     const valueFunctionTypes = ['value', 'functionValue'] as Array<ValueType>;
     const colorValueFunctionTypes = ['color', 'functionColor'] as Array<ValueType>;
@@ -70,6 +74,27 @@ export function BehaviorsProperties(props: BehaviorsPropertiesProps) {
         setAnchorEl(null);
     };
 
+    const onChangeBehaviorFunc = (index: number) => (generator: GenericGenerator) => {
+        let behavior = props.particleSystem.behaviors[index];
+        switch (behavior.type) {
+            case 'ColorOverLife':
+                (behavior as ColorOverLife).func = generator as FunctionColorGenerator;
+                break;
+            case 'RotationOverLife':
+                (behavior as RotationOverLife).angularVelocityFunc = generator as FunctionValueGenerator | ValueGenerator;
+                break;
+            case 'SizeOverLife':
+                (behavior as SizeOverLife).func = generator as FunctionValueGenerator;
+                break;
+            case 'FrameOverLife':
+                (behavior as FrameOverLife).func = generator as FunctionValueGenerator;
+                break;
+            default:
+                break;
+        }
+        props.updateProperties();
+    }
+
     return (
         <div className={classes.root}>
             <ButtonGroup color="primary" aria-label="primary button group">
@@ -96,18 +121,54 @@ export function BehaviorsProperties(props: BehaviorsPropertiesProps) {
                     <List dense className={classes.listRoot}>
                         {
                             props.particleSystem.behaviors.map((behavior, index) => {
-                                const labelId = `checkbox-list-secondary-label-${index}`;
+                                const labelId = `behavior-list-label-${index}`;
+                                let valueTypes: Array<ValueType>;
+                                let func: FunctionColorGenerator | FunctionValueGenerator | ValueGenerator | null = null;
+                                switch (behavior.type) {
+                                    case 'ColorOverLife':
+                                        valueTypes = ['functionColor'];
+                                        func = (behavior as ColorOverLife).func;
+                                        break;
+                                    case 'RotationOverLife':
+                                        valueTypes = ['functionValue', 'value'];
+                                        func = (behavior as RotationOverLife).angularVelocityFunc;
+                                        break;
+                                    case 'SizeOverLife':
+                                        valueTypes = ['functionValue'];
+                                        func = (behavior as SizeOverLife).func;
+                                        break;
+                                    case 'FrameOverLife':
+                                        valueTypes = ['functionValue'];
+                                        func = (behavior as FrameOverLife).func;
+                                        break;
+                                    default:
+                                        valueTypes = ['functionValue'];
+                                        break;
+                                }
+
+                                let editor;
+                                if (func) {
+                                    editor =
+                                        <GeneratorEditor name="Func"
+                                                         allowedType={valueTypes}
+                                                         generator={func}
+                                                         updateGenerator={onChangeBehaviorFunc(index)}/>;
+                                }
+
                                 return (
-                                    <ListItem key={index} button>
-                                        <ListItemText id={labelId} primary={behavior.type}/>
-                                        <ListItemSecondaryAction>
+                                    <ListItem key={index}
+                                              selected={selectedIndex == index}
+                                              onClick={(event) => handleListItemClick(event, index)}>
+                                        <ListItemIcon>
                                             <Checkbox
                                                 edge="end"
                                                 onChange={handleToggle(index)}
                                                 checked={checked.indexOf(index) !== -1}
                                                 inputProps={{'aria-labelledby': labelId}}
                                             />
-                                        </ListItemSecondaryAction>
+                                        </ListItemIcon>
+                                        <ListItemText id={labelId} primary={behavior.type}
+                                                      secondary={editor}/>
                                     </ListItem>
                                 );
                             })
