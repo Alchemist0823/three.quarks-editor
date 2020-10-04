@@ -22,6 +22,7 @@ import {BulletMuzzle} from "../example/BulletMuzzle";
 import {BulletProjectile} from "../example/BulletProjectile";
 import {BulletHit} from "../example/BulletHit";
 import {ToonExplosion} from "../example/ToonExplosion";
+import {Explosion} from "../example/Explosion";
 
 
 interface ApplicationContextProps {
@@ -77,9 +78,12 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
         } else if (demoIndex === 3) {
             demoObject = new BulletHit();
             demoObject.name = "BulletHit";
-        } else {
+        } else if (demoIndex === 4) {
             demoObject = new ToonExplosion();
             demoObject.name = "ToonExplosion";
+        } else {
+            demoObject = new Explosion();
+            demoObject.name = "Explosion";
         }
         scene.add(demoObject);
 

@@ -59,19 +59,17 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
             return false;
         }
 
-        if ( WEBGL.isWebGLAvailable() === false ) {
+        if ( !WEBGL.isWebGLAvailable() ) {
             document.body.appendChild( WEBGL.getWebGLErrorMessage() );
             return false;
         }
 
         this.renderer = new WebGLRenderer();
 
-        if ( this.renderer.extensions.get( 'ANGLE_instanced_arrays' ) === null ) {
-
+        /*if ( this.renderer.extensions.get( 'ANGLE_instanced_arrays' ) === null ) {
             document.getElementById( 'notSupported' )!.style.display = '';
             return false;
-
-        }
+        }*/
 
         let width = this.props.width;
         let height = this.props.height;
