@@ -4,11 +4,7 @@ Three.quarks is a fast powerful and general purpose particle engine for [three.j
 
 ### Demo
 
-Projectile Demo
-
-Cartoon Demo
-
-The particle system editor is [Here]().
+The particle system editor is **[Here](https://forrestsun.com/three.quarks-editor/)**.
 
 ### Install
 
