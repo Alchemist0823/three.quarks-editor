@@ -78,9 +78,20 @@ interface PropertiesEditorProps {
 
 export default function PropertiesEditor(props: PropertiesEditorProps) {
     const classes = useStyles();
+    const [expanded, setExpanded] = React.useState(['Object']);
+
+    const handleChange = (panel: string) => (event: any, isExpanded: boolean) => {
+        if (isExpanded) {
+            expanded.push(panel);
+        } else {
+            expanded.splice(expanded.indexOf(panel), 1);
+        }
+        setExpanded(expanded);
+    };
+
     return (
         <div className={classes.root}>
-            <Accordion>
+            <Accordion expanded={(expanded.indexOf('Object') !== -1)} onChange={handleChange('Object')}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon/>}
                     aria-controls="object-content"
@@ -97,7 +108,7 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                     </ApplicationContextConsumer>
                 </AccordionDetails>
             </Accordion>
-            <Accordion>
+            <Accordion expanded={(expanded.indexOf('Controller') !== -1)} onChange={handleChange('Controller')}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon/>}
                     aria-controls="particle-controller-content"
@@ -115,7 +126,7 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                 </AccordionDetails>
             </Accordion>
             {(props.object3d instanceof ParticleEmitter) &&
-            <Accordion>
+            <Accordion expanded={(expanded.indexOf('EmitterShape') !== -1)} onChange={handleChange('EmitterShape')}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon/>}
                     aria-controls="emitter-shape-content"
@@ -133,7 +144,7 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
             </Accordion>
             }
             {(props.object3d instanceof ParticleEmitter) &&
-            <Accordion>
+            <Accordion expanded={(expanded.indexOf('ParticleRenderer') !== -1)} onChange={handleChange('ParticleRenderer')}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon/>}
                     aria-controls="particle-renderer-content"
@@ -151,7 +162,7 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
             </Accordion>
             }
             {(props.object3d instanceof ParticleEmitter) &&
-            <Accordion>
+            <Accordion expanded={(expanded.indexOf('ParticleEmitter') !== -1)} onChange={handleChange('ParticleEmitter')}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon/>}
                     aria-controls="particle-emitter-content"
@@ -169,7 +180,7 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
             </Accordion>
             }
             {(props.object3d instanceof ParticleEmitter) &&
-            <Accordion>
+            <Accordion expanded={(expanded.indexOf('Behaviors') !== -1)} onChange={handleChange('Behaviors')}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon/>}
                     aria-controls="behaviors-content"
@@ -179,14 +190,14 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                 <AccordionDetails>
                     <ApplicationContextConsumer>
                         {context => context &&
-                            <BehaviorsProperties particleSystem={(props.object3d as ParticleEmitter).system}
+                            <BehaviorsProperties behaviors={(props.object3d as ParticleEmitter).system.behaviors}
                                                         updateProperties={context.actions.updateProperties}/>
                         }
                     </ApplicationContextConsumer>
                 </AccordionDetails>
             </Accordion>
             }
-            <Accordion>
+            <Accordion expanded={(expanded.indexOf('Script') !== -1)} onChange={handleChange('Script')}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon/>}
                     aria-controls="script-content"
@@ -206,33 +217,3 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
         </div>
     );
 }
-/*
-<Accordion.Title active={activeIndex === 1} index={1} onClick={this.handleClick}>
-    <Icon name='dropdown'/>
-    Emission
-</Accordion.Title>
-<Accordion.Content active={activeIndex === 1}>
-<div><GeneratorEditor name="startSpeed"
-allowedType={['value', 'function'] as Array<ValueType>}
-generator={this.state.valueGenerator}
-updateGenerator={g => this.setState({valueGenerator: g})}/></div>
-<div><GeneratorEditor name="startColor"
-allowedType={['color', 'functionColor'] as Array<ValueType>}
-generator={this.state.colorGenerator}
-updateGenerator={g => this.setState({colorGenerator: g})}/></div>
-</Accordion.Content>
-
-<Accordion.Title active={activeIndex === 2} index={2} onClick={this.handleClick}>
-    <Icon name='dropdown'/>
-    Renderer
-    </Accordion.Title>
-    <Accordion.Content active={activeIndex === 2}>
-</Accordion.Content>
-
-<Accordion.Title active={activeIndex === 3} index={3} onClick={this.handleClick}>
-    <Icon name='dropdown'/>
-    Emission Shape
-</Accordion.Title>
-<Accordion.Content active={activeIndex === 3}>
-<Select placeholder='Emitter' options={this.emitterOptions}/>
-</Accordion.Content>*/

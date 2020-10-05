@@ -1,7 +1,7 @@
 import * as React from "react";
 import {ApplicationContextConsumer} from "./ApplicationContext";
 import {GeneratorEditor, GenericGenerator, ValueType} from "./editors/GeneratorEditor";
-import {ColorOverLife, FrameOverLife, ParticleSystem, RotationOverLife, SizeOverLife} from "three.quarks";
+import {Behavior, ColorOverLife, FrameOverLife, ParticleSystem, RotationOverLife, SizeOverLife} from "three.quarks";
 import {FunctionValueGenerator, ValueGenerator} from "three.quarks";
 import {ColorGenerator, FunctionColorGenerator} from "three.quarks";
 import {ListItem, List, Theme, createStyles, Typography, Toolbar, ListItemIcon} from "@material-ui/core";
@@ -13,9 +13,10 @@ import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import {memo} from "react";
 
 interface BehaviorsPropertiesProps {
-    particleSystem: ParticleSystem,
+    behaviors: Array<Behavior>,
     updateProperties: Function,
 }
 
@@ -38,19 +39,12 @@ const useStyles = makeStyles((theme: Theme) =>
                  generator={this.props.particleSystem.startSpeed}
                  updateGenerator={this.onChangeStartSpeed}/>*/
 
-export function BehaviorsProperties(props: BehaviorsPropertiesProps) {
+function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
     const classes = useStyles();
     const [checked, setChecked] = React.useState([0, 1, 2, 3]);
     const [selectedIndex, setSelectedIndex] = React.useState(1);
     const handleListItemClick = (event: any, index: number) => {
         setSelectedIndex(index);
-    };
-
-    const valueFunctionTypes = ['value', 'functionValue'] as Array<ValueType>;
-    const colorValueFunctionTypes = ['color', 'functionColor'] as Array<ValueType>;
-    const onChangeStartColor = (g: GenericGenerator) => {
-        props.particleSystem.startColor = g as ColorGenerator | FunctionColorGenerator;
-        props.updateProperties();
     };
 
     const handleToggle = (value: number) => () => {
@@ -75,7 +69,7 @@ export function BehaviorsProperties(props: BehaviorsPropertiesProps) {
     };
 
     const onChangeBehaviorFunc = (index: number) => (generator: GenericGenerator) => {
-        const behavior = props.particleSystem.behaviors[index];
+        const behavior = props.behaviors[index];
         switch (behavior.type) {
             case 'ColorOverLife':
                 (behavior as ColorOverLife).func = generator as FunctionColorGenerator;
@@ -92,6 +86,7 @@ export function BehaviorsProperties(props: BehaviorsPropertiesProps) {
             default:
                 break;
         }
+        console.log("changing")
         props.updateProperties();
     }
 
@@ -116,66 +111,64 @@ export function BehaviorsProperties(props: BehaviorsPropertiesProps) {
                 </Menu>
                 <Button>Remove</Button>
             </ButtonGroup>
-            <ApplicationContextConsumer>
-                {context => context &&
-                    <List dense className={classes.listRoot}>
-                        {
-                            props.particleSystem.behaviors.map((behavior, index) => {
-                                const labelId = `behavior-list-label-${index}`;
-                                let valueTypes: Array<ValueType>;
-                                let func: FunctionColorGenerator | FunctionValueGenerator | ValueGenerator | null = null;
-                                switch (behavior.type) {
-                                    case 'ColorOverLife':
-                                        valueTypes = ['functionColor'];
-                                        func = (behavior as ColorOverLife).func;
-                                        break;
-                                    case 'RotationOverLife':
-                                        valueTypes = ['functionValue', 'value'];
-                                        func = (behavior as RotationOverLife).angularVelocityFunc;
-                                        break;
-                                    case 'SizeOverLife':
-                                        valueTypes = ['functionValue'];
-                                        func = (behavior as SizeOverLife).func;
-                                        break;
-                                    case 'FrameOverLife':
-                                        valueTypes = ['functionValue'];
-                                        func = (behavior as FrameOverLife).func;
-                                        break;
-                                    default:
-                                        valueTypes = ['functionValue'];
-                                        break;
-                                }
-
-                                let editor;
-                                if (func) {
-                                    editor =
-                                        <GeneratorEditor name="Func"
-                                                         allowedType={valueTypes}
-                                                         generator={func}
-                                                         updateGenerator={onChangeBehaviorFunc(index)}/>;
-                                }
-
-                                return (
-                                    <ListItem key={index}
-                                              selected={selectedIndex === index}
-                                              onClick={(event) => handleListItemClick(event, index)}>
-                                        <ListItemIcon>
-                                            <Checkbox
-                                                edge="end"
-                                                onChange={handleToggle(index)}
-                                                checked={checked.indexOf(index) !== -1}
-                                                inputProps={{'aria-labelledby': labelId}}
-                                            />
-                                        </ListItemIcon>
-                                        <ListItemText id={labelId} primary={behavior.type}
-                                                      secondary={editor}/>
-                                    </ListItem>
-                                );
-                            })
+            <List dense className={classes.listRoot}>
+                {
+                    props.behaviors.map((behavior, index) => {
+                        const labelId = `behavior-list-label-${index}`;
+                        let valueTypes: Array<ValueType>;
+                        let func: FunctionColorGenerator | FunctionValueGenerator | ValueGenerator | null = null;
+                        switch (behavior.type) {
+                            case 'ColorOverLife':
+                                valueTypes = ['functionColor'];
+                                func = (behavior as ColorOverLife).func;
+                                break;
+                            case 'RotationOverLife':
+                                valueTypes = ['functionValue', 'value'];
+                                func = (behavior as RotationOverLife).angularVelocityFunc;
+                                break;
+                            case 'SizeOverLife':
+                                valueTypes = ['functionValue'];
+                                func = (behavior as SizeOverLife).func;
+                                break;
+                            case 'FrameOverLife':
+                                valueTypes = ['functionValue'];
+                                func = (behavior as FrameOverLife).func;
+                                break;
+                            default:
+                                valueTypes = ['functionValue'];
+                                break;
                         }
-                    </List>
+
+                        let editor;
+                        if (func) {
+                            editor =
+                                <GeneratorEditor name="Func"
+                                                 allowedType={valueTypes}
+                                                 generator={func}
+                                                 updateGenerator={onChangeBehaviorFunc(index)}/>;
+                        }
+
+                        return (
+                            <ListItem key={index}
+                                      selected={selectedIndex === index}
+                                      onClick={(event) => handleListItemClick(event, index)}>
+                                <ListItemIcon>
+                                    <Checkbox
+                                        edge="end"
+                                        onChange={handleToggle(index)}
+                                        checked={checked.indexOf(index) !== -1}
+                                        inputProps={{'aria-labelledby': labelId}}
+                                    />
+                                </ListItemIcon>
+                                <ListItemText id={labelId} primary={behavior.type}
+                                              secondary={editor}/>
+                            </ListItem>
+                        );
+                    })
                 }
-            </ApplicationContextConsumer>
+            </List>
         </div>
     );
 }
+
+export const BehaviorsProperties = React.memo(BehaviorsPropertiesFunc);

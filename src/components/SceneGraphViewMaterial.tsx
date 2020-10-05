@@ -73,6 +73,9 @@ export function SceneGraphViewMaterial(props: SceneGraphViewMaterialProps) {
     const classes = useStyles();
 
     const [selected, setSelected] = React.useState<string[]>([]);
+    const [expanded, setExpanded] = React.useState<string[]>([]);
+
+
 
     const countIndex = (index: number, object3d: Object3D): Object3D | null => {
         if (index == 0)
@@ -94,6 +97,12 @@ export function SceneGraphViewMaterial(props: SceneGraphViewMaterialProps) {
                 props.context.actions.select(object3d);
         }
         setSelected(nodeIds);
+    };
+    const handleToggle = (event: React.ChangeEvent<{}>, nodeIds: string[]) => {
+        //console.log(event.target);
+        if ((event.target as HTMLElement).tagName === 'svg') {
+            setExpanded(nodeIds);
+        }
     };
 
     const getObjectName = (object3d: Object3D) => {
@@ -155,6 +164,8 @@ export function SceneGraphViewMaterial(props: SceneGraphViewMaterialProps) {
         return <TreeView
             className={classes.root}
             selected={selected}
+            expanded={expanded}
+            onNodeToggle={handleToggle}
             onNodeSelect={handleSelect}
             defaultCollapseIcon={<ExpandMoreIcon />}
             defaultExpandIcon={<ChevronRightIcon />}

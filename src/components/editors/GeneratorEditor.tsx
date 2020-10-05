@@ -71,6 +71,9 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
             case "randomColor":
                 generator = new RandomColor(new Vector4(0,0,0,1), new Vector4(1,1,1,1));
                 break;
+            case "piecewiseBezier":
+                generator = new PiecewiseBezier();
+                break;
         }
         if (generator)
             this.props.updateGenerator(generator);
