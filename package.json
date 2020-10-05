@@ -24,10 +24,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts gh-page",
+    "build": "react-scripts docs",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "gh-pages -d gh-page"
+    "deploy": "gh-pages -d docs"
   },
   "eslintConfig": {
     "extends": "react-app"
