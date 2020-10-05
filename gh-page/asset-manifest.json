@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/three.quarks-editor/static/css/main.83b7f3d0.chunk.css",
+    "main.js": "/three.quarks-editor/static/js/main.6fe8a7a4.chunk.js",
+    "main.js.map": "/three.quarks-editor/static/js/main.6fe8a7a4.chunk.js.map",
+    "runtime-main.js": "/three.quarks-editor/static/js/runtime-main.6e4bea79.js",
+    "runtime-main.js.map": "/three.quarks-editor/static/js/runtime-main.6e4bea79.js.map",
+    "static/css/2.c7d94637.chunk.css": "/three.quarks-editor/static/css/2.c7d94637.chunk.css",
+    "static/js/2.c6781309.chunk.js": "/three.quarks-editor/static/js/2.c6781309.chunk.js",
+    "static/js/2.c6781309.chunk.js.map": "/three.quarks-editor/static/js/2.c6781309.chunk.js.map",
+    "index.html": "/three.quarks-editor/index.html",
+    "precache-manifest.e94197c08a96830ef08044d677268550.js": "/three.quarks-editor/precache-manifest.e94197c08a96830ef08044d677268550.js",
+    "service-worker.js": "/three.quarks-editor/service-worker.js",
+    "static/css/2.c7d94637.chunk.css.map": "/three.quarks-editor/static/css/2.c7d94637.chunk.css.map",
+    "static/css/main.83b7f3d0.chunk.css.map": "/three.quarks-editor/static/css/main.83b7f3d0.chunk.css.map"
+  }
+}
