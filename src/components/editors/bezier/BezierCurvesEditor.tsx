@@ -30,7 +30,7 @@ interface BezierCurvesEditorState {
     down: number,
 }
 
-export class BezierCurvesEditor extends React.Component<BezierCurvesEditorProps, BezierCurvesEditorState> {
+export class BezierCurvesEditor extends React.PureComponent<BezierCurvesEditorProps, BezierCurvesEditorState> {
 
 
     static defaultP = {

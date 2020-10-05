@@ -143,14 +143,13 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
 
         const editorTypes = [];
         for (const valueType of allowedType) {
-            console.log(valueType);
-            console.log(ValueToEditor[valueType]);
             for (const editorType of ValueToEditor[valueType]) {
                 editorTypes.push(editorType);
             }
         }
 
         const currentEditor = this.getEditorType(generator);
+        console.log(currentEditor);
 
         let editor;
         switch (currentEditor) {
@@ -191,8 +190,8 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
         return <div className="property">
             <label className="name">{name}</label>
             {editor}
-            <select className="editor-select" onChange={this.changeEditor}>
-                {editorTypes.map(editorType => <option key={editorType} value={editorType} selected={currentEditor === editorType}>{editorType}</option>)}
+            <select className="editor-select" onChange={this.changeEditor} value={currentEditor}>
+                {editorTypes.map(editorType => <option key={editorType} value={editorType}>{editorType}</option>)}
             </select>
         </div>;
     }

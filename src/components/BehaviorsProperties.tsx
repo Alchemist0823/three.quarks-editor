@@ -1,5 +1,5 @@
 import * as React from "react";
-import {ApplicationContextConsumer} from "./ApplicationContext";
+import {ApplicationContextConsumer, ApplicationContextProvider} from "./ApplicationContext";
 import {GeneratorEditor, GenericGenerator, ValueType} from "./editors/GeneratorEditor";
 import {Behavior, ColorOverLife, FrameOverLife, ParticleSystem, RotationOverLife, SizeOverLife} from "three.quarks";
 import {FunctionValueGenerator, ValueGenerator} from "three.quarks";
@@ -14,6 +14,7 @@ import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import {memo} from "react";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
 
 interface BehaviorsPropertiesProps {
     behaviors: Array<Behavior>,
@@ -112,7 +113,8 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
                 <Button>Remove</Button>
             </ButtonGroup>
             <List dense className={classes.listRoot}>
-                {
+                <ApplicationContextConsumer>
+                    {context => context &&
                     props.behaviors.map((behavior, index) => {
                         const labelId = `behavior-list-label-${index}`;
                         let valueTypes: Array<ValueType>;
@@ -141,11 +143,10 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
 
                         let editor;
                         if (func) {
-                            editor =
-                                <GeneratorEditor name="Func"
-                                                 allowedType={valueTypes}
-                                                 generator={func}
-                                                 updateGenerator={onChangeBehaviorFunc(index)}/>;
+                            editor = <GeneratorEditor name="Func"
+                                                      allowedType={valueTypes}
+                                                      generator={func!}
+                                                      updateGenerator={onChangeBehaviorFunc(index)}/>;
                         }
 
                         return (
@@ -166,6 +167,7 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
                         );
                     })
                 }
+                </ApplicationContextConsumer>
             </List>
         </div>
     );
