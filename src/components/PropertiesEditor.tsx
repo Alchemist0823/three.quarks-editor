@@ -78,7 +78,7 @@ interface PropertiesEditorProps {
 
 export default function PropertiesEditor(props: PropertiesEditorProps) {
     const classes = useStyles();
-    const [expanded, setExpanded] = React.useState(['Object']);
+    const [expanded, setExpanded] = React.useState(['Object', 'EmitterShape', 'ParticleRenderer','ParticleEmitter','Behaviors','Script']);
 
     const handleChange = (panel: string) => (event: any, isExpanded: boolean) => {
         if (isExpanded) {
@@ -91,6 +91,12 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
 
     return (
         <div className={classes.root}>
+            <ApplicationContextConsumer>
+                {context => context &&
+                    <ParticleSystemController object3d={props.object3d}
+                                              updateProperties={context.actions.updateProperties}/>
+                }
+            </ApplicationContextConsumer>
             <Accordion expanded={(expanded.indexOf('Object') !== -1)} onChange={handleChange('Object')}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon/>}
@@ -104,23 +110,6 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                         {context => context &&
                             <ObjectProperties object3d={props.object3d}
                                               updateProperties={context.actions.updateProperties}/>
-                        }
-                    </ApplicationContextConsumer>
-                </AccordionDetails>
-            </Accordion>
-            <Accordion expanded={(expanded.indexOf('Controller') !== -1)} onChange={handleChange('Controller')}>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon/>}
-                    aria-controls="particle-controller-content"
-                    id="particle-controller-header"
-                >
-                    <Typography className={classes.heading}>Particle Controller</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <ApplicationContextConsumer>
-                        {context => context &&
-                            <ParticleSystemController object3d={props.object3d}
-                                                      updateProperties={context.actions.updateProperties}/>
                         }
                     </ApplicationContextConsumer>
                 </AccordionDetails>

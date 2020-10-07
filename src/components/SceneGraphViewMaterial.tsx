@@ -28,42 +28,6 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-/*
-interface SceneGraphItemViewProps {
-    selected: boolean;
-    object3d: Object3D;
-    onClick: (a: React.MouseEvent) => void;
-    indent: number;
-}*/
-/*
-const SceneGraphItemView: React.FC<SceneGraphItemViewProps> = (props) => {
-
-    const getObjectName = (object3d: Object3D) => {
-        let type = 'object';
-        if (object3d instanceof ParticleEmitter) {
-            type = 'ParticleSystem';
-        } else {
-            type =  object3d.type;
-        }
-        let name = 'unnamed';
-        if (object3d.name) {
-            name = object3d.name;
-        }
-        return `[${type}] ${name}`;
-    };
-
-    let className = 'item';
-    if (props.selected) {
-        className += ' selected';
-    }
-
-    return <MenuProvider id="scene-graph-menu" data={{object3d: props.object3d}}>
-        <li className={className} onClick={props.onClick} style={{marginLeft: props.indent + 'em'}}>
-        {getObjectName(props.object3d)}
-        </li>
-    </MenuProvider>;
-};*/
-
 interface SceneGraphViewMaterialProps {
     context: AppContext
     scene: Scene;
@@ -73,7 +37,7 @@ export function SceneGraphViewMaterial(props: SceneGraphViewMaterialProps) {
     const classes = useStyles();
 
     const [selected, setSelected] = React.useState<string[]>([]);
-    const [expanded, setExpanded] = React.useState<string[]>([]);
+    const [expanded, setExpanded] = React.useState<string[]>(['1']);
 
 
 
@@ -121,7 +85,6 @@ export function SceneGraphViewMaterial(props: SceneGraphViewMaterialProps) {
 
     const renderObject = (context: AppContext, object3d: THREE.Object3D, index: number): [React.ReactNode, number] => {
         const items = [];
-
         const originIndex = index;
         index ++;
         for (const child of object3d.children) {
@@ -130,28 +93,40 @@ export function SceneGraphViewMaterial(props: SceneGraphViewMaterialProps) {
             index = result[1];
         }
         //selected={context.selection.indexOf(object3d) !== -1}
-        return  [<TreeItem key={object3d.uuid} nodeId={"" + originIndex} label={getObjectName(object3d)} >
-            {items}
-        </TreeItem>, index];
+        if (originIndex !== 0) {
+            return [<TreeItem key={object3d.uuid} nodeId={"" + originIndex}
+                              label={<MenuProvider id="scene-graph-menu" data={{object3d: object3d}}>{getObjectName(object3d)}</MenuProvider>}>
+                {items}
+            </TreeItem>, index];
+        } else {
+            return [<React.Fragment>{items}</React.Fragment>, index];
+        }
     }
 
     const onContextMenuClick = ({event, props}: MenuItemEventHandler) => console.log(event,props);
 
-    const onContextMenuAddParticleSystem = ({event, props: sceneObj}: MenuItemEventHandler) => {
-        if ((sceneObj as any).object3d) {
-            props.context.actions.addObject3d('particle', (props! as any).object3d);
+    const onContextMenuAddParticleSystem = ({event, props: contextProps}: MenuItemEventHandler) => {
+        if ((contextProps as any).object3d) {
+            props.context.actions.addObject3d('particle', (contextProps! as any).object3d);
         }
     };
-    const onContextMenuRemove = ({event, props: sceneObj}: MenuItemEventHandler) => {
-        if ((sceneObj as any).object3d) {
-            props.context.actions.removeObject3d((props! as any).object3d);
+    const onContextMenuRemove = ({event, props: contextProps}: MenuItemEventHandler) => {
+        if ((contextProps as any).object3d) {
+            props.context.actions.removeObject3d((contextProps! as any).object3d);
         }
     };
 
-    const onContextMenuExport = ({event, props: sceneObj}: MenuItemEventHandler) => {
-        if ((sceneObj! as any).object3d) {
+    const onContextMenuDuplicate = ({event, props: contextProps}: MenuItemEventHandler) => {
+        if ((contextProps as any).object3d) {
+            props.context.actions.duplicateObject3d((contextProps! as any).object3d);
+        }
+    };
+
+    const onContextMenuExport = ({event, props: contextProps}: MenuItemEventHandler) => {
+        console.log(contextProps);
+        if ((contextProps! as any).object3d) {
             const a = document.createElement("a");
-            const json = (props! as any).object3d.toJSON();
+            const json = (contextProps! as any).object3d.toJSON();
             //json.images.forEach((image: any) => image.url = "http://localhost:3000/textures/texture1.png");
             const file = new Blob([JSON.stringify(json)], {type: "application/json"});
             a.href = URL.createObjectURL(file);
@@ -183,6 +158,7 @@ export function SceneGraphViewMaterial(props: SceneGraphViewMaterialProps) {
                 <Item onClick={onContextMenuClick}>Ball</Item>
             </Submenu>
             <Separator />
+            <Item onClick={onContextMenuDuplicate}>Duplicate</Item>
             <Item onClick={onContextMenuRemove}>Remove</Item>
             <Separator />
             <Item onClick={onContextMenuExport}>Export</Item>

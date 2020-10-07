@@ -1,7 +1,15 @@
 import * as React from "react";
 import {ApplicationContextConsumer, ApplicationContextProvider} from "./ApplicationContext";
 import {GeneratorEditor, GenericGenerator, ValueType} from "./editors/GeneratorEditor";
-import {Behavior, ColorOverLife, FrameOverLife, ParticleSystem, RotationOverLife, SizeOverLife} from "three.quarks";
+import {
+    Behavior,
+    ColorOverLife,
+    FrameOverLife,
+    OrbitOverLife,
+    ParticleSystem,
+    RotationOverLife,
+    SizeOverLife
+} from "three.quarks";
 import {FunctionValueGenerator, ValueGenerator} from "three.quarks";
 import {ColorGenerator, FunctionColorGenerator} from "three.quarks";
 import {ListItem, List, Theme, createStyles, Typography, Toolbar, ListItemIcon} from "@material-ui/core";
@@ -84,6 +92,9 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
             case 'FrameOverLife':
                 (behavior as FrameOverLife).func = generator as FunctionValueGenerator;
                 break;
+            case 'OrbitOverLife':
+                (behavior as OrbitOverLife).angularVelocityFunc = generator as FunctionValueGenerator | ValueGenerator;
+                break;
             default:
                 break;
         }
@@ -109,6 +120,7 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
                     <MenuItem onClick={handleClose}>ColorOverLife</MenuItem>
                     <MenuItem onClick={handleClose}>RotationOverLife</MenuItem>
                     <MenuItem onClick={handleClose}>FrameOverLife</MenuItem>
+                    <MenuItem onClick={handleClose}>OrbitOverLife</MenuItem>
                 </Menu>
                 <Button>Remove</Button>
             </ButtonGroup>
@@ -135,6 +147,10 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
                             case 'FrameOverLife':
                                 valueTypes = ['functionValue'];
                                 func = (behavior as FrameOverLife).func;
+                                break;
+                            case 'OrbitOverLife':
+                                valueTypes = ['functionValue'];
+                                func = (behavior as OrbitOverLife).angularVelocityFunc;
                                 break;
                             default:
                                 valueTypes = ['functionValue'];

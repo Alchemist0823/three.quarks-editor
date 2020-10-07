@@ -23,7 +23,7 @@ import {BulletProjectile} from "../example/BulletProjectile";
 import {BulletHit} from "../example/BulletHit";
 import {ToonExplosion} from "../example/ToonExplosion";
 import {Explosion} from "../example/Explosion";
-
+import {LevelUp} from "../example/LevelUp";
 
 
 export interface AppContext {
@@ -78,6 +78,12 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
         } else if (demoIndex === 4) {
             demoObject = new ToonExplosion();
             demoObject.name = "ToonExplosion";
+        } else if (demoIndex === 5) {
+            demoObject = new Explosion();
+            demoObject.name = "Explosion";
+        } else if (demoIndex === 6) {
+            demoObject = new LevelUp();
+            demoObject.name = "LevelUp";
         } else {
             demoObject = new Explosion();
             demoObject.name = "Explosion";
@@ -139,8 +145,7 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
                 },
                 addObject3d: this.addObject3d,
                 removeObject3d: this.removeObject3d,
-                duplicateObject3d: () => {
-                },
+                duplicateObject3d: this.duplicateObject3d,
                 updateParticleSystem: () => {
                 },
                 updateProperties: () => {
@@ -157,6 +162,12 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
             object3D.parent.remove(object3D);
         }
     };
+
+    duplicateObject3d = (object3D: Object3D) => {
+        if (object3D.parent) {
+            object3D.parent.add(object3D.clone());
+        }
+    }
 
     addObject3d = (type: string, parent: Object3D) => {
         let object;

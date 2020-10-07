@@ -115,12 +115,13 @@ class MainMenu extends React.PureComponent<MainMenuProps, MainMenuState> {
                             open={Boolean(this.state.anchorEl && this.state.anchorEl.id === "demo-button")}
                             onClose={this.handleMenuClose}
                         >
-                            <MenuItem onClick={() => this.openDemo(0)}>Demo 1</MenuItem>
-                            <MenuItem onClick={() => this.openDemo(1)}>Demo 2</MenuItem>
-                            <MenuItem onClick={() => this.openDemo(2)}>Demo 3</MenuItem>
-                            <MenuItem onClick={() => this.openDemo(3)}>Demo 4</MenuItem>
-                            <MenuItem onClick={() => this.openDemo(4)}>Demo 5</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(0)}>Demo PlasmaProjectile</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(1)}>Demo BulletMuzzle</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(2)}>Demo BulletProjectile</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(3)}>Demo BulletProjectile</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(4)}>Demo HitImpact</MenuItem>
                             <MenuItem onClick={() => this.openDemo(5)}>Demo Explosion</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(6)}>Demo Levelup</MenuItem>
                         </Menu>
                     </Toolbar>
                 </AppBar>
