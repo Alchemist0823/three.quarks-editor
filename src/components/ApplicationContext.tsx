@@ -25,6 +25,7 @@ import {ToonExplosion} from "../example/ToonExplosion";
 import {Explosion} from "../example/Explosion";
 import {LevelUp} from "../example/LevelUp";
 import {PickUp} from "../example/PickUp";
+import {ShipSmoke} from "../example/ShipSmoke";
 
 
 export interface AppContext {
@@ -74,8 +75,8 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
             demoObject = new BulletProjectile();
             demoObject.name = "BulletProjectile";
         } else if (demoIndex === 3) {
-            demoObject = new BulletHit();
-            demoObject.name = "BulletHit";
+            demoObject = new ShipSmoke();
+            demoObject.name = "shipSmoke";
         } else if (demoIndex === 4) {
             demoObject = new ToonExplosion();
             demoObject.name = "ToonExplosion";

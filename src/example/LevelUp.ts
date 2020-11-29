@@ -19,6 +19,7 @@ export class LevelUp extends Group {
 
     constructor() {
         super();
+        this.name = 'levelUp';
 
         let texture = new TextureLoader().load( "textures/texture1.png");
         texture.name = "textures/texture1.png";
