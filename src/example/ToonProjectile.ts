@@ -146,6 +146,13 @@ export class ToonProjectile extends Group {
 
         this.add(this.smoke.emitter);
 
+        this.userData = {
+            script:
+                "    this.position.x += delta * 30;\n" +
+                "    if (this.position.x > 20)\n" +
+                "        this.position.x = -20;\n"
+        };
+        this.userData.func = new Function("delta", this.userData.script);
     }
 
     update(delta: number) {

@@ -115,14 +115,16 @@ class MainMenu extends React.PureComponent<MainMenuProps, MainMenuState> {
                             open={Boolean(this.state.anchorEl && this.state.anchorEl.id === "demo-button")}
                             onClose={this.handleMenuClose}
                         >
-                            <MenuItem onClick={() => this.openDemo(0)}>Demo PlasmaProjectile</MenuItem>
-                            <MenuItem onClick={() => this.openDemo(1)}>Demo BulletMuzzle</MenuItem>
-                            <MenuItem onClick={() => this.openDemo(2)}>Demo BulletProjectile</MenuItem>
-                            <MenuItem onClick={() => this.openDemo(3)}>Demo ShipSmoke</MenuItem>
-                            <MenuItem onClick={() => this.openDemo(4)}>Demo HitImpact</MenuItem>
-                            <MenuItem onClick={() => this.openDemo(5)}>Demo Explosion</MenuItem>
-                            <MenuItem onClick={() => this.openDemo(6)}>Demo Levelup</MenuItem>
-                            <MenuItem onClick={() => this.openDemo(7)}>Demo Pickup</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(0)}>PlasmaProjectile</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(1)}>BulletMuzzle</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(2)}>BulletProjectile</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(3)}>ShipSmoke</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(4)}>HitImpact</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(5)}>Explosion</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(6)}>Levelup</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(7)}>Pickup</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(8)}>ElectricBall</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(9)}>ShipTrail</MenuItem>
                         </Menu>
                     </Toolbar>
                 </AppBar>

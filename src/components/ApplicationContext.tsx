@@ -26,6 +26,8 @@ import {Explosion} from "../example/Explosion";
 import {LevelUp} from "../example/LevelUp";
 import {PickUp} from "../example/PickUp";
 import {ShipSmoke} from "../example/ShipSmoke";
+import {ElectricBall} from "../example/ElectricBall";
+import {ShipTrail} from "../example/ShipTrail";
 
 
 export interface AppContext {
@@ -61,13 +63,6 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
         if (demoIndex === 0) {
             demoObject = new ToonProjectile();
             demoObject.name = "Toon Projectile";
-            demoObject.userData = {
-                script:
-                    "    this.position.x += delta * 30;\n" +
-                    "    if (this.position.x > 20)\n" +
-                    "        this.position.x = -20;\n"
-            };
-            demoObject.userData.func = new Function("delta", demoObject.userData.script);
         } else if (demoIndex === 1) {
             demoObject = new BulletMuzzle();
             demoObject.name = "BulletMuzzle";
@@ -89,9 +84,15 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
         } else if (demoIndex === 7) {
             demoObject = new PickUp();
             demoObject.name = "PickUp";
+        } else if (demoIndex == 8) {
+            demoObject = new ElectricBall();
+            demoObject.name = "ElectricBall";
+        } else if (demoIndex == 9){
+            demoObject = new ShipTrail();
+            demoObject.name = "ShipTrail";
         } else {
-            demoObject = new Explosion();
-            demoObject.name = "Explosion";
+            demoObject = new ElectricBall();
+            demoObject.name = "ElectricBall";
         }
         scene.add(demoObject);
 
