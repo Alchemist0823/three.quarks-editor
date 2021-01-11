@@ -2,11 +2,11 @@ import * as React from "react";
 import {ApplicationContextConsumer, ApplicationContextProvider} from "./ApplicationContext";
 import {GeneratorEditor, GenericGenerator, ValueType} from "./editors/GeneratorEditor";
 import {
-    Behavior,
-    ColorOverLife,
-    FrameOverLife,
+    Behavior, Bezier,
+    ColorOverLife, ColorRange,
+    FrameOverLife, Gradient,
     OrbitOverLife,
-    ParticleSystem,
+    ParticleSystem, PiecewiseBezier,
     RotationOverLife,
     SizeOverLife
 } from "three.quarks";
@@ -23,6 +23,7 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import {memo} from "react";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
+import {Vector4} from "three";
 
 interface BehaviorsPropertiesProps {
     behaviors: Array<Behavior>,
@@ -50,6 +51,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
     const classes = useStyles();
+
+
+
     const [checked, setChecked] = React.useState([0, 1, 2, 3]);
     const [selectedIndex, setSelectedIndex] = React.useState(1);
     const handleListItemClick = (event: any, index: number) => {
@@ -75,7 +79,40 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
     };
     const handleClose = () => {
         setAnchorEl(null);
-    };
+    }
+
+    const deleteBehavior = () => {
+        props.behaviors.splice(selectedIndex, 1);
+        props.updateProperties();
+    }
+
+    const onAddNewBehavior = (type: string) => () => {
+        let behavior;
+        switch (type) {
+            case 'ColorOverLife':
+                behavior = new ColorOverLife(new ColorRange(new Vector4(1.0, 1.0, 1.0, 1.0), new Vector4(0.0, 0.0, 0.0, 1.0)));
+                break;
+            case 'RotationOverLife':
+                behavior = new RotationOverLife(new PiecewiseBezier([[new Bezier(0, 0.3333, 0.6667, 1.0), 0]]));
+                break;
+            case 'SizeOverLife':
+                behavior = new SizeOverLife(new PiecewiseBezier([[new Bezier(0, 0.3333, 0.6667, 1.0), 0]]));
+                break;
+            case 'FrameOverLife':
+                behavior = new FrameOverLife(new PiecewiseBezier([[new Bezier(0, 0.3333, 0.6667, 1.0), 0]]));
+                break;
+            case 'OrbitOverLife':
+                behavior = new OrbitOverLife(new PiecewiseBezier([[new Bezier(0, 0.3333, 0.6667, 1.0), 0]]));
+                break;
+            default:
+                break;
+        }
+        if (behavior) {
+            props.behaviors.push(behavior);
+            props.updateProperties();
+        }
+        setAnchorEl(null);
+    }
 
     const onChangeBehaviorFunc = (index: number) => (generator: GenericGenerator) => {
         const behavior = props.behaviors[index];
@@ -116,13 +153,13 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
                 >
-                    <MenuItem onClick={handleClose}>SizeOverLife</MenuItem>
-                    <MenuItem onClick={handleClose}>ColorOverLife</MenuItem>
-                    <MenuItem onClick={handleClose}>RotationOverLife</MenuItem>
-                    <MenuItem onClick={handleClose}>FrameOverLife</MenuItem>
-                    <MenuItem onClick={handleClose}>OrbitOverLife</MenuItem>
+                    <MenuItem onClick={onAddNewBehavior('SizeOverLife')}>SizeOverLife</MenuItem>
+                    <MenuItem onClick={onAddNewBehavior('ColorOverLife')}>ColorOverLife</MenuItem>
+                    <MenuItem onClick={onAddNewBehavior('RotationOverLife')}>RotationOverLife</MenuItem>
+                    <MenuItem onClick={onAddNewBehavior('FrameOverLife')}>FrameOverLife</MenuItem>
+                    <MenuItem onClick={onAddNewBehavior('OrbitOverLife')}>OrbitOverLife</MenuItem>
                 </Menu>
-                <Button>Remove</Button>
+                <Button onClick={deleteBehavior}>Remove</Button>
             </ButtonGroup>
             <List dense className={classes.listRoot}>
                 <ApplicationContextConsumer>
