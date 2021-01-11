@@ -8,7 +8,7 @@ import {
     OrbitOverLife,
     ParticleSystem, PiecewiseBezier,
     RotationOverLife,
-    SizeOverLife
+    SizeOverLife, SpeedOverLife
 } from "three.quarks";
 import {FunctionValueGenerator, ValueGenerator} from "three.quarks";
 import {ColorGenerator, FunctionColorGenerator} from "three.quarks";
@@ -104,6 +104,9 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
             case 'OrbitOverLife':
                 behavior = new OrbitOverLife(new PiecewiseBezier([[new Bezier(0, 0.3333, 0.6667, 1.0), 0]]));
                 break;
+            case 'SpeedOverLife':
+                behavior = new SpeedOverLife(new PiecewiseBezier([[new Bezier(1, 0.6667, 0.3333, 0.0), 0]]));
+                break;
             default:
                 break;
         }
@@ -158,6 +161,7 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
                     <MenuItem onClick={onAddNewBehavior('RotationOverLife')}>RotationOverLife</MenuItem>
                     <MenuItem onClick={onAddNewBehavior('FrameOverLife')}>FrameOverLife</MenuItem>
                     <MenuItem onClick={onAddNewBehavior('OrbitOverLife')}>OrbitOverLife</MenuItem>
+                    <MenuItem onClick={onAddNewBehavior('SpeedOverLife')}>SpeedOverLife</MenuItem>
                 </Menu>
                 <Button onClick={deleteBehavior}>Remove</Button>
             </ButtonGroup>
@@ -188,6 +192,10 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
                             case 'OrbitOverLife':
                                 valueTypes = ['functionValue'];
                                 func = (behavior as OrbitOverLife).angularVelocityFunc;
+                                break;
+                            case 'SpeedOverLife':
+                                valueTypes = ['functionValue'];
+                                func = (behavior as SpeedOverLife).func;
                                 break;
                             default:
                                 valueTypes = ['functionValue'];

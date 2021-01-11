@@ -121,7 +121,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
         if (this.appContext) {
             this.controls!.update();
             const delta = this.clock!.getDelta();
-            console.log(delta);
+            //console.log(delta);
             //let time = performance.now() * 0.0005;
             //this.particleSystem!.update(this.clock!.getDelta());
             this.appContext.script(delta);

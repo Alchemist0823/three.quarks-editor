@@ -41,22 +41,22 @@ export function SceneGraphViewMaterial(props: SceneGraphViewMaterialProps) {
 
 
 
-    const countIndex = (index: number, object3d: Object3D): Object3D | null => {
+    const countIndex = (index: number, object3d: Object3D): [Object3D | null, number] => {
         if (index == 0)
-            return object3d;
+            return [object3d, 0];
         index --;
         for (const child of object3d.children) {
-            const res = countIndex(index, child);
+            const [res, newIndex] = countIndex(index, child);
             if (res)
-                return res;
-            index --;
+                return [res, newIndex];
+            index = newIndex;
         }
-        return null;
+        return [null, index];
     }
     const handleSelect = (event: React.ChangeEvent<{}>, nodeIds: string[]) => {
         if (nodeIds.length > 0) {
             const index = parseInt(nodeIds[0]);
-            const object3d = countIndex(index, props.scene);
+            const [object3d, ] = countIndex(index, props.scene);
             if (object3d)
                 props.context.actions.select(object3d);
         }
@@ -95,7 +95,7 @@ export function SceneGraphViewMaterial(props: SceneGraphViewMaterialProps) {
         //selected={context.selection.indexOf(object3d) !== -1}
         if (originIndex !== 0) {
             return [<TreeItem key={object3d.uuid} nodeId={"" + originIndex}
-                              label={<MenuProvider id="scene-graph-menu" data={{object3d: object3d}}>{getObjectName(object3d)}</MenuProvider>}>
+                              label={<MenuProvider id="scene-graph-menu" data={{object3d: object3d}}>{getObjectName(object3d) + " " + originIndex}</MenuProvider>}>
                 {items}
             </TreeItem>, index];
         } else {

@@ -138,7 +138,7 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
     }
 
     render() {
-        console.log('render GeneratorEditor');
+        //console.log('render GeneratorEditor');
         const {name, generator, allowedType} = this.props;
 
         const editorTypes = [];
@@ -149,7 +149,7 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
         }
 
         const currentEditor = this.getEditorType(generator);
-        console.log(currentEditor);
+        //console.log(currentEditor);
 
         let editor;
         switch (currentEditor) {
