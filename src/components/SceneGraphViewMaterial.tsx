@@ -13,7 +13,8 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import {makeStyles, createStyles} from "@material-ui/core";
 import TreeItem from "@material-ui/lab/TreeItem";
 import {Theme, Typography} from "@material-ui/core";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
+import {CodeExporter} from "../util/CodeExporter";
+import {ScrollDialog} from "./ScrollDialog";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface SceneGraphViewMaterialProps {
-    context: AppContext
+    context: AppContext;
     scene: Scene;
 }
 
@@ -39,7 +40,7 @@ export function SceneGraphViewMaterial(props: SceneGraphViewMaterialProps) {
     const [selected, setSelected] = React.useState<string[]>([]);
     const [expanded, setExpanded] = React.useState<string[]>(['1']);
 
-
+    const [code, setCode] = React.useState<string>('');
 
     const countIndex = (index: number, object3d: Object3D): [Object3D | null, number] => {
         if (index == 0)
@@ -135,6 +136,12 @@ export function SceneGraphViewMaterial(props: SceneGraphViewMaterialProps) {
         }
     };
 
+    const onContextMenuCopyCode = ({event, props: contextProps}: MenuItemEventHandler) => {
+        if ((contextProps! as any).object3d) {
+            setCode(CodeExporter.exportCode((contextProps! as any).object3d));
+        }
+    }
+
     const renderScene = (context: AppContext, scene: THREE.Scene) => {
         return <TreeView
             className={classes.root}
@@ -162,7 +169,8 @@ export function SceneGraphViewMaterial(props: SceneGraphViewMaterialProps) {
             <Item onClick={onContextMenuRemove}>Remove</Item>
             <Separator />
             <Item onClick={onContextMenuExport}>Export</Item>
-            <Item disabled>Dolor</Item>
+            <Item onClick={onContextMenuCopyCode}>Copy JS Code</Item>
         </Menu>
+        <ScrollDialog content={code} open={code !== ''} handleClose={()=>{setCode('')}} />
     </div>;
 }

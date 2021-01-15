@@ -1,8 +1,8 @@
 import * as React from "react";
+import Button from "@material-ui/core/Button";
 
 
 interface FileInputProps {
-    fileName: string
     onChange: (files: FileList) => void;
 }
 
@@ -21,8 +21,17 @@ export class FileInput extends React.Component<FileInputProps>
     render ()
     {
         return <div>
-            <input type="file" onChange={this.handleChange} />
-            {this.props.fileName}
+            <input
+                accept="image/*"
+                type="file"
+                id="contained-button-file"
+                style={{display: 'none'}}
+                onChange={this.handleChange} />
+            <label htmlFor="contained-button-file">
+                <Button variant="contained" color="primary" component="span">
+                    Upload
+                </Button>
+            </label>
         </div>;
     }
 }

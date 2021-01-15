@@ -144,6 +144,7 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                     <ApplicationContextConsumer>
                         {context => context &&
                             <ParticleRendererProperties particleSystem={(props.object3d as ParticleEmitter).system}
+                                                        context={context}
                                                         updateProperties={context.actions.updateProperties}/>
                         }
                     </ApplicationContextConsumer>

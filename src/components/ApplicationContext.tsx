@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as THREE from "three";
-import {Object3D} from "three";
+import {Object3D, Texture} from "three";
 import {ParticleEmitter, QuarksLoader} from "three.quarks";
 import {Application} from "./Application";
 import {TextureLoader} from "three";
@@ -30,10 +30,16 @@ import {ElectricBall} from "../example/ElectricBall";
 import {ShipTrail} from "../example/ShipTrail";
 
 
+export interface TextureImage {
+    img: string,
+    texture: Texture,
+}
+
 export interface AppContext {
     scene: THREE.Scene;
     script: (delta: number) => void;
     selection: Array<Object3D>;
+    textures: Array<TextureImage>;
     actions: {
         onOpenDemo: (index: number)=>void;
         onSaveAs: ()=>void;
@@ -44,6 +50,7 @@ export interface AppContext {
         removeObject3d: (object: Object3D) => void;
         duplicateObject3d: (object: Object3D) => void;
         updateParticleSystem: (object: ParticleEmitter) => void;
+        addTexture: (textureImage: TextureImage) => void;
         updateProperties: () => void;
     }
 }
@@ -112,10 +119,19 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
 
     constructor(props: Readonly<{}>) {
         super(props);
+        const texture1 = new TextureLoader().load("textures/texture1.png");
+        texture1.name = "textures/texture1.png";
+        const texture2 = new TextureLoader().load("textures/texture2.png");
+        texture2.name = "textures/texture2.png";
+
         const state: AppContext = {
             scene: this.createScene(0),
             script: this.animate,
             selection: [],
+            textures: [
+                {img: './textures/texture1.png', texture: texture1},
+                {img: './textures/texture2.png', texture: texture2},
+            ],
             actions: {
                 onOpenDemo: (index: number) => {
                     const scene = this.createScene(index);
@@ -156,6 +172,10 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
                 },
                 updateProperties: () => {
                     this.setState({scene: this.state.scene});
+                },
+                addTexture: (textureImage: TextureImage) => {
+                    this.state.textures.push(textureImage);
+                    this.setState({textures: this.state.textures});
                 }
             }
         };
@@ -179,7 +199,7 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
         let object;
         switch (type) {
             case 'particle':
-                const texture = new TextureLoader().load("textures/texture1.png");
+                const texture = this.state.textures[0].texture;
                 const particleSystem = new ParticleSystem({
                     maxParticle: 10000,
                     shape: new ConeEmitter(),
