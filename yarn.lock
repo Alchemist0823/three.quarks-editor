@@ -10639,10 +10639,10 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-three.quarks@^0.2.7:
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/three.quarks/-/three.quarks-0.2.7.tgz#3537d40d4b143e957bc7ec690466be4e066dc5af"
-  integrity sha512-dQTRKLME0V1GaDFvMJJmHRWzQZLfup/RMuzL+0BLv5XXoYqNeDIVgvHKJtzgcCaxmK2a5/inAMqECRgtIIPyNg==
+three.quarks@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/three.quarks/-/three.quarks-0.3.0.tgz#0997d6d4096925c703876bb1468183dcb6c59454"
+  integrity sha512-y5c0OaDIm8Bdartwl5bgm2CWxWboDzb1l39rxP3Z6Qvly6KG6LaaEDOjwk6v7cN+H6AQxXvhcPYJRNcCbghEFQ==
 
 three@^0.121.1:
   version "0.121.1"
