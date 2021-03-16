@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/three.quarks-editor/precache-manifest.437e5297e58d0e5dbebaaee0506a96d4.js"
+  "/three.quarks-editor/precache-manifest.4d08ff5d02150f2c28ac56dd990b2e0f.js"
 );
 
 self.addEventListener('message', (event) => {
