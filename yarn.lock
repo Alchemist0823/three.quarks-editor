@@ -10644,10 +10644,10 @@ three.quarks@^0.3.0:
   resolved "https://registry.yarnpkg.com/three.quarks/-/three.quarks-0.3.0.tgz#0997d6d4096925c703876bb1468183dcb6c59454"
   integrity sha512-y5c0OaDIm8Bdartwl5bgm2CWxWboDzb1l39rxP3Z6Qvly6KG6LaaEDOjwk6v7cN+H6AQxXvhcPYJRNcCbghEFQ==
 
-three@^0.121.1:
-  version "0.121.1"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.121.1.tgz#fda39cf4701d02be9c3be5c27ccea24b7a1ea59b"
-  integrity sha512-+rYhNpW5W1aBdLkPQDld/GA4Sj/uOKJJKVpCAZUbpk/HZEiYRUlPt8+s+9nmxRglWmRHdBa3ERvUwqg4nmoA5w==
+three@^0.125.0:
+  version "0.125.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.125.0.tgz#19e922b9dc51ad0b706893aeee888de68e99850a"
+  integrity sha512-qL36qUGsPQ/Ofo/RZdXwHwM7A8wzUSAIyawtjIebJSPvounUQeneSqxI0aBY2iwKpseGy+RUtj3C5f/z4poyXw==
 
 throat@^4.0.0:
   version "4.1.0"
