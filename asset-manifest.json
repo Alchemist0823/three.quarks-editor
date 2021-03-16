@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/three.quarks-editor/static/css/main.d0b4f3f7.chunk.css",
-    "main.js": "/three.quarks-editor/static/js/main.167d1d56.chunk.js",
-    "main.js.map": "/three.quarks-editor/static/js/main.167d1d56.chunk.js.map",
-    "runtime-main.js": "/three.quarks-editor/static/js/runtime-main.6e4bea79.js",
-    "runtime-main.js.map": "/three.quarks-editor/static/js/runtime-main.6e4bea79.js.map",
-    "static/css/2.c7d94637.chunk.css": "/three.quarks-editor/static/css/2.c7d94637.chunk.css",
-    "static/js/2.435832a6.chunk.js": "/three.quarks-editor/static/js/2.435832a6.chunk.js",
-    "static/js/2.435832a6.chunk.js.map": "/three.quarks-editor/static/js/2.435832a6.chunk.js.map",
+    "main.css": "/three.quarks-editor/static/css/main.cc77434b.chunk.css",
+    "main.js": "/three.quarks-editor/static/js/main.c0cf74ac.chunk.js",
+    "main.js.map": "/three.quarks-editor/static/js/main.c0cf74ac.chunk.js.map",
+    "runtime-main.js": "/three.quarks-editor/static/js/runtime-main.3ced882e.js",
+    "runtime-main.js.map": "/three.quarks-editor/static/js/runtime-main.3ced882e.js.map",
+    "static/css/2.86fb98b1.chunk.css": "/three.quarks-editor/static/css/2.86fb98b1.chunk.css",
+    "static/js/2.814da434.chunk.js": "/three.quarks-editor/static/js/2.814da434.chunk.js",
+    "static/js/2.814da434.chunk.js.map": "/three.quarks-editor/static/js/2.814da434.chunk.js.map",
     "index.html": "/three.quarks-editor/index.html",
-    "precache-manifest.870d7a61df0282cb31280de6752ce170.js": "/three.quarks-editor/precache-manifest.870d7a61df0282cb31280de6752ce170.js",
+    "precache-manifest.437e5297e58d0e5dbebaaee0506a96d4.js": "/three.quarks-editor/precache-manifest.437e5297e58d0e5dbebaaee0506a96d4.js",
     "service-worker.js": "/three.quarks-editor/service-worker.js",
-    "static/css/2.c7d94637.chunk.css.map": "/three.quarks-editor/static/css/2.c7d94637.chunk.css.map",
-    "static/css/main.d0b4f3f7.chunk.css.map": "/three.quarks-editor/static/css/main.d0b4f3f7.chunk.css.map"
+    "static/css/2.86fb98b1.chunk.css.map": "/three.quarks-editor/static/css/2.86fb98b1.chunk.css.map",
+    "static/css/main.cc77434b.chunk.css.map": "/three.quarks-editor/static/css/main.cc77434b.chunk.css.map"
   }
 }
