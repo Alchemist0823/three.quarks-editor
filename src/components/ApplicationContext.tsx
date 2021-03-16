@@ -29,6 +29,7 @@ import {ShipSmoke} from "../example/ShipSmoke";
 import {ElectricBall} from "../example/ElectricBall";
 import {ShipTrail} from "../example/ShipTrail";
 import {Explosion2} from "../example/Explosion2";
+import {EnergyRifleMuzzle} from "../example/EnergyRifleMuzzle";
 
 
 export interface TextureImage {
@@ -90,8 +91,8 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
             demoObject = new LevelUp(this.state.textures);
             demoObject.name = "LevelUp";
         } else if (demoIndex === 7) {
-            demoObject = new PickUp(this.state.textures);
-            demoObject.name = "PickUp";
+            demoObject = new EnergyRifleMuzzle(this.state.textures);
+            demoObject.name = "EnergyRifleMuzzle";
         } else if (demoIndex == 8) {
             demoObject = new ElectricBall(this.state.textures);
             demoObject.name = "ElectricBall";
@@ -101,11 +102,9 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
         } else if (demoIndex == 10) {
             demoObject = new Explosion2(this.state.textures);
             demoObject.name = "Explosion2";
-        } else {
-            demoObject = new Explosion2(this.state.textures);
-            demoObject.name = "Explosion2";
         }
-        scene.add(demoObject);
+        if (demoObject)
+            scene.add(demoObject);
 
         const axisHelper = new AxesHelper(100);
         axisHelper.name = "axisHelper";
@@ -129,7 +128,7 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
         texture2.name = "textures/texture2.png";
 
         const state: AppContext = {
-            scene: new Scene(),
+            scene: this.createScene(-1),
             script: this.animate,
             selection: [],
             textures: [

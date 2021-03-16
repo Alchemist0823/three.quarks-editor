@@ -122,7 +122,7 @@ class MainMenu extends React.PureComponent<MainMenuProps, MainMenuState> {
                             <MenuItem onClick={() => this.openDemo(4)}>HitImpact</MenuItem>
                             <MenuItem onClick={() => this.openDemo(5)}>Explosion</MenuItem>
                             <MenuItem onClick={() => this.openDemo(6)}>Levelup</MenuItem>
-                            <MenuItem onClick={() => this.openDemo(7)}>Pickup</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(7)}>EnergyMuzzle</MenuItem>
                             <MenuItem onClick={() => this.openDemo(8)}>ElectricBall</MenuItem>
                             <MenuItem onClick={() => this.openDemo(9)}>ShipTrail</MenuItem>
                             <MenuItem onClick={() => this.openDemo(10)}>Explosion2</MenuItem>

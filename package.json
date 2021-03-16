@@ -59,7 +59,7 @@
     "react-simple-code-editor": "^0.11.0",
     "stats.js": "^0.17.0",
     "three": "^0.121.1",
-    "three.quarks": "^0.2.7"
+    "three.quarks": "^0.3.0"
   },
   "devDependencies": {
     "@types/jest": "26.0.13",

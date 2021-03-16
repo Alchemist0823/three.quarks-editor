@@ -41,12 +41,12 @@ export class BulletProjectile extends Group {
             startTileIndex: 0,
             uTileCount: 1,
             vTileCount: 1,
-            instancingGeometry: [
+            /*instancingGeometry: [
                 -2, -0.5, 0, 0, 0,
                 2, -0.5, 0, 1, 0,
                 2, 0.5, 0, 1, 1,
                 -2, 0.5, 0, 0, 1
-            ],
+            ],*/
             renderMode: RenderMode.LocalSpaceBillBoard
         };
 

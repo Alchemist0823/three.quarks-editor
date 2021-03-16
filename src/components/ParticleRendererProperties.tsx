@@ -1,18 +1,14 @@
 import * as React from "react";
 import {AdditiveBlending, Blending, NormalBlending, Texture} from "three";
 import {AppContext, ApplicationContextConsumer, TextureImage} from "./ApplicationContext";
-import {GeneratorEditor, GenericGenerator, ValueType} from "./editors/GeneratorEditor";
-import {ParticleSystem} from "three.quarks";
+import {ParticleSystem, RenderMode} from "three.quarks";
 import {NumberInput} from "./editors/NumberInput";
-import {FileInput} from "./editors/FileInput";
 import {TexturePicker} from "./TexturePicker";
 import Button from "@material-ui/core/Button";
-import {GridListTile} from "@material-ui/core";
 
 
 interface ParticleRendererPropertiesProps {
     particleSystem: ParticleSystem,
-    context: AppContext,
     updateProperties: Function,
 }
 
@@ -52,6 +48,41 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
         }
         this.props.updateProperties();
     }
+
+    getValueOfBlending = (blending: Blending) => {
+        switch (blending) {
+            case NormalBlending:
+                return "Normal"
+            case AdditiveBlending:
+                return "Additive";
+        }
+    }
+
+    onChangeRenderMode = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        switch (e.target.value) {
+            case "BillBoard":
+                this.props.particleSystem.renderMode = RenderMode.BillBoard;
+                break;
+            case "LocalSpaceBillBoard":
+                this.props.particleSystem.renderMode = RenderMode.LocalSpaceBillBoard;
+                break;
+            case "StretchedBillBoard":
+                this.props.particleSystem.renderMode = RenderMode.StretchedBillBoard;
+                break;
+        }
+        this.props.updateProperties();
+    }
+    getValueOfRenderMode = (renderMode: RenderMode) => {
+        switch (renderMode) {
+            case RenderMode.BillBoard:
+                return "BillBoard"
+            case RenderMode.LocalSpaceBillBoard:
+                return "LocalSpaceBillBoard";
+            case RenderMode.StretchedBillBoard:
+                return "StretchedBillBoard";
+        }
+    }
+
     onChangeWorldSpace = (e: React.ChangeEvent<HTMLSelectElement>) => {
         switch (e.target.value) {
             case "True":
@@ -64,20 +95,11 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
         this.props.updateProperties();
     }
 
-    getValueOfBlending = (blending: Blending) => {
-        switch (blending) {
-            case NormalBlending:
-                return "Normal"
-            case AdditiveBlending:
-                return "Additive";
-        }
-    }
-
     getValueOfBoolean = (worldSpace: boolean) => {
         return worldSpace ? 'True': 'False';
     }
 
-    onUploadTexture = (files: FileList) => {
+    onUploadTexture = (context: AppContext) => (files: FileList) => {
         console.log("upload texture");
         const image = document.createElement( 'img' );
         const texture = new Texture( image );
@@ -96,7 +118,7 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
                 img: URL.createObjectURL(files[0]),
                 texture: texture
             };
-            this.props.context.actions.addTexture(textureImage);
+            context.actions.addTexture(textureImage);
         }
 
     }
@@ -119,6 +141,14 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
         console.log('rendered particleRendererProperties');
         return (
             <div className="property-container">
+                <div className="property">
+                    <label className="name">RenderMode</label>
+                    <select className="editor-select" onChange={this.onChangeRenderMode} value={this.getValueOfRenderMode(this.props.particleSystem.renderMode)}>
+                        <option key={0} value="BillBoard" >BillBoard</option>
+                        <option key={1} value="LocalSpaceBillBoard" >Local Space BillBoard</option>
+                        <option key={2} value="StretchedBillBoard" >Stretched BillBoard</option>
+                    </select>
+                </div>
                 <div className="property">
                     <label className="name">World Space</label>
                     <select className="editor-select" onChange={this.onChangeWorldSpace} value={this.getValueOfBoolean(this.props.particleSystem.worldSpace)}>
@@ -167,7 +197,7 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
                 </ApplicationContextConsumer>
                 <ApplicationContextConsumer>
                     {context => context &&
-                    <TexturePicker handleClose={this.closeTexturePicker} handleSelect={this.onChangeTexture} handleUpload={this.onUploadTexture} open={this.state.texturePickerOpen} textures={context.textures}/>
+                    <TexturePicker handleClose={this.closeTexturePicker} handleSelect={this.onChangeTexture} handleUpload={this.onUploadTexture(context)} open={this.state.texturePickerOpen} textures={context.textures}/>
                     }
                 </ApplicationContextConsumer>
             </div>

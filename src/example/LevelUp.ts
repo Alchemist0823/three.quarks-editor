@@ -60,7 +60,7 @@ export class LevelUp extends Group {
             looping: false,
             startLife: new ConstantValue(2.0),
             startSpeed: new ConstantValue(0),
-            startSize: new IntervalValue(60, 80),
+            startSize: new IntervalValue(120, 160),
             startColor: new ConstantColor(yellow),
             worldSpace: false,
 
@@ -80,12 +80,12 @@ export class LevelUp extends Group {
             startTileIndex: 1,
             uTileCount: 10,
             vTileCount: 10,
-            instancingGeometry: [
+            /*instancingGeometry: [
                 -1, -1, 0, 0, 0,
                 1, -1, 0, 1, 0,
                 1, 1, 0, 1, 1,
                 -1, 1, 0, 0, 1
-            ],
+            ],*/
             renderMode: RenderMode.LocalSpaceBillBoard
         };
 
