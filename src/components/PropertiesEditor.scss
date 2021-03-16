@@ -1,6 +1,19 @@
+.property-container {
+    width: 100%;
+}
 .property {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
     .name {
-        display: inline-block;
-        width: 80px;
+        width: 100px;
     }
+}
+
+.texture-preview {
+    object-fit: none;
+    background-color: #9e9e9e;
+    max-width: 300px;
+    max-height: 300px;
 }

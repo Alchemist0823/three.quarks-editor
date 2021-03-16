@@ -9,6 +9,7 @@ import {
     PointEmitter,
     RenderMode, SizeOverLife, SphereEmitter
 } from "three.quarks";
+import {TextureImage} from "../components/ApplicationContext";
 
 export class LevelUp extends Group {
 
@@ -17,12 +18,11 @@ export class LevelUp extends Group {
     private glow2: ParticleSystem;
     private particle: ParticleSystem;
 
-    constructor() {
+    constructor(textures: TextureImage[]) {
         super();
         this.name = 'levelUp';
 
-        let texture = new TextureLoader().load( "textures/texture1.png");
-        texture.name = "textures/texture1.png";
+        let texture = textures[0].texture;
 
         let yellow = new Vector4(.8,.8,.2, 1);
 

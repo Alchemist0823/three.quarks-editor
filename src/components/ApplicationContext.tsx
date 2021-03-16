@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as THREE from "three";
-import {Object3D, Texture} from "three";
+import {Object3D, Scene, Texture} from "three";
 import {ParticleEmitter, QuarksLoader} from "three.quarks";
 import {Application} from "./Application";
 import {TextureLoader} from "three";
@@ -28,6 +28,7 @@ import {PickUp} from "../example/PickUp";
 import {ShipSmoke} from "../example/ShipSmoke";
 import {ElectricBall} from "../example/ElectricBall";
 import {ShipTrail} from "../example/ShipTrail";
+import {Explosion2} from "../example/Explosion2";
 
 
 export interface TextureImage {
@@ -68,38 +69,41 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
 
         let demoObject;
         if (demoIndex === 0) {
-            demoObject = new ToonProjectile();
+            demoObject = new ToonProjectile(this.state.textures);
             demoObject.name = "Toon Projectile";
         } else if (demoIndex === 1) {
-            demoObject = new BulletMuzzle();
+            demoObject = new BulletMuzzle(this.state.textures);
             demoObject.name = "BulletMuzzle";
         } else if (demoIndex === 2) {
             demoObject = new BulletProjectile();
             demoObject.name = "BulletProjectile";
         } else if (demoIndex === 3) {
-            demoObject = new ShipSmoke();
+            demoObject = new ShipSmoke(this.state.textures);
             demoObject.name = "shipSmoke";
         } else if (demoIndex === 4) {
-            demoObject = new ToonExplosion();
+            demoObject = new ToonExplosion(this.state.textures);
             demoObject.name = "ToonExplosion";
         } else if (demoIndex === 5) {
-            demoObject = new Explosion();
+            demoObject = new Explosion(this.state.textures);
             demoObject.name = "Explosion";
         } else if (demoIndex === 6) {
-            demoObject = new LevelUp();
+            demoObject = new LevelUp(this.state.textures);
             demoObject.name = "LevelUp";
         } else if (demoIndex === 7) {
-            demoObject = new PickUp();
+            demoObject = new PickUp(this.state.textures);
             demoObject.name = "PickUp";
         } else if (demoIndex == 8) {
-            demoObject = new ElectricBall();
+            demoObject = new ElectricBall(this.state.textures);
             demoObject.name = "ElectricBall";
         } else if (demoIndex == 9){
-            demoObject = new ShipTrail();
+            demoObject = new ShipTrail(this.state.textures);
             demoObject.name = "ShipTrail";
+        } else if (demoIndex == 10) {
+            demoObject = new Explosion2(this.state.textures);
+            demoObject.name = "Explosion2";
         } else {
-            demoObject = new ElectricBall();
-            demoObject.name = "ElectricBall";
+            demoObject = new Explosion2(this.state.textures);
+            demoObject.name = "Explosion2";
         }
         scene.add(demoObject);
 
@@ -125,7 +129,7 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
         texture2.name = "textures/texture2.png";
 
         const state: AppContext = {
-            scene: this.createScene(0),
+            scene: new Scene(),
             script: this.animate,
             selection: [],
             textures: [

@@ -12,6 +12,7 @@ import {ConstantValue} from "three.quarks";
 import {Bezier} from "three.quarks";
 import {Gradient} from "three.quarks";
 import {RandomColor} from "three.quarks";
+import {TextureImage} from "../components/ApplicationContext";
 
 export class BulletMuzzle extends Group {
     private beam: ParticleSystem;
@@ -21,11 +22,10 @@ export class BulletMuzzle extends Group {
     private smoke: ParticleSystem;
     private particles: ParticleSystem;
 
-    constructor() {
+    constructor(textures: TextureImage[]) {
         super();
 
-        let texture = new TextureLoader().load( "textures/texture1.png");
-        texture.name = "textures/texture1.png";
+        let texture = textures[0].texture;
 
         this.beam = new ParticleSystem({
             duration: 1,

@@ -9,6 +9,7 @@ import {
     PointEmitter, RandomColor,
     RenderMode, SizeOverLife, SphereEmitter
 } from "three.quarks";
+import {TextureImage} from "../components/ApplicationContext";
 
 export class PickUp extends Group {
 
@@ -21,11 +22,10 @@ export class PickUp extends Group {
     private upflow: ParticleSystem;
     private beam: ParticleSystem;
 
-    constructor() {
+    constructor(textures: TextureImage[]) {
         super();
 
-        let texture = new TextureLoader().load( "textures/texture1.png");
-        texture.name = "textures/texture1.png";
+        let texture = textures[0].texture;
 
         this.circle = new ParticleSystem({
             duration: 1,

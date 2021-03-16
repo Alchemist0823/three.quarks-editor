@@ -69,7 +69,7 @@
     "@types/react-color": "^3.0.4",
     "@types/react-dom": "16.9.8",
     "@types/stats.js": "^0.17.0",
-    "gh-pages": "^2.0.1",
+    "gh-pages": "^2.2.0",
     "node-sass": "^4.14.1",
     "typescript": "3.5.2"
   }

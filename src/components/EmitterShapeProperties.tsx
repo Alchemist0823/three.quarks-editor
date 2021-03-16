@@ -83,7 +83,7 @@ export class EmitterShapeProperties extends React.PureComponent<EmitterShapeProp
 
     render() {
         return (
-            <div>
+            <div className="property-container">
                 <ApplicationContextConsumer>
                     {context => context &&
                         <div className="property">

@@ -9,16 +9,16 @@ import {
     PointEmitter,
     RenderMode, SizeOverLife, SphereEmitter
 } from "three.quarks";
+import {TextureImage} from "../components/ApplicationContext";
 
 export class ShipSmoke extends Group {
 
     private smoke: ParticleSystem;
-    constructor() {
+    constructor(textures: TextureImage[]) {
         super();
         this.name = 'shipSmoke';
 
-        let texture = new TextureLoader().load("textures/texture1.png");
-        texture.name = "textures/texture1.png";
+        let texture = textures[0].texture;
 
         let grey = new Vector4(.5, .5, .5, 1);
 

@@ -12,6 +12,7 @@ import {ConstantValue} from "three.quarks";
 import {Bezier} from "three.quarks";
 import {ColorOverLife} from "three.quarks";
 import {RandomColor} from "three.quarks";
+import {TextureImage} from "../components/ApplicationContext";
 
 // TODO
 export class ElectricBall extends Group {
@@ -21,11 +22,11 @@ export class ElectricBall extends Group {
     private electricBall: ParticleSystem;
     /*private sparks: ParticleSystem;*/
 
-    constructor() {
+    constructor(textures: TextureImage[]) {
         super();
+        this.name = 'ElectricBall';
 
-        let texture2 = new TextureLoader().load( "textures/texture2.png");
-        texture2.name = "textures/texture2.png";
+        let texture2 = textures[1].texture;
         this.beam = new ParticleSystem({
             duration: 1,
             looping: true,

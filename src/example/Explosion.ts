@@ -9,6 +9,7 @@ import {
     SizeOverLife,
     SphereEmitter
 } from "three.quarks";
+import {TextureImage} from "../components/ApplicationContext";
 
 export class Explosion extends Group {
 
@@ -23,11 +24,10 @@ export class Explosion extends Group {
     private beam: ParticleSystem;
     private circle: ParticleSystem;
 
-    constructor() {
+    constructor(textures: TextureImage[]) {
         super();
 
-        let texture = new TextureLoader().load( "textures/texture1.png");
-        texture.name = "textures/texture1.png";
+        let texture = textures[0].texture;
         let mainColor = Explosion.yellowColor;
         let secColor = Explosion.yellowColor2;
 

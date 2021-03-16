@@ -54,7 +54,7 @@ export class ParticleSystemProperties extends React.PureComponent<ParticleSystem
         const valueFunctionTypes = ['value', 'functionValue'] as Array<ValueType>;
         const colorValueFunctionTypes = ['color', 'functionColor'] as Array<ValueType>;
         return (
-            <div>
+            <div className="property-container">
                 <ApplicationContextConsumer>
                     {context => context &&
                         <GeneratorEditor name="Start Life"

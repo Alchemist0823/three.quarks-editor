@@ -7,6 +7,7 @@ import {NumberInput} from "./editors/NumberInput";
 import {FileInput} from "./editors/FileInput";
 import {TexturePicker} from "./TexturePicker";
 import Button from "@material-ui/core/Button";
+import {GridListTile} from "@material-ui/core";
 
 
 interface ParticleRendererPropertiesProps {
@@ -39,7 +40,6 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
         this.props.updateProperties();
     };
     onChangeBlending = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        console.log(e.target.value);
         switch (e.target.value) {
             case "Normal":
                 this.props.particleSystem.blending = NormalBlending;
@@ -52,6 +52,17 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
         }
         this.props.updateProperties();
     }
+    onChangeWorldSpace = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        switch (e.target.value) {
+            case "True":
+                this.props.particleSystem.worldSpace = true;
+                break;
+            case "False":
+                this.props.particleSystem.worldSpace = false;
+                break;
+        }
+        this.props.updateProperties();
+    }
 
     getValueOfBlending = (blending: Blending) => {
         switch (blending) {
@@ -60,6 +71,10 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
             case AdditiveBlending:
                 return "Additive";
         }
+    }
+
+    getValueOfBoolean = (worldSpace: boolean) => {
+        return worldSpace ? 'True': 'False';
     }
 
     onUploadTexture = (files: FileList) => {
@@ -103,46 +118,52 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
     render() {
         console.log('rendered particleRendererProperties');
         return (
-            <div>
-
-                texture?: Texture;
-                blending?: Blending;
-                worldSpace?: boolean;
-
+            <div className="property-container">
+                <div className="property">
+                    <label className="name">World Space</label>
+                    <select className="editor-select" onChange={this.onChangeWorldSpace} value={this.getValueOfBoolean(this.props.particleSystem.worldSpace)}>
+                        <option key={0} value="True" >True</option>
+                        <option key={1} value="False" >False</option>
+                    </select>
+                </div>
+                <div className="property">
+                    <label className="name">Blend Mode</label>
+                    <select className="editor-select" onChange={this.onChangeBlending} value={this.getValueOfBlending(this.props.particleSystem.blending)}>
+                        <option key={0} value="Normal" >Normal</option>
+                        <option key={1} value="Additive" >Additive</option>
+                    </select>
+                </div>
+                <div className="property">
+                    <label className="name">UVTile</label>
+                    <label>Column:</label><NumberInput value={this.props.particleSystem.uTileCount} onChange={this.onChangeUTileCount}/>
+                    <label>Row:</label><NumberInput value={this.props.particleSystem.vTileCount} onChange={this.onChangeVTileCount}/>
+                </div>
+                <div className="property">
+                    <label className="name">Start Tile Index</label><NumberInput value={this.props.particleSystem.startTileIndex} onChange={this.onChangeStartTile}/>
+                </div>
                 <ApplicationContextConsumer>
-                    {context => context &&
-                        <div className="property">
-                            <label className="name">Blend Mode</label>
-                            <select className="editor-select" onChange={this.onChangeBlending} value={this.getValueOfBlending(this.props.particleSystem.blending)}>
-                                <option key={0} value="Normal" >Normal</option>
-                                <option key={1} value="Additive" >Additive</option>
-                            </select>
-                        </div>
-                    }
-                </ApplicationContextConsumer>
-                <ApplicationContextConsumer>
-                    {context => context &&
-                        <div className="property">
-                            <label className="name">UVTile</label>
-                            <label>Column:</label><NumberInput value={this.props.particleSystem.uTileCount} onChange={this.onChangeUTileCount}/>
-                            <label>Row:</label><NumberInput value={this.props.particleSystem.vTileCount} onChange={this.onChangeVTileCount}/>
-                        </div>
-                    }
-                </ApplicationContextConsumer>
-                <ApplicationContextConsumer>
-                    {context => context &&
-                        <div className="property">
-                            <label className="name">Start Tile Index</label><NumberInput value={this.props.particleSystem.startTileIndex} onChange={this.onChangeStartTile}/>
-                        </div>
-                    }
-                </ApplicationContextConsumer>
-                <ApplicationContextConsumer>
-                    {context => context &&
-                        <div className="property">
+                    {context => {
+                        let texture;
+                        for (let i = 0; i < context!.textures.length; i ++) {
+                            if (context!.textures[i].texture === this.props.particleSystem.texture) {
+                                texture = context!.textures[i];
+                            }
+                        }
+                        let gridWidth=1, gridHeight=1;
+                        if (texture) {
+                            gridWidth = texture.texture.image.width / this.props.particleSystem.uTileCount;
+                            gridHeight = texture.texture.image.height / this.props.particleSystem.vTileCount;
+                        }
+                        return <div className="property">
                             <label className="name">Texture</label>
-                            {this.props.particleSystem.texture? this.props.particleSystem.texture.name: ".."} <Button onClick={this.openTexturePicker} variant={'contained'}>Pick</Button>
-                        </div>
-                    }
+                            {texture && <img className="texture-preview" src={texture.img} alt={texture.texture.name}
+                                             style={{objectPosition: `-${(this.props.particleSystem.startTileIndex % this.props.particleSystem.uTileCount) * gridWidth}px -${Math.floor(this.props.particleSystem.startTileIndex / this.props.particleSystem.uTileCount) * gridHeight}px`,
+                                                 width: gridWidth,
+                                                 height: gridHeight}}/>}
+                            {/*this.props.particleSystem.texture ? this.props.particleSystem.texture.name : ".."*/}
+                            <Button onClick={this.openTexturePicker} variant={'contained'}>Pick</Button>
+                        </div>;
+                    }}
                 </ApplicationContextConsumer>
                 <ApplicationContextConsumer>
                     {context => context &&

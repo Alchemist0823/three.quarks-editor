@@ -12,17 +12,17 @@ import {ConstantValue} from "three.quarks";
 import {Bezier} from "three.quarks";
 import {Gradient} from "three.quarks";
 import {RandomColor} from "three.quarks";
+import {TextureImage} from "../components/ApplicationContext";
 
 export class ShipTrail extends Group {
     private particles: ParticleSystem;
     private glowBeam: ParticleSystem;
     private beam: ParticleSystem;
 
-    constructor() {
+    constructor(textures: TextureImage[]) {
         super();
 
-        let texture = new TextureLoader().load( "textures/texture1.png");
-        texture.name = "textures/texture1.png";
+        let texture = textures[0].texture;
 
         this.beam = new ParticleSystem({
             duration: 1,
