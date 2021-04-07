@@ -30,6 +30,7 @@ import {ElectricBall} from "../example/ElectricBall";
 import {ShipTrail} from "../example/ShipTrail";
 import {Explosion2} from "../example/Explosion2";
 import {EnergyRifleMuzzle} from "../example/EnergyRifleMuzzle";
+import {Blackhole} from "../example/Blackhole";
 
 
 export interface TextureImage {
@@ -85,8 +86,8 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
             demoObject = new ToonExplosion(this.state.textures);
             demoObject.name = "ToonExplosion";
         } else if (demoIndex === 5) {
-            demoObject = new Explosion(this.state.textures);
-            demoObject.name = "Explosion";
+            demoObject = new Blackhole(this.state.textures);
+            demoObject.name = "Blackhole";
         } else if (demoIndex === 6) {
             demoObject = new LevelUp(this.state.textures);
             demoObject.name = "LevelUp";

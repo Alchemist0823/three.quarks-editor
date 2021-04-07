@@ -1,12 +1,17 @@
 import {Object3D, Vector4} from "three";
 import {
+    Behavior,
     Bezier,
-    ColorGenerator, ColorRange, ConstantColor, ConstantValue,
+    ColorGenerator, ColorRange, ConeEmitter, ConstantColor, ConstantValue, DonutEmitter, EmitterShape,
     FunctionColorGenerator,
-    FunctionValueGenerator, IntervalValue,
-    ParticleEmitter, PiecewiseBezier, RandomColor,
-    RenderMode,
-    ValueGenerator
+    FunctionValueGenerator, Gradient, IntervalValue,
+    ParticleEmitter, PiecewiseBezier, PointEmitter, RandomColor,
+    RenderMode, SphereEmitter,
+    ValueGenerator,
+    ColorGeneratorFromJSON,
+    ColorOverLife, FrameOverLife, OrbitOverLife,
+    RotationOverLife, SizeOverLife, SpeedOverLife,
+    ValueGeneratorFromJSON
 } from "three.quarks";
 
 
@@ -46,6 +51,14 @@ export class CodeExporter {
             return `new ColorRange(${CodeExporter.exportColor(func.a)}, ${CodeExporter.exportColor(func.b)})`;
         } else if (func instanceof RandomColor) {
             return `new RandomColor(${CodeExporter.exportColor(func.a)}, ${CodeExporter.exportColor(func.b)})`;
+        }  else if (func instanceof Gradient) {
+            let code = `new Gradient(\n`;
+            for (let i = 0; i < func.functions.length - 1; i ++) {
+                code += ' '.repeat(indent + 4) + `[${CodeExporter.exportFunction(func.functions[i][0])}, ${func.functions[i][1]}], `;
+            }
+            code += ' '.repeat(indent + 4) + `[${CodeExporter.exportFunction(func.functions[func.functions.length - 1][0])}, ${func.functions[func.functions.length - 1][1]}]`;
+            code += ' '.repeat(indent) + `)`;
+            return code;
         } else if (func instanceof PiecewiseBezier) {
             let code = `new PiecewiseBezier(\n`;
             for (let i = 0; i < func.functions.length - 1; i ++) {
@@ -75,7 +88,7 @@ export class CodeExporter {
         code += `            maxParticle: ${system.maxParticle},\n`;
         code += `            emissionOverTime: ${CodeExporter.exportFunction(system.emissionOverTime)},\n`;
         code += `            emissionBursts: ${system.emissionBursts},\n`;
-        code += `            shape: ${system.emitterShape},\n`;
+        code += `            shape: ${CodeExporter.exportShape(system.emitterShape)},\n`;
         code += `            texture: texture,\n`;
         code += `            blending: ${system.blending},\n`;
         code += `            startTileIndex: ${system.startTileIndex},\n`;
@@ -85,10 +98,10 @@ export class CodeExporter {
         if (system.renderMode == RenderMode.StretchedBillBoard) {
             code += `            speedFactor: ${system.speedFactor},\n`;
         }
-        code += '        }\n';
+        code += '        });\n';
 
         for (let i = 0; i < system.behaviors.length; i ++) {
-            code += `        this.${name}.addBehavior(${system.behaviors[i]});\n`;
+            code += `        this.${name}.addBehavior(${CodeExporter.exportBehavior(system.behaviors[i])});\n`;
         }
         code += `        this.${name}.emitter.renderOrder = ${system.emitter.renderOrder};\n`
         code += `        this.${name}.emitter.name = '${name}';\n`
@@ -96,6 +109,50 @@ export class CodeExporter {
         code += `        this.add(this.${name}.emitter);\n`
         code += '\n';
         return code;
+    }
+
+    static exportShape(shape: EmitterShape) {
+        let json = shape.toJSON();
+        delete json.type;
+        let params = JSON.stringify(json);
+        const unquoted = params.replace(/"([^"]+)":/g, '$1:');
+
+        if (shape instanceof PointEmitter) {
+            return "new PointEmitter()";
+        }if (shape instanceof SphereEmitter) {
+            return "new SphereEmitter(" + unquoted + ")";
+        }if (shape instanceof ConeEmitter) {
+            return "new ConeEmitter(" + unquoted + ")";
+        }if (shape instanceof DonutEmitter) {
+            return "new DonutEmitter(" + unquoted + ")";
+        }
+    }
+
+    static exportBehavior(behavior: Behavior) {
+        let func;
+        switch (behavior.type) {
+            case 'ColorOverLife':
+                func = CodeExporter.exportFunction((behavior as ColorOverLife).func)
+                break;
+            case 'RotationOverLife':
+                func = CodeExporter.exportFunction((behavior as RotationOverLife).angularVelocityFunc)
+                break;
+            case 'SizeOverLife':
+                func = CodeExporter.exportFunction((behavior as SizeOverLife).func)
+                break;
+            case 'SpeedOverLife':
+                func = CodeExporter.exportFunction((behavior as SpeedOverLife).func)
+                break;
+            case 'FrameOverLife':
+                func = CodeExporter.exportFunction((behavior as FrameOverLife).func)
+                break;
+            case 'OrbitOverLife':
+                func = CodeExporter.exportFunction((behavior as OrbitOverLife).angularVelocityFunc)
+                break;
+            default:
+                func = behavior;
+        }
+        return "new " + behavior.type + "(" + func + ")";
     }
 
     static exportCode(root: Object3D): string {
@@ -127,7 +184,7 @@ export class CodeExporter {
         code += '    update(delta: number) {\n';
         for (let i = 0; i < root.children.length; i ++) {
             if (root.children[i] instanceof ParticleEmitter) {
-                code += `        ${CodeExporter.camelize(root.children[i].name)}.update(delta);\n`
+                code += `        this.${CodeExporter.camelize(root.children[i].name)}.update(delta);\n`
             }
         }
         code += '    }\n';

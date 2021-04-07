@@ -7,6 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 import AppBar from "@material-ui/core/AppBar";
 import withStyles from "@material-ui/core/styles/withStyles";
 import MenuIcon from '@material-ui/icons/Menu';
+import {Blackhole} from "../example/Blackhole";
 
 interface MainMenuProps {
     onSaveAs: () => void;
@@ -120,7 +121,7 @@ class MainMenu extends React.PureComponent<MainMenuProps, MainMenuState> {
                             <MenuItem onClick={() => this.openDemo(2)}>BulletProjectile</MenuItem>
                             <MenuItem onClick={() => this.openDemo(3)}>ShipSmoke</MenuItem>
                             <MenuItem onClick={() => this.openDemo(4)}>HitImpact</MenuItem>
-                            <MenuItem onClick={() => this.openDemo(5)}>Explosion</MenuItem>
+                            <MenuItem onClick={() => this.openDemo(5)}>BlackHole</MenuItem>
                             <MenuItem onClick={() => this.openDemo(6)}>Levelup</MenuItem>
                             <MenuItem onClick={() => this.openDemo(7)}>EnergyMuzzle</MenuItem>
                             <MenuItem onClick={() => this.openDemo(8)}>ElectricBall</MenuItem>
