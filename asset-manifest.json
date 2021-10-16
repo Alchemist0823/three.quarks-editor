@@ -1,17 +1,23 @@
 {
   "files": {
-    "main.css": "/three.quarks-editor/static/css/main.cc77434b.chunk.css",
-    "main.js": "/three.quarks-editor/static/js/main.78cf4236.chunk.js",
-    "main.js.map": "/three.quarks-editor/static/js/main.78cf4236.chunk.js.map",
-    "runtime-main.js": "/three.quarks-editor/static/js/runtime-main.3ced882e.js",
-    "runtime-main.js.map": "/three.quarks-editor/static/js/runtime-main.3ced882e.js.map",
-    "static/css/2.86fb98b1.chunk.css": "/three.quarks-editor/static/css/2.86fb98b1.chunk.css",
-    "static/js/2.6f80ff8c.chunk.js": "/three.quarks-editor/static/js/2.6f80ff8c.chunk.js",
-    "static/js/2.6f80ff8c.chunk.js.map": "/three.quarks-editor/static/js/2.6f80ff8c.chunk.js.map",
+    "main.css": "/three.quarks-editor/static/css/main.42d01850.chunk.css",
+    "main.js": "/three.quarks-editor/static/js/main.e607298d.chunk.js",
+    "main.js.map": "/three.quarks-editor/static/js/main.e607298d.chunk.js.map",
+    "runtime-main.js": "/three.quarks-editor/static/js/runtime-main.c850f1be.js",
+    "runtime-main.js.map": "/three.quarks-editor/static/js/runtime-main.c850f1be.js.map",
+    "static/css/2.62e33e9b.chunk.css": "/three.quarks-editor/static/css/2.62e33e9b.chunk.css",
+    "static/js/2.e7e21325.chunk.js": "/three.quarks-editor/static/js/2.e7e21325.chunk.js",
+    "static/js/2.e7e21325.chunk.js.map": "/three.quarks-editor/static/js/2.e7e21325.chunk.js.map",
     "index.html": "/three.quarks-editor/index.html",
-    "precache-manifest.4d08ff5d02150f2c28ac56dd990b2e0f.js": "/three.quarks-editor/precache-manifest.4d08ff5d02150f2c28ac56dd990b2e0f.js",
-    "service-worker.js": "/three.quarks-editor/service-worker.js",
-    "static/css/2.86fb98b1.chunk.css.map": "/three.quarks-editor/static/css/2.86fb98b1.chunk.css.map",
-    "static/css/main.cc77434b.chunk.css.map": "/three.quarks-editor/static/css/main.cc77434b.chunk.css.map"
-  }
+    "static/css/2.62e33e9b.chunk.css.map": "/three.quarks-editor/static/css/2.62e33e9b.chunk.css.map",
+    "static/css/main.42d01850.chunk.css.map": "/three.quarks-editor/static/css/main.42d01850.chunk.css.map",
+    "static/js/2.e7e21325.chunk.js.LICENSE.txt": "/three.quarks-editor/static/js/2.e7e21325.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.c850f1be.js",
+    "static/css/2.62e33e9b.chunk.css",
+    "static/js/2.e7e21325.chunk.js",
+    "static/css/main.42d01850.chunk.css",
+    "static/js/main.e607298d.chunk.js"
+  ]
 }
