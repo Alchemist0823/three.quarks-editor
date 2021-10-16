@@ -1,81 +1,58 @@
 
-import { Theme, createStyles, makeStyles, withStyles, WithStyles } from '@material-ui/core/styles';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import MuiDialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import Typography from '@material-ui/core/Typography';
-import {Button, Dialog, GridList, GridListTile, GridListTileBar} from "@material-ui/core";
+import {Theme, styled} from '@mui/material/styles';
+import MuiDialogTitle from '@mui/material/DialogTitle';
+import MuiDialogContent from '@mui/material/DialogContent';
+import MuiDialogActions from '@mui/material/DialogActions';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Typography from '@mui/material/Typography';
+import {Box, Button, Dialog, ImageList, ImageListItem, ImageListItemBar} from "@mui/material";
 import React, {useState} from "react";
 import {Texture} from "three";
 import {TextureImage} from "./ApplicationContext";
 import {FileInput} from "./editors/FileInput";
 import "./TexturePicker.scss";
 
-
-const styles = (theme: Theme) =>
-    createStyles({
-        root: {
-            margin: 0,
-            padding: theme.spacing(2),
-        },
-        closeButton: {
-            position: 'absolute',
-            right: theme.spacing(1),
-            top: theme.spacing(1),
-            color: theme.palette.grey[500],
-        },
-    });
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'space-around',
-            overflow: 'hidden',
-            backgroundColor: theme.palette.background.paper,
-        },
-        gridList: {
-            width: 500,
-            height: 450,
-        },
-    }),
-);
-
-export interface DialogTitleProps extends WithStyles<typeof styles> {
+export interface DialogTitleProps {
     id: string;
     children: React.ReactNode;
     onClose: () => void;
 }
 
-const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
-    const { children, classes, onClose, ...other } = props;
+const DialogTitle = (props: DialogTitleProps) => {
+    const { children, onClose, ...other } = props;
     return (
-        <MuiDialogTitle disableTypography className={classes.root} {...other}>
+        <MuiDialogTitle sx={{
+            margin: 0,
+            padding: (theme) => theme.spacing(2)
+        }} {...other}>
             <Typography variant="h6">{children}</Typography>
             {onClose ? (
-                <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+                <IconButton aria-label="close" sx={{
+                    position: 'absolute',
+                    right: theme => theme.spacing(1),
+                    top: theme =>theme.spacing(1),
+                    color: theme => theme.palette.grey[500],
+                }} onClick={onClose}>
                     <CloseIcon />
                 </IconButton>
             ) : null}
         </MuiDialogTitle>
     );
-});
+};
 
-const DialogContent = withStyles((theme: Theme) => ({
+const DialogContent = styled(MuiDialogContent)(({theme}) => ({
     root: {
         padding: theme.spacing(2),
     },
-}))(MuiDialogContent);
+}));
 
-const DialogActions = withStyles((theme: Theme) => ({
+const DialogActions = styled(MuiDialogActions)(({theme}) => ({
     root: {
         margin: 0,
         padding: theme.spacing(1),
     },
-}))(MuiDialogActions);
+}));
 
 export interface TexturePickerProps {
     textures: Array<TextureImage>,
@@ -86,7 +63,6 @@ export interface TexturePickerProps {
 }
 
 export const TexturePicker: React.FC<TexturePickerProps> = (props) => {
-    const classes = useStyles();
     const [selected, setSelected] = useState(0);
 
     return (
@@ -95,19 +71,25 @@ export const TexturePicker: React.FC<TexturePickerProps> = (props) => {
                 Picker Texture
             </DialogTitle>
             <DialogContent dividers>
-                <div className={classes.root}>
-                    <GridList cellHeight={160} className={classes.gridList} cols={3}>
+                <Box sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-around',
+                    overflow: 'hidden',
+                    backgroundColor: theme => theme.palette.background.paper,
+                }}>
+                    <ImageList rowHeight={160} sx={{width: 500, height: 450}} cols={3}>
                         {props.textures.map((texture, index) => (
-                            <GridListTile key={texture.img} cols={1} onClick={() => {setSelected(index)}} className={ index === selected ? 'selected-tile': ''}>
+                            <ImageListItem key={texture.img} cols={1} onClick={() => {setSelected(index)}} className={ index === selected ? 'selected-tile': ''}>
                                 <img src={texture.img} alt={texture.texture.name} />
-                                <GridListTileBar
+                                <ImageListItemBar
                                     title={texture.texture.name}
                                     subtitle={<span>by: {texture.texture.name}</span>}
                                 />
-                            </GridListTile>
+                            </ImageListItem>
                         ))}
-                    </GridList>
-                </div>
+                    </ImageList>
+                </Box>
             </DialogContent>
             <DialogActions>
                 <FileInput onChange={props.handleUpload} />

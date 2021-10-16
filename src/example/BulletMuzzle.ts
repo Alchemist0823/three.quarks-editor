@@ -1,5 +1,12 @@
 import {AdditiveBlending, Group, NormalBlending, TextureLoader, Vector4} from "three";
-import {ColorOverLife, ParticleSystem, PointEmitter, RenderMode, RotationOverLife} from "three.quarks";
+import {
+    BatchedParticleRenderer,
+    ColorOverLife,
+    ParticleSystem,
+    PointEmitter,
+    RenderMode,
+    RotationOverLife
+} from "three.quarks";
 import {ConeEmitter} from "three.quarks";
 import {IntervalValue} from "three.quarks";
 import {SizeOverLife} from "three.quarks";
@@ -22,12 +29,12 @@ export class BulletMuzzle extends Group {
     private smoke: ParticleSystem;
     private particles: ParticleSystem;
 
-    constructor(textures: TextureImage[]) {
+    constructor(renderer: BatchedParticleRenderer, textures: TextureImage[]) {
         super();
 
-        let texture = textures[0].texture;
+        const texture = textures[0].texture;
 
-        this.beam = new ParticleSystem({
+        this.beam = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
             startLife: new IntervalValue(0.1, 0.2),
@@ -58,7 +65,7 @@ export class BulletMuzzle extends Group {
         this.beam.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.95, 0.75, 0), 0]])));
         this.add(this.beam.emitter);
 
-        let muzzle = {
+        const muzzle = {
             duration: 1,
             looping: false,
             startLife: new IntervalValue(0.1, 0.2),
@@ -83,19 +90,19 @@ export class BulletMuzzle extends Group {
             startTileIndex: 91,
             uTileCount: 10,
             vTileCount: 10,
-            renderMode: RenderMode.LocalSpaceBillBoard
+            renderMode: RenderMode.LocalSpaceBillBoard,
+            renderOrder: 2,
         };
 
-        this.muzzle1 = new ParticleSystem(muzzle);
+        this.muzzle1 = new ParticleSystem(renderer, muzzle);
         this.muzzle1.addBehavior(new ColorOverLife(new ColorRange(new Vector4(1, 0.3882312, 0.125, 1), new Vector4(1, 0.826827, 0.3014706, 1))));
         this.muzzle1.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.95, 0.75, 0), 0]])));
         this.muzzle1.addBehavior(new FrameOverLife(new PiecewiseBezier([[new Bezier(91, 94, 97, 100), 0]])));
-        this.muzzle1.emitter.renderOrder = 2;
         this.muzzle1.emitter.name = 'muzzle1';
         this.muzzle1.emitter.position.x = 1;
         this.add(this.muzzle1.emitter);
 
-        this.muzzle2 = new ParticleSystem(muzzle);
+        this.muzzle2 = new ParticleSystem(renderer, muzzle);
         this.muzzle2.addBehavior(new ColorOverLife(new ColorRange(new Vector4(1, 0.3882312, 0.125, 1), new Vector4(1, 0.826827, 0.3014706, 1))));
         this.muzzle2.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.95, 0.75, 0), 0]])));
         this.muzzle2.addBehavior(new FrameOverLife(new PiecewiseBezier([[new Bezier(91, 94, 97, 100), 0]])));
@@ -105,7 +112,7 @@ export class BulletMuzzle extends Group {
         this.muzzle2.emitter.rotation.x = Math.PI / 2;
         this.add(this.muzzle2.emitter);
 
-        this.flash = new ParticleSystem({
+        this.flash = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
             startLife: new IntervalValue(0.1, 0.2),
@@ -131,15 +138,15 @@ export class BulletMuzzle extends Group {
             startTileIndex: 81,
             uTileCount: 10,
             vTileCount: 10,
-            renderMode: RenderMode.BillBoard
+            renderMode: RenderMode.BillBoard,
+            renderOrder: 2,
         });
         this.flash.addBehavior(new ColorOverLife(new ColorRange(new Vector4(1, 0.95, 0.82, 1), new Vector4(1, 0.38, 0.12, 1))));
         this.flash.addBehavior(new FrameOverLife(new PiecewiseBezier([[new Bezier(81, 84.333, 87.666, 91), 0]])));
-        this.flash.emitter.renderOrder = 2;
         this.flash.emitter.name = 'flash';
         this.add(this.flash.emitter);
 
-        this.smoke = new ParticleSystem({
+        this.smoke = new ParticleSystem(renderer, {
             duration: 2.5,
             looping: false,
             startLife: new IntervalValue(0.6, 0.8),
@@ -170,17 +177,17 @@ export class BulletMuzzle extends Group {
             startTileIndex: 81,
             uTileCount: 10,
             vTileCount: 10,
-            renderMode: RenderMode.BillBoard
+            renderMode: RenderMode.BillBoard,
+            renderOrder: -2,
         });
         this.smoke.addBehavior(new ColorOverLife(new ColorRange(new Vector4(1, 1, 1, 1), new Vector4(1, 1, 1, 0))));
         this.smoke.addBehavior(new RotationOverLife(new IntervalValue(- Math.PI / 4, Math.PI / 4)));
         this.smoke.addBehavior(new FrameOverLife(new PiecewiseBezier([[new Bezier(28, 31, 34, 37), 0]])));
-        this.smoke.emitter.renderOrder = -2;
         this.smoke.emitter.name = 'smoke';
         this.smoke.emitter.rotation.y = Math.PI / 2;
         this.add(this.smoke.emitter);
 
-        this.particles = new ParticleSystem({
+        this.particles = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
             startLife: new IntervalValue(0.2, 0.6),
@@ -212,9 +219,9 @@ export class BulletMuzzle extends Group {
             vTileCount: 10,
             renderMode: RenderMode.StretchedBillBoard,
             speedFactor: 0.5,
+            renderOrder: 0,
         });
         this.particles.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.95, 0.75, 0), 0]])));
-        this.particles.emitter.renderOrder = 1;
         this.particles.emitter.name = 'particles';
         this.particles.emitter.rotation.y = Math.PI / 2;
         this.add(this.particles.emitter);

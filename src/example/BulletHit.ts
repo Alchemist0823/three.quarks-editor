@@ -1,29 +1,28 @@
-import {AdditiveBlending, Group, NormalBlending, TextureLoader, Vector4} from "three";
-import {ColorOverLife, ParticleSystem, PointEmitter, RenderMode, RotationOverLife} from "three.quarks";
-import {ConeEmitter} from "three.quarks";
+import {AdditiveBlending, Group, TextureLoader, Vector4} from "three";
+import {
+    BatchedParticleRenderer,
+    ColorOverLife,
+    ParticleSystem,
+    PointEmitter,
+    RenderMode,
+} from "three.quarks";
 import {IntervalValue} from "three.quarks";
-import {SizeOverLife} from "three.quarks";
-import {PiecewiseBezier} from "three.quarks";
 import {ColorRange} from "three.quarks";
 import {ConstantColor} from "three.quarks";
-import {SphereEmitter} from "three.quarks";
-import {FrameOverLife} from "three.quarks";
 import {ConstantValue} from "three.quarks";
-import {Bezier} from "three.quarks";
 import {Gradient} from "three.quarks";
-import {RandomColor} from "three.quarks";
 
 export class BulletHit extends Group {
     private hProjectile: ParticleSystem;
     private vProjectile: ParticleSystem;
 
-    constructor() {
+    constructor(renderer: BatchedParticleRenderer) {
         super();
 
-        let texture = new TextureLoader().load( "textures/projectile.png");
+        const texture = new TextureLoader().load( "textures/projectile.png");
         texture.name = "textures/projectile.png";
 
-        let projectileParam = {
+        const projectileParam = {
             duration: 1,
             looping: true,
             startLife: new ConstantValue(0.5),
@@ -41,25 +40,24 @@ export class BulletHit extends Group {
             startTileIndex: 0,
             uTileCount: 1,
             vTileCount: 1,
-            renderMode: RenderMode.LocalSpaceBillBoard
+            renderMode: RenderMode.LocalSpaceBillBoard,
+            renderOrder: 2,
         };
 
-        this.hProjectile = new ParticleSystem(projectileParam);
+        this.hProjectile = new ParticleSystem(renderer, projectileParam);
         this.hProjectile.addBehavior(new ColorOverLife(new Gradient([
             [new ColorRange(new Vector4(1, 1, 1, 0), new Vector4(0, 1, 0.25, 1)), 0],
             [new ColorRange(new Vector4(0, 1, 0.25, 1), new Vector4(1, 1, 1, 0)), 0.5]
         ])));
-        this.hProjectile.emitter.renderOrder = 2;
         this.hProjectile.emitter.name = 'hProjectile';
         this.hProjectile.emitter.scale.x = 2;
         this.add(this.hProjectile.emitter);
 
-        this.vProjectile = new ParticleSystem(projectileParam);
+        this.vProjectile = new ParticleSystem(renderer, projectileParam);
         this.vProjectile.addBehavior(new ColorOverLife(new Gradient([
             [new ColorRange(new Vector4(1, 1, 1, 0), new Vector4(0, 1, 0.25, 1)), 0],
             [new ColorRange(new Vector4(0, 1, 0.25, 1), new Vector4(1, 1, 1, 0)), 0.5]
         ])));
-        this.vProjectile.emitter.renderOrder = 2;
         this.vProjectile.emitter.name = 'vProjectile';
         this.vProjectile.emitter.rotation.x = Math.PI / 2;
         this.vProjectile.emitter.scale.x = 10;

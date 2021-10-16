@@ -1,5 +1,5 @@
 import {AdditiveBlending, Group, NormalBlending, TextureLoader, Vector4} from "three";
-import {ColorOverLife, ParticleSystem, PointEmitter, RenderMode} from "three.quarks";
+import {BatchedParticleRenderer, ColorOverLife, ParticleSystem, PointEmitter, RenderMode} from "three.quarks";
 import {ConeEmitter} from "three.quarks";
 import {IntervalValue} from "three.quarks";
 import {SizeOverLife} from "three.quarks";
@@ -19,12 +19,12 @@ export class ShipTrail extends Group {
     private glowBeam: ParticleSystem;
     private beam: ParticleSystem;
 
-    constructor(textures: TextureImage[]) {
+    constructor(renderer: BatchedParticleRenderer, textures: TextureImage[]) {
         super();
 
-        let texture = textures[0].texture;
+        const texture = textures[0].texture;
 
-        this.beam = new ParticleSystem({
+        this.beam = new ParticleSystem(renderer, {
             duration: 1,
             looping: true,
             startLife: new ConstantValue(1.0),
@@ -42,14 +42,14 @@ export class ShipTrail extends Group {
             startTileIndex: 1,
             uTileCount: 10,
             vTileCount: 10,
+            renderOrder: 0,
         });
-        this.beam.emitter.renderOrder = 0;
         this.beam.emitter.name = 'beam';
         this.add(this.beam.emitter);
 
         this.add(this.beam.emitter);
 
-        this.glowBeam = new ParticleSystem({
+        this.glowBeam = new ParticleSystem(renderer, {
             duration: 1,
             looping: true,
             startLife: new ConstantValue(0.5),
@@ -71,16 +71,16 @@ export class ShipTrail extends Group {
             startTileIndex: 1,
             uTileCount: 10,
             vTileCount: 10,
+            renderOrder: 2,
         });
         this.glowBeam.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 1.0, 0.8, 0.5), 0]])));
         this.glowBeam.addBehavior(new ColorOverLife(new ColorRange(new Vector4(1,1,1,1), new Vector4(0,0,0,0))));
-        this.glowBeam.emitter.renderOrder = 2;
         this.glowBeam.emitter.name = 'glowBeam';
 
         this.add(this.glowBeam.emitter);
 
 
-        this.particles = new ParticleSystem({
+        this.particles = new ParticleSystem(renderer, {
             duration: 1,
             looping: true,
             startLife: new IntervalValue(0.3, 0.6),
@@ -105,9 +105,9 @@ export class ShipTrail extends Group {
             startTileIndex: 0,
             uTileCount: 10,
             vTileCount: 10,
+            renderOrder: 0,
         });
         this.particles.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.25, 0.05, 0), 0]])));
-        this.particles.emitter.renderOrder = 0;
         this.particles.emitter.rotateY(-Math.PI/2);
         this.particles.emitter.name = 'particles';
         this.add(this.particles.emitter);

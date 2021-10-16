@@ -8,7 +8,6 @@ export const WEBGL = {
 
         try {
             const canvas = document.createElement( 'canvas' );
-            // @ts-ignore
             return !! ( window.WebGLRenderingContext && ( canvas.getContext( 'webgl' ) || canvas.getContext( 'experimental-webgl' ) ) );
         } catch ( e ) {
             return false;
@@ -19,7 +18,6 @@ export const WEBGL = {
     isWebGL2Available: function () {
         try {
             const canvas = document.createElement( 'canvas' );
-            // @ts-ignore
             return !! ( window.WebGL2RenderingContext && canvas.getContext( 'webgl2' ) );
         } catch ( e ) {
             return false;
@@ -40,10 +38,8 @@ export const WEBGL = {
             2: 'WebGL 2'
         };
 
-        const contexts :{[version:number]: string} = {
-            // @ts-ignore
+        const contexts :{[version:number]: any} = {
             1: window.WebGLRenderingContext,
-            // @ts-ignore
             2: window.WebGL2RenderingContext
         };
 

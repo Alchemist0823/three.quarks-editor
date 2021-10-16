@@ -7,7 +7,7 @@ import {StringInput} from "./editors/StringInput";
 
 interface ObjectPropertiesProps {
     object3d: Object3D,
-    updateProperties: Function,
+    updateProperties: ()=>void,
 }
 
 interface ObjectPropertiesState {

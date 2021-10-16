@@ -4,12 +4,12 @@ import {AppContext, ApplicationContextConsumer, TextureImage} from "./Applicatio
 import {ParticleSystem, RenderMode} from "three.quarks";
 import {NumberInput} from "./editors/NumberInput";
 import {TexturePicker} from "./TexturePicker";
-import Button from "@material-ui/core/Button";
+import {Button} from "@mui/material";
 
 
 interface ParticleRendererPropertiesProps {
     particleSystem: ParticleSystem,
-    updateProperties: Function,
+    updateProperties: ()=>void,
 }
 
 interface ParticleRendererPropertiesState {
@@ -23,6 +23,14 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
             texturePickerOpen: false,
         };
     }
+    onChangeSpeedFactor = (order: number) => {
+        this.props.particleSystem.speedFactor = order;
+        this.props.updateProperties();
+    };
+    onChangeRenderOrder = (order: number) => {
+        this.props.particleSystem.renderOrder = order;
+        this.props.updateProperties();
+    };
     onChangeStartTile = (index: number) => {
         this.props.particleSystem.startTileIndex = index;
         this.props.updateProperties();
@@ -39,11 +47,9 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
         switch (e.target.value) {
             case "Normal":
                 this.props.particleSystem.blending = NormalBlending;
-                this.props.particleSystem.emitter.material.blending = NormalBlending;
                 break;
             case "Additive":
                 this.props.particleSystem.blending = AdditiveBlending;
-                this.props.particleSystem.emitter.material.blending = AdditiveBlending;
                 break;
         }
         this.props.updateProperties();
@@ -62,9 +68,11 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
         switch (e.target.value) {
             case "BillBoard":
                 this.props.particleSystem.renderMode = RenderMode.BillBoard;
+                this.props.particleSystem.speedFactor = 0;
                 break;
             case "LocalSpaceBillBoard":
                 this.props.particleSystem.renderMode = RenderMode.LocalSpaceBillBoard;
+                this.props.particleSystem.speedFactor = 0;
                 break;
             case "StretchedBillBoard":
                 this.props.particleSystem.renderMode = RenderMode.StretchedBillBoard;
@@ -149,6 +157,12 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
                         <option key={2} value="StretchedBillBoard" >Stretched BillBoard</option>
                     </select>
                 </div>
+                {this.props.particleSystem.renderMode === RenderMode.StretchedBillBoard &&
+                    <div className="property">
+                        <label className="name">SpeedFactor</label>
+                        <NumberInput value={this.props.particleSystem.speedFactor} onChange={this.onChangeSpeedFactor}/>
+                    </div>
+                }
                 <div className="property">
                     <label className="name">World Space</label>
                     <select className="editor-select" onChange={this.onChangeWorldSpace} value={this.getValueOfBoolean(this.props.particleSystem.worldSpace)}>
@@ -162,6 +176,9 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
                         <option key={0} value="Normal" >Normal</option>
                         <option key={1} value="Additive" >Additive</option>
                     </select>
+                </div>
+                <div className="property">
+                    <label className="name">RenderOrder:</label><NumberInput value={this.props.particleSystem.renderOrder} onChange={this.onChangeRenderOrder}/>
                 </div>
                 <div className="property">
                     <label className="name">UVTile</label>
@@ -180,7 +197,7 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
                             }
                         }
                         let gridWidth=1, gridHeight=1;
-                        if (texture) {
+                        if (texture && texture.texture.image) {
                             gridWidth = texture.texture.image.width / this.props.particleSystem.uTileCount;
                             gridHeight = texture.texture.image.height / this.props.particleSystem.vTileCount;
                         }

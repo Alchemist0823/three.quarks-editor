@@ -5,7 +5,7 @@ import {
     PointEmitter,
     SphereEmitter,
     OrbitOverLife,
-    PiecewiseBezier, Gradient, ColorRange, ColorOverLife, Bezier
+    PiecewiseBezier, Gradient, ColorRange, ColorOverLife, Bezier, BatchedParticleRenderer
 } from "three.quarks";
 import {Group, Vector4} from "three";
 import {TextureImage} from "../components/ApplicationContext";
@@ -15,12 +15,12 @@ export class Blackhole extends Group {
     private particles: ParticleSystem;
     private ring: ParticleSystem;
 
-    constructor(textures: TextureImage[]) {
+    constructor(renderer: BatchedParticleRenderer, textures: TextureImage[]) {
         super();
 
-        let texture = textures[0].texture;
+        const texture = textures[0].texture;
 
-        this.beam = new ParticleSystem({
+        this.beam = new ParticleSystem(renderer,{
             duration: 1,
             looping: true,
             startLife: new ConstantValue(1),
@@ -38,13 +38,13 @@ export class Blackhole extends Group {
             uTileCount: 10,
             vTileCount: 10,
             renderMode: 0,
+            renderOrder: 0,
         });
-        this.beam.emitter.renderOrder = 0;
         this.beam.emitter.name = 'beam';
         this.beam.emitter.rotation.set(0, 0, 0);
         this.add(this.beam.emitter);
 
-        this.particles = new ParticleSystem({
+        this.particles = new ParticleSystem(renderer, {
             duration: 1,
             looping: true,
             startLife: new ConstantValue(3),
@@ -66,18 +66,18 @@ export class Blackhole extends Group {
             uTileCount: 10,
             vTileCount: 10,
             renderMode: 0,
+            renderOrder: 0,
         });
         this.particles.addBehavior(new OrbitOverLife(new ConstantValue(1)));
         this.particles.addBehavior(new ColorOverLife(new Gradient([[new ColorRange(new Vector4(0,0,0,1), new Vector4(1,1,1,1)),0],
             [new ColorRange(new Vector4(1,1,1,1), new Vector4(1,1,1,1)),0.2],
             [new ColorRange(new Vector4(1,1,1,1), new Vector4(0,0,0,1)),0.8]
         ])));
-        this.particles.emitter.renderOrder = 0;
         this.particles.emitter.name = 'particles';
         this.particles.emitter.rotation.set(0, 0, 0);
         this.add(this.particles.emitter);
 
-        this.ring = new ParticleSystem({
+        this.ring = new ParticleSystem(renderer, {
             duration: 1,
             looping: true,
             startLife: new ConstantValue(1),
@@ -95,8 +95,8 @@ export class Blackhole extends Group {
             uTileCount: 10,
             vTileCount: 10,
             renderMode: 0,
+            renderOrder: 0,
         });
-        this.ring.emitter.renderOrder = 0;
         this.ring.emitter.name = 'ring';
         this.ring.emitter.rotation.set(0, 0, 0);
         this.add(this.ring.emitter);

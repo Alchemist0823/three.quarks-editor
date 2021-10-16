@@ -1,5 +1,5 @@
 import {AdditiveBlending, Group, NormalBlending, TextureLoader, Vector4} from "three";
-import {FrameOverLife, ParticleSystem, PointEmitter, RenderMode} from "three.quarks";
+import {BatchedParticleRenderer, FrameOverLife, ParticleSystem, PointEmitter, RenderMode} from "three.quarks";
 import {ConeEmitter} from "three.quarks";
 import {IntervalValue} from "three.quarks";
 import {SizeOverLife} from "three.quarks";
@@ -22,12 +22,12 @@ export class ElectricBall extends Group {
     private electricBall: ParticleSystem;
     /*private sparks: ParticleSystem;*/
 
-    constructor(textures: TextureImage[]) {
+    constructor(renderer: BatchedParticleRenderer, textures: TextureImage[]) {
         super();
         this.name = 'ElectricBall';
 
-        let texture2 = textures[1].texture;
-        this.beam = new ParticleSystem({
+        const texture2 = textures[1].texture;
+        this.beam = new ParticleSystem(renderer, {
             duration: 1,
             looping: true,
             startLife: new ConstantValue(1.0),
@@ -45,12 +45,12 @@ export class ElectricBall extends Group {
             startTileIndex: 1,
             uTileCount: 10,
             vTileCount: 10,
+            renderOrder: 0,
         });
-        this.beam.emitter.renderOrder = 0;
         this.beam.emitter.name = 'beam';
         this.add(this.beam.emitter);
 
-        this.beamWorld = new ParticleSystem({
+        this.beamWorld = new ParticleSystem(renderer, {
             duration: 1,
             looping: true,
             startLife: new IntervalValue(0.1, 0.4),
@@ -72,13 +72,13 @@ export class ElectricBall extends Group {
             startTileIndex: 1,
             uTileCount: 10,
             vTileCount: 10,
+            renderOrder: 0,
         });
-        this.beamWorld.emitter.renderOrder = 0;
         this.beamWorld.emitter.name = 'beamWorld';
         this.beamWorld.addBehavior(new ColorOverLife(new ColorRange(new Vector4(1.0, 1.0, 1.0, 1.0), new Vector4(0.0, 0.0, 0.0, 1.0))));
         this.add(this.beamWorld.emitter);
 
-        this.electricity = new ParticleSystem({
+        this.electricity = new ParticleSystem(renderer, {
             duration: 0.5,
             looping: true,
 
@@ -99,15 +99,15 @@ export class ElectricBall extends Group {
             startTileIndex: 0,
             uTileCount: 10,
             vTileCount: 10,
+            renderOrder: 2,
         });
         //this.electricity.addBehavior(new ColorOverLife(([[new Bezier(61, 64, 67, 70), 0]])));
         this.electricity.addBehavior(new FrameOverLife(new PiecewiseBezier([[new Bezier(53, 56, 59, 62), 0]])));
         this.electricity.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1.0, 1.0, 0.75, 0), 0]])));
-        this.electricity.emitter.renderOrder = 2;
         this.electricity.emitter.name = 'electricity';
         this.add(this.electricity.emitter);
 
-        this.electricBall = new ParticleSystem({
+        this.electricBall = new ParticleSystem(renderer, {
             duration: 0.4,
             looping: true,
 
@@ -128,13 +128,13 @@ export class ElectricBall extends Group {
             startTileIndex: 0,
             uTileCount: 10,
             vTileCount: 10,
+            renderOrder: 1,
         });
         this.electricBall.addBehavior(new FrameOverLife(new PiecewiseBezier([[new Bezier(62, 65, 68, 71), 0]])));
-        this.electricBall.emitter.renderOrder = 1;
         this.electricBall.emitter.name = 'electricBall';
         this.add(this.electricBall.emitter);
         /*
-        this.sparks = new ParticleSystem({
+        this.sparks = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
             startLife: new IntervalValue(0.5, 0.8),
@@ -172,7 +172,7 @@ export class ElectricBall extends Group {
         this.smoke.emitter.name = 'smoke';
         this.add(this.smoke.emitter);
 
-        this.particles = new ParticleSystem({
+        this.particles = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
             startLife: new IntervalValue(0.6, 1.2),
@@ -210,7 +210,7 @@ export class ElectricBall extends Group {
         this.particles.emitter.name = 'particles';
         this.add(this.particles.emitter);
 
-        this.beam = new ParticleSystem({
+        this.beam = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
 
@@ -242,7 +242,7 @@ export class ElectricBall extends Group {
         this.beam.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.66666, 0.33333, 0), 0]])));
         this.add(this.beam.emitter);
 
-        this.circle = new ParticleSystem({
+        this.circle = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
             startLife: new ConstantValue(0.4),

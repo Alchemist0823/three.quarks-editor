@@ -1,5 +1,6 @@
 import {AdditiveBlending, Group, TextureLoader, Vector4} from "three";
 import {
+    BatchedParticleRenderer,
     Bezier,
     ColorOverLife, ColorRange, ConeEmitter,
     ConstantColor,
@@ -18,15 +19,15 @@ export class LevelUp extends Group {
     private glow2: ParticleSystem;
     private particle: ParticleSystem;
 
-    constructor(textures: TextureImage[]) {
+    constructor(renderer: BatchedParticleRenderer, textures: TextureImage[]) {
         super();
         this.name = 'levelUp';
 
-        let texture = textures[0].texture;
+        const texture = textures[0].texture;
 
-        let yellow = new Vector4(.8,.8,.2, 1);
+        const yellow = new Vector4(.8,.8,.2, 1);
 
-        this.gatherParticles = new ParticleSystem({
+        this.gatherParticles = new ParticleSystem(renderer, {
             duration: 0.5,
             looping: false,
             startLife: new IntervalValue(0.3, 0.4),
@@ -47,15 +48,15 @@ export class LevelUp extends Group {
             uTileCount: 10,
             vTileCount: 10,
             renderMode: RenderMode.StretchedBillBoard,
-            speedFactor: 0.05
+            speedFactor: 0.05,
+            renderOrder: 2,
         });
         //this.gatherParticles.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.25, 0.05, 0), 0]])));
         this.gatherParticles.addBehavior(new ColorOverLife(new ColorRange(new Vector4(.2, .2, .2, 1), new Vector4(1, 1, 1, 1))));
         this.gatherParticles.emitter.name = 'gatherParticles';
-        this.gatherParticles.emitter.renderOrder = 2;
         this.add(this.gatherParticles.emitter);
 
-        let glowParam = {
+        const glowParam = {
             duration: 2,
             looping: false,
             startLife: new ConstantValue(2.0),
@@ -80,28 +81,22 @@ export class LevelUp extends Group {
             startTileIndex: 1,
             uTileCount: 10,
             vTileCount: 10,
-            /*instancingGeometry: [
-                -1, -1, 0, 0, 0,
-                1, -1, 0, 1, 0,
-                1, 1, 0, 1, 1,
-                -1, 1, 0, 0, 1
-            ],*/
-            renderMode: RenderMode.LocalSpaceBillBoard
+            renderMode: RenderMode.LocalSpaceBillBoard,
+            renderOrder: 0,
         };
 
-        this.glow = new ParticleSystem(glowParam);
+        this.glow = new ParticleSystem(renderer, glowParam);
         /*this.glow.addBehavior(new ColorOverLife(new Gradient([
             [new ColorRange(new Vector4(1, 1, 1, 0), new Vector4(0, 1, 0.25, 1)), 0],
             [new ColorRange(new Vector4(0, 1, 0.25, 1), new Vector4(1, 1, 1, 0)), 0.5]
         ])));*/
         this.glow.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(0, 0.75, 0.90, 1),0], [new Bezier(1, 0.90, 0.75, 0), 0.5]])));
-        this.glow.emitter.renderOrder = 0;
         this.glow.emitter.name = 'glow';
         this.glow.emitter.rotation.x = -Math.PI / 2;
         this.add(this.glow.emitter);
 
 
-        let glow2Param = {
+        const glow2Param = {
             duration: 2,
             looping: false,
             startLife: new ConstantValue(2.0),
@@ -126,20 +121,20 @@ export class LevelUp extends Group {
             startTileIndex: 1,
             uTileCount: 10,
             vTileCount: 10,
-            renderMode: RenderMode.BillBoard
+            renderMode: RenderMode.BillBoard,
+            renderOrder: 0,
         };
 
-        this.glow2 = new ParticleSystem(glow2Param);
+        this.glow2 = new ParticleSystem(renderer, glow2Param);
         /*this.glow.addBehavior(new ColorOverLife(new Gradient([
             [new ColorRange(new Vector4(1, 1, 1, 0), new Vector4(0, 1, 0.25, 1)), 0],
             [new ColorRange(new Vector4(0, 1, 0.25, 1), new Vector4(1, 1, 1, 0)), 0.5]
         ])));*/
         this.glow2.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(0, 0.75, 0.90, 1), 0], [new Bezier(1, 0.90, 0.75, 0), 0.2]])));
-        this.glow2.emitter.renderOrder = 0;
         this.glow2.emitter.name = 'glow2';
         this.add(this.glow2.emitter);
 
-        let particleParam = {
+        const particleParam = {
             duration: 1.0,
             looping: false,
             startLife: new IntervalValue(0.6, 0.8),
@@ -167,13 +162,13 @@ export class LevelUp extends Group {
             uTileCount: 10,
             vTileCount: 10,
             //speedFactor: 0.1,
-            renderMode: RenderMode.BillBoard
+            renderMode: RenderMode.BillBoard,
+            renderOrder: 2,
         };
 
-        this.particle = new ParticleSystem(particleParam);
+        this.particle = new ParticleSystem(renderer, particleParam);
         this.particle.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(0, 0.75, 0.90, 1),0], [new Bezier(1, 0.90, 0.75, 0), 0.5]])));
         this.particle.addBehavior(new OrbitOverLife(new PiecewiseBezier([[new Bezier(0, Math.PI * 4* 0.75, Math.PI * 4 * 0.90, Math.PI * 4),0]])));
-        this.particle.emitter.renderOrder = 2;
         this.particle.emitter.name = 'particle';
         this.particle.emitter.rotation.x = -Math.PI / 2;
         this.add(this.particle.emitter);

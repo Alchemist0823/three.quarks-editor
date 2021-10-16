@@ -7,14 +7,11 @@ import {ScriptEditor} from "./editors/ScriptEditor";
 
 interface ScriptPropertiesProps {
     object3d: Object3D,
-    updateProperties: Function,
+    updateProperties: () => void,
 }
 
-interface ScriptPropertiesState {
 
-}
-
-export class ScriptProperties extends React.PureComponent<ScriptPropertiesProps, ScriptPropertiesState> {
+export class ScriptProperties extends React.PureComponent<ScriptPropertiesProps> {
     constructor(props: Readonly<ScriptPropertiesProps>) {
         super(props);
     }

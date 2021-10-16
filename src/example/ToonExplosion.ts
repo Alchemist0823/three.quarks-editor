@@ -1,5 +1,5 @@
 import {AdditiveBlending, Group, NormalBlending, TextureLoader, Vector4} from "three";
-import {FrameOverLife, ParticleSystem, PointEmitter, RenderMode} from "three.quarks";
+import {BatchedParticleRenderer, FrameOverLife, ParticleSystem, PointEmitter, RenderMode} from "three.quarks";
 import {ConeEmitter} from "three.quarks";
 import {IntervalValue} from "three.quarks";
 import {SizeOverLife} from "three.quarks";
@@ -23,11 +23,11 @@ export class ToonExplosion extends Group {
     private smoke: ParticleSystem;
     private circle: ParticleSystem;
 
-    constructor(textures: TextureImage[]) {
+    constructor(renderer: BatchedParticleRenderer, textures: TextureImage[]) {
         super();
 
-        let texture = textures[0].texture;
-        this.mainBeam = new ParticleSystem({
+        const texture = textures[0].texture;
+        this.mainBeam = new ParticleSystem(renderer, {
             duration: 2,
             looping: false,
             startLife: new IntervalValue(0.1, 0.3),
@@ -57,13 +57,13 @@ export class ToonExplosion extends Group {
             startTileIndex: 0,
             uTileCount: 10,
             vTileCount: 10,
+            renderOrder: 2,
         });
         this.mainBeam.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.25, 0.05, 0), 0]])));
-        this.mainBeam.emitter.renderOrder = 2;
         this.mainBeam.emitter.name = 'mainBeam';
         this.add(this.mainBeam.emitter);
 
-        this.glowBeam = new ParticleSystem({
+        this.glowBeam = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
 
@@ -94,13 +94,13 @@ export class ToonExplosion extends Group {
             startTileIndex: 0,
             uTileCount: 10,
             vTileCount: 10,
+            renderOrder: 2,
         });
         this.glowBeam.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.25, 0.05, 0), 0]])));
-        this.glowBeam.emitter.renderOrder = 2;
         this.glowBeam.emitter.name = 'glowBeam';
         this.add(this.glowBeam.emitter);
 
-        this.smoke = new ParticleSystem({
+        this.smoke = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
             startLife: new IntervalValue(0.5, 0.8),
@@ -130,15 +130,15 @@ export class ToonExplosion extends Group {
             startTileIndex: 2,
             uTileCount: 10,
             vTileCount: 10,
+            renderOrder: -2,
         });
         this.smoke.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.95, 0.75, 0), 0]])));
         this.smoke.addBehavior(new ColorOverLife(new ColorRange(new Vector4(1, 0.1509503, 0.07352942, 1), new Vector4(0, 0, 0, 0))));
         this.smoke.addBehavior(new RotationOverLife(new IntervalValue(-Math.PI * 2, Math.PI * 2)));
-        this.smoke.emitter.renderOrder = -2;
         this.smoke.emitter.name = 'smoke';
         this.add(this.smoke.emitter);
 
-        this.particles = new ParticleSystem({
+        this.particles = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
             startLife: new IntervalValue(0.6, 1.2),
@@ -170,13 +170,13 @@ export class ToonExplosion extends Group {
             vTileCount: 10,
             renderMode: RenderMode.StretchedBillBoard,
             speedFactor: 0.5,
+            renderOrder: 0,
         });
         this.particles.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.25, 0.05, 0), 0]])));
-        this.particles.emitter.renderOrder = 0;
         this.particles.emitter.name = 'particles';
         this.add(this.particles.emitter);
 
-        this.beam = new ParticleSystem({
+        this.beam = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
 
@@ -202,13 +202,13 @@ export class ToonExplosion extends Group {
             startTileIndex: 1,
             uTileCount: 10,
             vTileCount: 10,
+            renderOrder: 0,
         });
-        this.beam.emitter.renderOrder = 0;
         this.beam.emitter.name = 'beam';
         this.beam.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.66666, 0.33333, 0), 0]])));
         this.add(this.beam.emitter);
 
-        this.circle = new ParticleSystem({
+        this.circle = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
             startLife: new ConstantValue(0.4),
@@ -233,10 +233,10 @@ export class ToonExplosion extends Group {
             startTileIndex: 10,
             uTileCount: 10,
             vTileCount: 10,
+            renderOrder: 2,
         });
         this.circle.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(0.3, 0.6, 0.9, 1), 0]])));
         this.circle.addBehavior(new FrameOverLife(new PiecewiseBezier([[new Bezier(10, 13, 16, 19), 0]])));
-        this.circle.emitter.renderOrder = 2;
         this.circle.emitter.name = 'circle';
         this.add(this.circle.emitter);
 

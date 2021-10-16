@@ -1,5 +1,5 @@
 import {AdditiveBlending, Group, NormalBlending, Texture, TextureLoader, Vector4} from "three";
-import {ColorOverLife, ParticleSystem, RenderMode} from "three.quarks";
+import {BatchedParticleRenderer, ColorOverLife, ParticleSystem, RenderMode} from "three.quarks";
 import {ConeEmitter} from "three.quarks";
 import {IntervalValue} from "three.quarks";
 import {SizeOverLife} from "three.quarks";
@@ -20,12 +20,12 @@ export class ToonProjectile extends Group {
     private glowBeam: ParticleSystem;
     private mainBeam: ParticleSystem;
 
-    constructor(textures: TextureImage[]) {
+    constructor(renderer: BatchedParticleRenderer, textures: TextureImage[]) {
         super();
 
-        let texture = textures[0].texture;
+        const texture = textures[0].texture;
 
-        this.mainBeam = new ParticleSystem({
+        this.mainBeam = new ParticleSystem(renderer, {
             duration: 1,
             looping: true,
             startLife: new IntervalValue(0.1, 0.15),
@@ -47,14 +47,14 @@ export class ToonProjectile extends Group {
             startTileIndex: 0,
             uTileCount: 10,
             vTileCount: 10,
+            renderOrder: 2,
         });
         this.mainBeam.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.25, 0.05, 0), 0]])));
-        this.mainBeam.emitter.renderOrder = 2;
         this.mainBeam.emitter.name = 'mainBeam';
 
         this.add(this.mainBeam.emitter);
 
-        this.glowBeam = new ParticleSystem({
+        this.glowBeam = new ParticleSystem(renderer, {
             duration: 1,
             looping: true,
             startLife: new IntervalValue(0.1, 0.15),
@@ -76,15 +76,15 @@ export class ToonProjectile extends Group {
             startTileIndex: 1,
             uTileCount: 10,
             vTileCount: 10,
+            renderOrder: 2,
         });
         this.glowBeam.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.95, 0.75, 0), 0]])));
-        this.glowBeam.emitter.renderOrder = 2;
         this.glowBeam.emitter.name = 'glowBeam';
 
         this.add(this.glowBeam.emitter);
 
 
-        this.particles = new ParticleSystem({
+        this.particles = new ParticleSystem(renderer, {
             duration: 1,
             looping: true,
             startLife: new IntervalValue(0.3, 0.6),
@@ -109,15 +109,15 @@ export class ToonProjectile extends Group {
             startTileIndex: 0,
             uTileCount: 10,
             vTileCount: 10,
+            renderOrder: 0,
         });
         this.particles.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.25, 0.05, 0), 0]])));
-        this.particles.emitter.renderOrder = 0;
         this.particles.emitter.rotateY(-Math.PI/2);
         this.particles.emitter.name = 'particles';
 
         this.add(this.particles.emitter);
 
-        this.smoke = new ParticleSystem({
+        this.smoke = new ParticleSystem(renderer, {
             startLife: new IntervalValue(0.25, 0.3),
             startSpeed: new ConstantValue(0),
             startSize: new IntervalValue(.75, 1.25),
@@ -137,11 +137,11 @@ export class ToonProjectile extends Group {
             startTileIndex: 2,
             uTileCount: 10,
             vTileCount: 10,
+            renderOrder: -2,
         });
         this.smoke.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.95, 0.75, 0), 0]])));
         this.smoke.addBehavior(new ColorOverLife(new ColorRange(new Vector4(1, 0.1509503, 0.07352942, 1), new Vector4(0, 0, 0, 0))));
         this.smoke.addBehavior(new RotationOverLife(new IntervalValue(-Math.PI * 2, Math.PI * 2)));
-        this.smoke.emitter.renderOrder = -2;
         this.smoke.emitter.name = 'smoke';
 
         this.add(this.smoke.emitter);

@@ -40,7 +40,7 @@ export class CodeExporter {
     static exportColor(color: Vector4) {
         return `new Vector4(${color.x}, ${color.y}, ${color.z}, ${color.w})`;
     }
-    static exportFunction(func: ValueGenerator | ColorGenerator | FunctionValueGenerator | FunctionColorGenerator, indent: number = 0): string {
+    static exportFunction(func: ValueGenerator | ColorGenerator | FunctionValueGenerator | FunctionColorGenerator, indent = 0): string {
         if (func instanceof ConstantValue) {
             return `new ConstantValue(${func.value})`;
         } else if (func instanceof ConstantColor) {
@@ -67,17 +67,15 @@ export class CodeExporter {
             code += ' '.repeat(indent + 4) + `[${CodeExporter.exportBezier(func.functions[func.functions.length - 1][0])}, ${func.functions[func.functions.length - 1][1]}]`;
             code += ' '.repeat(indent) + `)`;
             return code;
-        } else if (func instanceof ConstantValue) {
-            return `new ConstantValue(${func.value})`;
         }
         throw new Error();
     }
 
     static exportParticleEmitter(emitter: ParticleEmitter): string {
 
-        let name = CodeExporter.camelize(emitter.name);
-        let system = emitter.system;
-        let code = `        this.${name} = new ParticleSystem({\n`;
+        const name = CodeExporter.camelize(emitter.name);
+        const system = emitter.system;
+        let code = `        this.${name} = new ParticleSystem(renderer, {\n`;
         code += `            duration: ${system.duration},\n`;
         code += `            looping: ${system.looping},\n`;
         code += `            startLife: ${CodeExporter.exportFunction(system.startLife)},\n`;
@@ -95,7 +93,7 @@ export class CodeExporter {
         code += `            uTileCount: ${system.uTileCount},\n`;
         code += `            vTileCount: ${system.vTileCount},\n`;
         code += `            renderMode: ${system.renderMode},\n`;
-        if (system.renderMode == RenderMode.StretchedBillBoard) {
+        if (system.renderMode === RenderMode.StretchedBillBoard) {
             code += `            speedFactor: ${system.speedFactor},\n`;
         }
         code += '        });\n';
@@ -112,9 +110,10 @@ export class CodeExporter {
     }
 
     static exportShape(shape: EmitterShape) {
-        let json = shape.toJSON();
+        const json = shape.toJSON();
+        //@ts-ignore
         delete json.type;
-        let params = JSON.stringify(json);
+        const params = JSON.stringify(json);
         const unquoted = params.replace(/"([^"]+)":/g, '$1:');
 
         if (shape instanceof PointEmitter) {

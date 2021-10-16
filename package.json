@@ -1,7 +1,7 @@
 {
   "name": "three.quarks-editor",
   "description": "A Editor for three.quarks",
-  "version": "0.2.6",
+  "version": "0.4.0",
   "private": false,
   "homepage": "http://Alchemist0823.github.io/three.quarks-editor",
   "repository": {
@@ -27,6 +27,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "lint:fix": "eslint --fix --ext .ts,.tsx .",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
@@ -45,32 +46,34 @@
     ]
   },
   "dependencies": {
-    "@material-ui/core": "^4.11.0",
-    "@material-ui/icons": "^4.9.1",
-    "@material-ui/lab": "^4.0.0-alpha.56",
-    "prismjs": "^1.21.0",
-    "react": "16.13.1",
-    "react-color": "2.18.1",
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.3.0",
+    "@mui/icons-material": "^5.0.4",
+    "@mui/lab": "^5.0.0-alpha.51",
+    "@mui/material": "^5.0.4",
+    "prismjs": "^1.25.0",
+    "react": "^17.0.2",
+    "react-color": "2.19.3",
     "react-contexify": "^4.1.1",
-    "react-dnd": "11.1.3",
-    "react-dom": "16.13.1",
-    "react-redux": "^7.2.1",
-    "react-scripts": "3.1.2",
+    "react-dnd": "14.0.4",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.5",
+    "react-scripts": "^4.0.3",
     "react-simple-code-editor": "^0.11.0",
     "stats.js": "^0.17.0",
-    "three": "^0.121.1",
-    "three.quarks": "^0.3.0"
+    "three": "^0.133.1",
+    "three.quarks": "^0.4.0"
   },
   "devDependencies": {
     "@types/jest": "26.0.13",
-    "@types/node": "12.12.55",
     "@types/prismjs": "^1.16.0",
-    "@types/react": "16.9.49",
-    "@types/react-color": "^3.0.4",
-    "@types/react-dom": "16.9.8",
+    "@types/react": "17.0.30",
+    "@types/react-color": "^3.0.5",
+    "@types/react-dom": "17.0.9",
     "@types/stats.js": "^0.17.0",
+    "@types/three": "0.133.1",
     "gh-pages": "^2.2.0",
-    "node-sass": "^4.14.1",
-    "typescript": "3.5.2"
+    "node-sass": "^6.0.1",
+    "typescript": "^4.4.4"
   }
 }

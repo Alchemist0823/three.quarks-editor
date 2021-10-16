@@ -2,7 +2,6 @@ import * as React from "react";
 import * as THREE from "three";
 import {Object3D, Scene, Texture} from "three";
 import {ParticleEmitter, QuarksLoader} from "three.quarks";
-import {Application} from "./Application";
 import {TextureLoader} from "three";
 import {ParticleSystem} from "three.quarks";
 import {ConeEmitter} from "three.quarks";
@@ -20,17 +19,15 @@ import {PointLight} from "three";
 import {AmbientLight} from "three";
 import {BulletMuzzle} from "../example/BulletMuzzle";
 import {BulletProjectile} from "../example/BulletProjectile";
-import {BulletHit} from "../example/BulletHit";
 import {ToonExplosion} from "../example/ToonExplosion";
-import {Explosion} from "../example/Explosion";
 import {LevelUp} from "../example/LevelUp";
-import {PickUp} from "../example/PickUp";
 import {ShipSmoke} from "../example/ShipSmoke";
 import {ElectricBall} from "../example/ElectricBall";
 import {ShipTrail} from "../example/ShipTrail";
 import {Explosion2} from "../example/Explosion2";
 import {EnergyRifleMuzzle} from "../example/EnergyRifleMuzzle";
 import {Blackhole} from "../example/Blackhole";
+import {BatchedParticleRenderer} from "three.quarks";
 
 
 export interface TextureImage {
@@ -43,6 +40,8 @@ export interface AppContext {
     script: (delta: number) => void;
     selection: Array<Object3D>;
     textures: Array<TextureImage>;
+    batchedRenderer?: BatchedParticleRenderer;
+
     actions: {
         onOpenDemo: (index: number)=>void;
         onSaveAs: ()=>void;
@@ -54,92 +53,94 @@ export interface AppContext {
         duplicateObject3d: (object: Object3D) => void;
         updateParticleSystem: (object: ParticleEmitter) => void;
         addTexture: (textureImage: TextureImage) => void;
-        updateProperties: () => void;
+        setBatchedRenderer: (renderer: BatchedParticleRenderer) => void;
     }
+    updateProperties: () => void;
 }
 
 const ApplicationContext = React.createContext<AppContext | null>(null);
 
+interface ApplicationContextProviderProps {
+
+}
+
 export const ApplicationContextConsumer = ApplicationContext.Consumer;
 
-export class ApplicationContextProvider extends React.Component<{ }, AppContext> {
+export class ApplicationContextProvider extends React.Component<ApplicationContextProviderProps, AppContext> {
 
-    createScene(demoIndex: number) {
-        const scene = new THREE.Scene();
+    textureLoader: TextureLoader;
 
-        scene.background = new Color(0x666666);
-
+    addDemo(demoIndex: number) {
         let demoObject;
         if (demoIndex === 0) {
-            demoObject = new ToonProjectile(this.state.textures);
+            demoObject = new ToonProjectile(this.state.batchedRenderer!, this.state.textures);
             demoObject.name = "Toon Projectile";
         } else if (demoIndex === 1) {
-            demoObject = new BulletMuzzle(this.state.textures);
+            demoObject = new BulletMuzzle(this.state.batchedRenderer!, this.state.textures);
             demoObject.name = "BulletMuzzle";
         } else if (demoIndex === 2) {
-            demoObject = new BulletProjectile();
+            demoObject = new BulletProjectile(this.state.batchedRenderer!);
             demoObject.name = "BulletProjectile";
         } else if (demoIndex === 3) {
-            demoObject = new ShipSmoke(this.state.textures);
+            demoObject = new ShipSmoke(this.state.batchedRenderer!, this.state.textures);
             demoObject.name = "shipSmoke";
         } else if (demoIndex === 4) {
-            demoObject = new ToonExplosion(this.state.textures);
+            demoObject = new ToonExplosion(this.state.batchedRenderer!, this.state.textures);
             demoObject.name = "ToonExplosion";
         } else if (demoIndex === 5) {
-            demoObject = new Blackhole(this.state.textures);
+            demoObject = new Blackhole(this.state.batchedRenderer!, this.state.textures);
             demoObject.name = "Blackhole";
         } else if (demoIndex === 6) {
-            demoObject = new LevelUp(this.state.textures);
+            demoObject = new LevelUp(this.state.batchedRenderer!, this.state.textures);
             demoObject.name = "LevelUp";
         } else if (demoIndex === 7) {
-            demoObject = new EnergyRifleMuzzle(this.state.textures);
+            demoObject = new EnergyRifleMuzzle(this.state.batchedRenderer!, this.state.textures);
             demoObject.name = "EnergyRifleMuzzle";
-        } else if (demoIndex == 8) {
-            demoObject = new ElectricBall(this.state.textures);
+        } else if (demoIndex === 8) {
+            demoObject = new ElectricBall(this.state.batchedRenderer!, this.state.textures);
             demoObject.name = "ElectricBall";
-        } else if (demoIndex == 9){
-            demoObject = new ShipTrail(this.state.textures);
+        } else if (demoIndex === 9){
+            demoObject = new ShipTrail(this.state.batchedRenderer!, this.state.textures);
             demoObject.name = "ShipTrail";
-        } else if (demoIndex == 10) {
-            demoObject = new Explosion2(this.state.textures);
+        } else if (demoIndex === 10) {
+            demoObject = new Explosion2(this.state.batchedRenderer!, this.state.textures);
             demoObject.name = "Explosion2";
         }
         if (demoObject)
-            scene.add(demoObject);
-
-        const axisHelper = new AxesHelper(100);
-        axisHelper.name = "axisHelper";
-        scene.add(axisHelper);
-
-        const light = new PointLight(new Color(1, 1, 1), 0.8, 200);
-        light.position.set(50, 50, 50);
-        scene.add(light);
-
-        const ambientLight = new AmbientLight(new Color(1, 1, 1), 0.2);
-        scene.add(ambientLight);
-
-        return scene;
+            this.state.scene.add(demoObject);
+        this.state.updateProperties();
     }
 
-    constructor(props: Readonly<{}>) {
+    updateProperties1 = () => {
+        this.setState({updateProperties: this.updateProperties2});
+    }
+
+    updateProperties2 = () => {
+        this.setState({updateProperties: this.updateProperties1});
+    }
+
+    constructor(props: Readonly<ApplicationContextProviderProps>) {
         super(props);
-        const texture1 = new TextureLoader().load("textures/texture1.png");
+        this.textureLoader = new TextureLoader();
+        const texture1 = this.textureLoader.load(process.env.PUBLIC_URL + "/textures/texture1.png");
         texture1.name = "textures/texture1.png";
-        const texture2 = new TextureLoader().load("textures/texture2.png");
+        const texture2 = this.textureLoader.load(process.env.PUBLIC_URL + "/textures/texture2.png", ()=>{console.log(texture2);});
         texture2.name = "textures/texture2.png";
 
+
         const state: AppContext = {
-            scene: this.createScene(-1),
+            scene: new Scene(),
             script: this.animate,
+            batchedRenderer: undefined,
             selection: [],
             textures: [
-                {img: './textures/texture1.png', texture: texture1},
-                {img: './textures/texture2.png', texture: texture2},
+                {img: process.env.PUBLIC_URL + '/textures/texture1.png', texture: texture1},
+                {img: process.env.PUBLIC_URL + '/textures/texture2.png', texture: texture2},
             ],
             actions: {
                 onOpenDemo: (index: number) => {
-                    const scene = this.createScene(index);
-                    this.setState({scene: scene});
+                    this.addDemo(index);
+                    //this.setState({scene: scene});
                 },
                 onSaveAs: () => {
                     const a = document.createElement("a");
@@ -155,7 +156,7 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
 
                         const loader = new QuarksLoader();
                         loader.setCrossOrigin("");
-                        loader.load(jsonURL, (object3D: Object3D)=>{
+                        loader.load(jsonURL, this.state.batchedRenderer!, (object3D: Object3D)=>{
                             this.state.scene.add(object3D);
                         }, ()=>{}, ()=>{});
                     }
@@ -174,14 +175,15 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
                 duplicateObject3d: this.duplicateObject3d,
                 updateParticleSystem: () => {
                 },
-                updateProperties: () => {
-                    this.setState({scene: this.state.scene});
-                },
                 addTexture: (textureImage: TextureImage) => {
                     this.state.textures.push(textureImage);
                     this.setState({textures: this.state.textures});
-                }
-            }
+                },
+                setBatchedRenderer: (renderer) => {
+                    this.setState({batchedRenderer: renderer});
+                },
+            },
+            updateProperties: this.updateProperties1,
         };
 
         this.state = state;
@@ -202,9 +204,9 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
     addObject3d = (type: string, parent: Object3D) => {
         let object;
         switch (type) {
-            case 'particle':
+            case 'particle': {
                 const texture = this.state.textures[0].texture;
-                const particleSystem = new ParticleSystem({
+                const particleSystem = new ParticleSystem(this.state.batchedRenderer!, {
                     maxParticle: 10000,
                     shape: new ConeEmitter(),
                     emissionOverTime: new ConstantValue(100),
@@ -222,6 +224,7 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
                 object = particleSystem.emitter;
                 this.state.scene.add(object);
                 break;
+            }
             case 'box':
                 object = new Mesh(new BoxBufferGeometry(10, 10, 10), new MeshStandardMaterial({color: 0xcccccc}));
                 this.state.scene.add(object);
@@ -243,7 +246,7 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
 
         this.update += delta;
         if (this.update > 0.1) {
-            this.state.actions.updateProperties();
+            //this.state
             this.update = 0;
         }
     };
@@ -258,7 +261,7 @@ export class ApplicationContextProvider extends React.Component<{ }, AppContext>
     }
 }
 /*
-        this.particleSystem = new ParticleSystem({
+        this.particleSystem = new ParticleSystem(renderer, {
             maxParticle: 10000,
             shape: new ConeEmitter(),
             emissionOverTime: new ConstantValue(100),

@@ -11,7 +11,7 @@ export interface TransformProps {
     yTo: number;
 }
 
-export class TransformComponent<T extends TransformProps = TransformProps, K = {}> extends React.Component<T, K> {
+export class TransformComponent<T extends TransformProps = TransformProps> extends React.Component<T> {
 
     x = (value: number) => interp(this.props.xFrom, this.props.xTo, value);
     y = (value: number) => interp(this.props.yFrom, this.props.yTo, value);

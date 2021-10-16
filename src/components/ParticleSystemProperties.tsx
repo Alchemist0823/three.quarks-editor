@@ -7,14 +7,10 @@ import {ColorGenerator, FunctionColorGenerator} from "three.quarks";
 
 interface ParticleSystemPropertiesProps {
     particleSystem: ParticleSystem,
-    updateProperties: Function,
+    updateProperties: ()=>void,
 }
 
-interface ParticleSystemPropertiesState {
-
-}
-
-export class ParticleSystemProperties extends React.PureComponent<ParticleSystemPropertiesProps, ParticleSystemPropertiesState> {
+export class ParticleSystemProperties extends React.PureComponent<ParticleSystemPropertiesProps> {
     constructor(props: Readonly<ParticleSystemPropertiesProps>) {
         super(props);
     }

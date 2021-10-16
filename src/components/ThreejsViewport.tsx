@@ -4,12 +4,13 @@ import {WEBGL} from "../WebGL";
 import {
     PerspectiveCamera,
     WebGLRenderer,
-    Clock,
+    Clock, Color, AxesHelper, PointLight, AmbientLight,
 } from "three";
 import {RefObject} from "react";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import {ParticleEmitter} from "three.quarks";
+import {BatchedParticleRenderer, ParticleEmitter} from "three.quarks";
 import {AppContext, ApplicationContextConsumer} from "./ApplicationContext";
+import * as THREE from "three";
 
 interface ThreejsViewportProps {
     width: number;
@@ -21,6 +22,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
     stats?: Stats;
     camera?: PerspectiveCamera;
     renderer?: WebGLRenderer;
+    batchedRenderer?: BatchedParticleRenderer;
     private clock?: Clock;
     private controls?: OrbitControls;
 
@@ -37,7 +39,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
         }
     }
 
-    componentDidUpdate(prevProps: Readonly<ThreejsViewportProps>, prevState: Readonly<{}>, snapshot?: any): void {
+    componentDidUpdate(prevProps: Readonly<ThreejsViewportProps>, prevState: Readonly<any>, snapshot?: any): void {
         this.camera!.aspect = this.props.width / this.props.height;
         this.camera!.updateProjectionMatrix();
         this.renderer!.setSize( this.props.width, this.props.height );
@@ -54,6 +56,26 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
         }
 
         this.renderer = new WebGLRenderer();
+
+        const scene = this.appContext!.scene;
+
+        this.batchedRenderer = new BatchedParticleRenderer();
+        this.batchedRenderer.name = "batched particle renderer";
+        this.appContext?.actions.setBatchedRenderer(this.batchedRenderer);
+        scene.add(this.batchedRenderer);
+
+        scene.background = new Color(0x666666);
+
+        const axisHelper = new AxesHelper(100);
+        axisHelper.name = "axisHelper";
+        scene.add(axisHelper);
+
+        const light = new PointLight(new Color(1, 1, 1), 0.8, 200);
+        light.position.set(50, 50, 50);
+        scene.add(light);
+
+        const ambientLight = new AmbientLight(new Color(1, 1, 1), 0.2);
+        scene.add(ambientLight);
 
         /*if ( this.renderer.extensions.get( 'ANGLE_instanced_arrays' ) === null ) {
             document.getElementById( 'notSupported' )!.style.display = '';
@@ -141,6 +163,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
                 }
             });
 
+            this.batchedRenderer!.update();
             this.renderer!.render(this.appContext.scene, this.camera!);
         }
     }

@@ -1,5 +1,6 @@
 import {AdditiveBlending, Group, NormalBlending, TextureLoader, Vector4} from "three";
 import {
+    BatchedParticleRenderer,
     Bezier,
     ColorOverLife, ColorRange, ConeEmitter,
     ConstantColor,
@@ -22,12 +23,12 @@ export class PickUp extends Group {
     private upflow: ParticleSystem;
     private beam: ParticleSystem;
 
-    constructor(textures: TextureImage[]) {
+    constructor(renderer: BatchedParticleRenderer, textures: TextureImage[]) {
         super();
 
-        let texture = textures[0].texture;
+        const texture = textures[0].texture;
 
-        this.circle = new ParticleSystem({
+        this.circle = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
             startLife: new ConstantValue(0.6),
@@ -56,18 +57,18 @@ export class PickUp extends Group {
             startTileIndex: 0,
             uTileCount: 10,
             vTileCount: 10,
-            renderMode: RenderMode.BillBoard
+            renderMode: RenderMode.BillBoard,
+            renderOrder: 2,
         });
         this.circle.addBehavior(new OrbitOverLife(new IntervalValue(6, 8)));
 
         this.circle.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(0, 0.88, 0.88, 0), 0]])));
         this.circle.addBehavior(new ColorOverLife(new ColorRange(new Vector4(0.2, 0.6, 1, 1), new Vector4(0.2, 0.2, 1, 1))))
-        this.circle.emitter.renderOrder = 3;
         this.circle.emitter.name = 'mainBeam';
 
         this.add(this.circle.emitter);
 
-        this.beam = new ParticleSystem({
+        this.beam = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
 
@@ -93,14 +94,14 @@ export class PickUp extends Group {
             startTileIndex: 1,
             uTileCount: 10,
             vTileCount: 10,
-            renderMode: RenderMode.BillBoard
+            renderMode: RenderMode.BillBoard,
+            renderOrder: 0,
         });
-        this.beam.emitter.renderOrder = 0;
         this.beam.emitter.name = 'beam';
         this.beam.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(0.3, 0.5, 0.6666, 1), 0]])));
         this.add(this.beam.emitter);
 
-        this.particles = new ParticleSystem({
+        this.particles = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
             startLife: new IntervalValue(0.6, 0.8),
@@ -131,13 +132,14 @@ export class PickUp extends Group {
             vTileCount: 10,
             renderMode: RenderMode.StretchedBillBoard,
             speedFactor: 0.1,
+            renderOrder: 1,
         });
         this.particles.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.3, 0.25, 0.1), 0]])));
         this.particles.emitter.renderOrder = 2;
         this.particles.emitter.name = 'particles';
         this.add(this.particles.emitter);
 
-        this.upflow = new ParticleSystem({
+        this.upflow = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
             startLife: new ConstantValue(0.6),
@@ -162,11 +164,11 @@ export class PickUp extends Group {
             startTileIndex: 10,
             uTileCount: 10,
             vTileCount: 10,
-            renderMode: RenderMode.LocalSpaceBillBoard
+            renderMode: RenderMode.LocalSpaceBillBoard,
+            renderOrder: 1,
         });
         this.upflow.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.9, 0.6, 0.3), 0]])));
         this.upflow.addBehavior(new FrameOverLife(new PiecewiseBezier([[new Bezier(38, 39, 40, 46), 0]])));
-        this.upflow.emitter.renderOrder = 1;
         this.upflow.emitter.name = 'upflow';
         this.add(this.upflow.emitter);
 

@@ -1,42 +1,25 @@
 import * as React from "react";
-import Button from '@material-ui/core/Button';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import {createStyles, Theme, Typography, Toolbar} from "@material-ui/core";
-import IconButton from "@material-ui/core/IconButton";
-import AppBar from "@material-ui/core/AppBar";
-import withStyles from "@material-ui/core/styles/withStyles";
-import MenuIcon from '@material-ui/icons/Menu';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import {createStyles, Theme, Typography, Toolbar, Box} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import AppBar from "@mui/material/AppBar";
+import withStyles from "@mui/material/styles/withStyles";
+import MenuIcon from '@mui/icons-material/Menu';
 import {Blackhole} from "../example/Blackhole";
 
 interface MainMenuProps {
     onSaveAs: () => void;
     onImport: (files: FileList) => void;
     onOpenDemo: (demoIndex: number) => void;
-    classes: any
 }
 
 interface MainMenuState {
     anchorEl?: Element
 }
 
-const styles = createStyles((theme: Theme) => ({
-    root: {
-        flexGrow: 1,
-    },
-    menuIcon: {
-        marginRight: theme.spacing(2),
-    },
-    menuButton: {
-        marginRight: theme.spacing(1),
-    },
-    title: {
-        marginRight: theme.spacing(1),
-        //flexGrow: 1,
-    },
-}));
-
-class MainMenu extends React.PureComponent<MainMenuProps, MainMenuState> {
+export default class MainMenu extends React.PureComponent<MainMenuProps, MainMenuState> {
     private fileRef: React.RefObject<HTMLInputElement>;
 
     constructor(props: Readonly<MainMenuProps>) {
@@ -76,18 +59,17 @@ class MainMenu extends React.PureComponent<MainMenuProps, MainMenuState> {
         //<MenuIcon />
         //<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
         //</IconButton>
-        const {classes} = this.props;
         return (
-            <div className={classes.root}>
+            <Box sx={{flexGrow: 1}}>
                 <AppBar position="static">
                     <Toolbar variant="dense">
-                        <IconButton edge="start" className={classes.menuIcon} color="inherit" aria-label="menu">
+                        <IconButton edge="start" sx={{marginRight: theme => theme.spacing(2)}} color="inherit" aria-label="menu">
                             <MenuIcon/>
                         </IconButton>
-                        <Typography variant="h6" className={classes.title}>
+                        <Typography variant="h6" sx={{marginRight: theme => theme.spacing(1)}}>
                             Three.Quarks
                         </Typography>
-                        <Button color="inherit" className={classes.menuButton} aria-controls="simple-menu"
+                        <Button color="inherit" sx={{marginRight: theme => theme.spacing(1)}} aria-controls="simple-menu"
                                 aria-haspopup="true" onClick={this.handleMenuClick} id="file-button">
                             File
                         </Button>
@@ -105,7 +87,7 @@ class MainMenu extends React.PureComponent<MainMenuProps, MainMenuState> {
                                    style={{display: "none"}}
                                    onChange={this.importFile}/>
                         </Menu>
-                        <Button color="inherit" className={classes.menuButton} aria-controls="simple-menu"
+                        <Button color="inherit" sx={{marginRight: theme => theme.spacing(1)}} aria-controls="simple-menu"
                                 aria-haspopup="true" onClick={this.handleMenuClick} id="demo-button">
                             Demo
                         </Button>
@@ -130,8 +112,7 @@ class MainMenu extends React.PureComponent<MainMenuProps, MainMenuState> {
                         </Menu>
                     </Toolbar>
                 </AppBar>
-            </div>);
+            </Box>);
     }
 }
 
-export default withStyles(styles, {withTheme: true})(MainMenu);

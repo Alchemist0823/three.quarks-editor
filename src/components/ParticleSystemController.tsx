@@ -5,20 +5,16 @@ import {
     ParticleEmitter
 } from "three.quarks";
 import {Object3D} from "three";
-import {ButtonGroup} from "@material-ui/core";
-import Button from "@material-ui/core/Button";
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import {ButtonGroup} from "@mui/material";
+import Button from "@mui/material/Button";
+import ToggleButtonGroup from '@mui/lab/ToggleButtonGroup';
 
 interface ParticleSystemControllerProps {
     object3d: Object3D,
-    updateProperties: Function,
+    updateProperties: ()=>void,
 }
 
-interface ParticleSystemControllerState {
-
-}
-
-export class ParticleSystemController extends React.PureComponent<ParticleSystemControllerProps, ParticleSystemControllerState> {
+export class ParticleSystemController extends React.PureComponent<ParticleSystemControllerProps> {
     constructor(props: Readonly<ParticleSystemControllerProps>) {
         super(props);
     }

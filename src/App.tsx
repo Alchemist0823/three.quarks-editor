@@ -1,14 +1,10 @@
 import React, {useState} from 'react';
-import {PiecewiseBezier} from "three.quarks";
 import {Application} from "./components/Application";
-import {Bezier} from "three.quarks";
-import blue from "@material-ui/core/colors/blue";
-import red from "@material-ui/core/colors/red";
-import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
-import { ThemeProvider } from '@material-ui/core';
-import {BezierCurvesEditor} from "./components/editors/bezier/BezierCurvesEditor";
+import blue from "@mui/material/colors/blue";
+import red from "@mui/material/colors/red";
+import {createTheme, ThemeProvider} from "@mui/material/styles";
 
-const theme = createMuiTheme({
+const theme = createTheme({
     palette: {
         primary: {
             main: blue[500],
@@ -23,7 +19,6 @@ const theme = createMuiTheme({
 });
 
 const App: React.FC = () => {
-
   /*const [bezierCurves, setBezierCurves] = useState(
       new PiecewiseBezier([
         [new Bezier(0, 0.5 / 3, 0.5 / 3 * 2, 0.5), 0],

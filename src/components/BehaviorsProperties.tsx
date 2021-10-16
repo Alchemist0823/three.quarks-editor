@@ -1,48 +1,31 @@
 import * as React from "react";
-import {ApplicationContextConsumer, ApplicationContextProvider} from "./ApplicationContext";
+import {ApplicationContextConsumer} from "./ApplicationContext";
 import {GeneratorEditor, GenericGenerator, ValueType} from "./editors/GeneratorEditor";
 import {
     Behavior, Bezier,
     ColorOverLife, ColorRange,
-    FrameOverLife, Gradient,
+    FrameOverLife,
     OrbitOverLife,
-    ParticleSystem, PiecewiseBezier,
+    PiecewiseBezier,
     RotationOverLife,
     SizeOverLife, SpeedOverLife
 } from "three.quarks";
 import {FunctionValueGenerator, ValueGenerator} from "three.quarks";
-import {ColorGenerator, FunctionColorGenerator} from "three.quarks";
-import {ListItem, List, Theme, createStyles, Typography, Toolbar, ListItemIcon} from "@material-ui/core";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import Checkbox from "@material-ui/core/Checkbox";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
-import Button from "@material-ui/core/Button";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import {memo} from "react";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
+import { FunctionColorGenerator} from "three.quarks";
+import {ListItem, List, Theme, createStyles, ListItemIcon, Box} from "@mui/material";
+import ListItemText from "@mui/material/ListItemText";
+import Checkbox from "@mui/material/Checkbox";
+import makeStyles from "@mui/material/styles/makeStyles";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import {Vector4} from "three";
 
 interface BehaviorsPropertiesProps {
     behaviors: Array<Behavior>,
-    updateProperties: Function,
+    updateProperties: ()=>void,
 }
-
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            width: '100%',
-        },
-        listRoot: {
-            width: '100%',
-            backgroundColor: theme.palette.background.paper,
-        }
-    }),
-);
-
 /*
 <GeneratorEditor name="Start Speed"
                  allowedType={valueFunctionTypes}
@@ -50,10 +33,6 @@ const useStyles = makeStyles((theme: Theme) =>
                  updateGenerator={this.onChangeStartSpeed}/>*/
 
 function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
-    const classes = useStyles();
-
-
-
     const [checked, setChecked] = React.useState([0, 1, 2, 3]);
     const [selectedIndex, setSelectedIndex] = React.useState(1);
     const handleListItemClick = (event: any, index: number) => {
@@ -143,7 +122,7 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
     }
 
     return (
-        <div className={classes.root}>
+        <Box sx={{width: '100%'}}>
             <ButtonGroup color="primary" aria-label="primary button group">
                 <Button color="inherit" aria-controls="simple-menu"
                         aria-haspopup="true" onClick={handleClick} id="new-button">
@@ -165,7 +144,9 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
                 </Menu>
                 <Button onClick={deleteBehavior}>Remove</Button>
             </ButtonGroup>
-            <List dense className={classes.listRoot}>
+            <List dense sx={{
+                width: '100%',
+                backgroundColor: theme => theme.palette.background.paper}}>
                 <ApplicationContextConsumer>
                     {context => context &&
                     props.behaviors.map((behavior, index) => {
@@ -230,7 +211,7 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
                 }
                 </ApplicationContextConsumer>
             </List>
-        </div>
+        </Box>
     );
 }
 

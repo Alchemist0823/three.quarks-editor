@@ -7,7 +7,14 @@ import {
     TextureLoader,
     Vector4
 } from "three";
-import {ColorOverLife, ParticleSystem, PointEmitter, RenderMode, RotationOverLife} from "three.quarks";
+import {
+    BatchedParticleRenderer,
+    ColorOverLife,
+    ParticleSystem,
+    PointEmitter,
+    RenderMode,
+    RotationOverLife
+} from "three.quarks";
 import {ConeEmitter} from "three.quarks";
 import {IntervalValue} from "three.quarks";
 import {SizeOverLife} from "three.quarks";
@@ -29,12 +36,12 @@ export class EnergyRifleMuzzle extends Group {
     //private ringTop: ParticleSystem;
     private ringBase: ParticleSystem;
 
-    constructor(textures: TextureImage[]) {
+    constructor(renderer: BatchedParticleRenderer,textures: TextureImage[]) {
         super();
 
-        let texture = textures[1].texture;
+        const texture = textures[1].texture;
 
-        this.particles = new ParticleSystem({
+        this.particles = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
             startLife: new IntervalValue(0.2, 0.6),
@@ -61,6 +68,7 @@ export class EnergyRifleMuzzle extends Group {
             vTileCount: 10,
             renderMode: RenderMode.StretchedBillBoard,
             speedFactor: 0.1,
+            renderOrder: 0,
         });
         this.particles.emitter.renderOrder = 0;
         this.particles.emitter.name = 'particles';
@@ -68,7 +76,7 @@ export class EnergyRifleMuzzle extends Group {
         this.particles.addBehavior(new ColorOverLife(new ColorRange(new Vector4(1, 1, 1, 1), new Vector4(0, 0.8, 1, 1))));
         this.add(this.particles.emitter);
 
-        let glow = {
+        const glow = {
             duration: 1,
             looping: false,
             startLife: new IntervalValue(0.6, 0.8),
@@ -93,18 +101,18 @@ export class EnergyRifleMuzzle extends Group {
             startTileIndex: 1,
             uTileCount: 10,
             vTileCount: 10,
-            renderMode: RenderMode.BillBoard
+            renderMode: RenderMode.BillBoard,
+            renderOrder: -2,
         };
 
-        this.glow = new ParticleSystem(glow);
+        this.glow = new ParticleSystem(renderer, glow);
         this.glow.addBehavior(new ColorOverLife(new ColorRange(new Vector4(1, 1, 1, 1), new Vector4(0, 0, 0, 1))));
         //this.glow.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.95, 0.75, 0), 0]])));
-        this.glow.emitter.renderOrder = -2;
         this.glow.emitter.name = 'glow';
         this.glow.emitter.position.x = 1;
         this.add(this.glow.emitter);
 
-        this.glowTop = new ParticleSystem({
+        this.glowTop = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
             startLife: new IntervalValue(0.6, 0.8),
@@ -130,9 +138,9 @@ export class EnergyRifleMuzzle extends Group {
             startTileIndex: 1,
             uTileCount: 10,
             vTileCount: 10,
-            renderMode: RenderMode.BillBoard
+            renderMode: RenderMode.BillBoard,
+            renderOrder: -2,
         });
-        this.glowTop.emitter.renderOrder = -2;
         this.glowTop.emitter.name = 'glowTop';
         this.glowTop.addBehavior(new ColorOverLife(new Gradient([
             [new ColorRange(new Vector4(1, 1, 1, 1), new Vector4(1, 1, 1, 1)), 0],
@@ -142,7 +150,7 @@ export class EnergyRifleMuzzle extends Group {
         this.add(this.glowTop.emitter);
 
         /*
-        this.ringTop = new ParticleSystem({
+        this.ringTop = new ParticleSystem(renderer, {
             duration: 2.5,
             looping: false,
             startLife: new IntervalValue(0.6, 0.8),
@@ -183,14 +191,14 @@ export class EnergyRifleMuzzle extends Group {
         this.ringTop.emitter.rotation.y = Math.PI / 2;
         this.add(this.ringTop.emitter);
 */
-        let coneBufferGeometry = new CylinderBufferGeometry(10, 6, 4, 16, 1, true);
+        const coneBufferGeometry = new CylinderBufferGeometry(10, 6, 4, 16, 1, true);
         coneBufferGeometry.rotateX(Math.PI / 2);
         /*console.log(coneBufferGeometry.getIndex()!.array);
         console.log(coneBufferGeometry.getAttribute('position').array);
         console.log(coneBufferGeometry.getAttribute('uv').array);*/
 
 
-        this.ringBase = new ParticleSystem({
+        this.ringBase = new ParticleSystem(renderer, {
             duration: 1,
             looping: false,
             startLife: new ConstantValue(0.8),
@@ -217,13 +225,13 @@ export class EnergyRifleMuzzle extends Group {
             vTileCount: 10,
             instancingGeometry: coneBufferGeometry,
             renderMode: RenderMode.LocalSpaceBillBoard,
+            renderOrder: 1,
         });
         this.ringBase.addBehavior(new ColorOverLife(new Gradient([
             [new ColorRange(new Vector4(1, 1, 1, 1), new Vector4(1, 1, 1, 1)), 0],
             [new ColorRange(new Vector4(1, 1, 1, 1), new Vector4(0, 0, 0, 1)), 0.5],
         ])));
         this.ringBase.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(0.5, 0.75, 0.95, 1), 0]])));
-        this.ringBase.emitter.renderOrder = 1;
         this.ringBase.emitter.name = 'ringBase';
         //this.ringBase.emitter.rotation.y = Math.PI / 2;
         this.add(this.ringBase.emitter);

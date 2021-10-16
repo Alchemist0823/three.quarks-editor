@@ -1,5 +1,5 @@
 import {AdditiveBlending, Group, NormalBlending, TextureLoader, Vector4} from "three";
-import {ColorOverLife, ParticleSystem, PointEmitter, RenderMode, RotationOverLife} from "three.quarks";
+import {BatchedParticleRenderer, ColorOverLife, ParticleSystem, PointEmitter, RenderMode, RotationOverLife} from "three.quarks";
 import {IntervalValue} from "three.quarks";
 import {ConstantColor} from "three.quarks";
 import {ConstantValue} from "three.quarks";
@@ -8,13 +8,13 @@ export class BulletProjectile extends Group {
     private hProjectile: ParticleSystem;
     private vProjectile: ParticleSystem;
 
-    constructor() {
+    constructor(renderer: BatchedParticleRenderer) {
         super();
 
-        let texture = new TextureLoader().load( "textures/projectile.png");
+        const texture = new TextureLoader().load( "textures/projectile.png");
         texture.name = "textures/projectile.png";
 
-        let projectileParam = {
+        const projectileParam = {
             duration: 1,
             looping: true,
             startLife: new ConstantValue(1),
@@ -38,16 +38,15 @@ export class BulletProjectile extends Group {
                 2, 0.5, 0, 1, 1,
                 -2, 0.5, 0, 0, 1
             ],*/
-            renderMode: RenderMode.LocalSpaceBillBoard
+            renderMode: RenderMode.LocalSpaceBillBoard,
+            renderOrder: 2,
         };
 
-        this.hProjectile = new ParticleSystem(projectileParam);
-        this.hProjectile.emitter.renderOrder = 2;
+        this.hProjectile = new ParticleSystem(renderer, projectileParam);
         this.hProjectile.emitter.name = 'hProjectile';
         this.add(this.hProjectile.emitter);
 
-        this.vProjectile = new ParticleSystem(projectileParam);
-        this.vProjectile.emitter.renderOrder = 2;
+        this.vProjectile = new ParticleSystem(renderer, projectileParam);
         this.vProjectile.emitter.name = 'vProjectile';
         this.vProjectile.emitter.rotation.x = Math.PI / 2;
         this.add(this.vProjectile.emitter);

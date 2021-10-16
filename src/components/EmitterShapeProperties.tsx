@@ -1,15 +1,12 @@
-import {Blending, Texture} from "three";
 import {ApplicationContextConsumer} from "./ApplicationContext";
-import {GeneratorEditor, GenericGenerator, ValueType} from "./editors/GeneratorEditor";
 import {ConeEmitter, DonutEmitter, EmitterShape, ParticleSystem, PointEmitter, SphereEmitter} from "three.quarks";
 import {NumberInput} from "./editors/NumberInput";
-import {FileInput} from "./editors/FileInput";
 import React, {ChangeEvent} from "react";
 
 
 interface EmitterShapePropertiesProps {
     particleSystem: ParticleSystem,
-    updateProperties: Function,
+    updateProperties: ()=>void,
 }
 
 interface EmitterShapePropertiesState {
