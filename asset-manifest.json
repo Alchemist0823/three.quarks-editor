@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "/three.quarks-editor/static/css/main.42d01850.chunk.css",
-    "main.js": "/three.quarks-editor/static/js/main.e607298d.chunk.js",
-    "main.js.map": "/three.quarks-editor/static/js/main.e607298d.chunk.js.map",
+    "main.js": "/three.quarks-editor/static/js/main.a259d87e.chunk.js",
+    "main.js.map": "/three.quarks-editor/static/js/main.a259d87e.chunk.js.map",
     "runtime-main.js": "/three.quarks-editor/static/js/runtime-main.c850f1be.js",
     "runtime-main.js.map": "/three.quarks-editor/static/js/runtime-main.c850f1be.js.map",
     "static/css/2.62e33e9b.chunk.css": "/three.quarks-editor/static/css/2.62e33e9b.chunk.css",
-    "static/js/2.e7e21325.chunk.js": "/three.quarks-editor/static/js/2.e7e21325.chunk.js",
-    "static/js/2.e7e21325.chunk.js.map": "/three.quarks-editor/static/js/2.e7e21325.chunk.js.map",
+    "static/js/2.73666701.chunk.js": "/three.quarks-editor/static/js/2.73666701.chunk.js",
+    "static/js/2.73666701.chunk.js.map": "/three.quarks-editor/static/js/2.73666701.chunk.js.map",
     "index.html": "/three.quarks-editor/index.html",
     "static/css/2.62e33e9b.chunk.css.map": "/three.quarks-editor/static/css/2.62e33e9b.chunk.css.map",
     "static/css/main.42d01850.chunk.css.map": "/three.quarks-editor/static/css/main.42d01850.chunk.css.map",
-    "static/js/2.e7e21325.chunk.js.LICENSE.txt": "/three.quarks-editor/static/js/2.e7e21325.chunk.js.LICENSE.txt"
+    "static/js/2.73666701.chunk.js.LICENSE.txt": "/three.quarks-editor/static/js/2.73666701.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.c850f1be.js",
     "static/css/2.62e33e9b.chunk.css",
-    "static/js/2.e7e21325.chunk.js",
+    "static/js/2.73666701.chunk.js",
     "static/css/main.42d01850.chunk.css",
-    "static/js/main.e607298d.chunk.js"
+    "static/js/main.a259d87e.chunk.js"
   ]
 }
