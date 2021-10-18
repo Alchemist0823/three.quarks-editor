@@ -275,7 +275,7 @@ export class Explosion2 extends Group {
             startTileIndex: 10,
             uTileCount: 10,
             vTileCount: 10,
-            renderMode: RenderMode.LocalSpaceBillBoard,
+            renderMode: RenderMode.LocalSpace,
             renderOrder: 2,
         });
         this.circle2.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(0.3, 0.6, 0.9, 1), 0]])));

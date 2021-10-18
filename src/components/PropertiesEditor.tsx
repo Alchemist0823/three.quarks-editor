@@ -20,6 +20,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import "./PropertiesEditor.scss";
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import {BehaviorsProperties} from "./BehaviorsProperties";
+import {useState} from "react";
 
 const Accordion = styled((props: AccordionProps) => (
     <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -70,7 +71,7 @@ interface PropertiesEditorProps {
 }
 
 export default function PropertiesEditor(props: PropertiesEditorProps) {
-    const [expanded, setExpanded] = React.useState(['Object', 'EmitterShape', 'ParticleRenderer','ParticleEmitter','Behaviors','Script']);
+    const [expanded, setExpanded] = useState(['Object', 'EmitterShape', 'ParticleRenderer','ParticleEmitter','Behaviors','Script']);
 
     const handleChange = (panel: string) => (event: any, isExpanded: boolean) => {
         if (isExpanded) {

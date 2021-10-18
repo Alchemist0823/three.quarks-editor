@@ -90,7 +90,7 @@ export class BulletMuzzle extends Group {
             startTileIndex: 91,
             uTileCount: 10,
             vTileCount: 10,
-            renderMode: RenderMode.LocalSpaceBillBoard,
+            renderMode: RenderMode.LocalSpace,
             renderOrder: 2,
         };
 

@@ -164,7 +164,7 @@ export class PickUp extends Group {
             startTileIndex: 10,
             uTileCount: 10,
             vTileCount: 10,
-            renderMode: RenderMode.LocalSpaceBillBoard,
+            renderMode: RenderMode.LocalSpace,
             renderOrder: 1,
         });
         this.upflow.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.9, 0.6, 0.3), 0]])));

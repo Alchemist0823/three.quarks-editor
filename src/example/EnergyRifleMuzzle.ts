@@ -224,7 +224,7 @@ export class EnergyRifleMuzzle extends Group {
             uTileCount: 10,
             vTileCount: 10,
             instancingGeometry: coneBufferGeometry,
-            renderMode: RenderMode.LocalSpaceBillBoard,
+            renderMode: RenderMode.LocalSpace,
             renderOrder: 1,
         });
         this.ringBase.addBehavior(new ColorOverLife(new Gradient([

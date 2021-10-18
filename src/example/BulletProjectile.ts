@@ -38,7 +38,7 @@ export class BulletProjectile extends Group {
                 2, 0.5, 0, 1, 1,
                 -2, 0.5, 0, 0, 1
             ],*/
-            renderMode: RenderMode.LocalSpaceBillBoard,
+            renderMode: RenderMode.LocalSpace,
             renderOrder: 2,
         };
 

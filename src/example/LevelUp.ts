@@ -81,7 +81,7 @@ export class LevelUp extends Group {
             startTileIndex: 1,
             uTileCount: 10,
             vTileCount: 10,
-            renderMode: RenderMode.LocalSpaceBillBoard,
+            renderMode: RenderMode.LocalSpace,
             renderOrder: 0,
         };
 

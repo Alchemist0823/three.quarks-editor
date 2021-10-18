@@ -70,8 +70,8 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
                 this.props.particleSystem.renderMode = RenderMode.BillBoard;
                 this.props.particleSystem.speedFactor = 0;
                 break;
-            case "LocalSpaceBillBoard":
-                this.props.particleSystem.renderMode = RenderMode.LocalSpaceBillBoard;
+            case "LocalSpace":
+                this.props.particleSystem.renderMode = RenderMode.LocalSpace;
                 this.props.particleSystem.speedFactor = 0;
                 break;
             case "StretchedBillBoard":
@@ -84,8 +84,8 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
         switch (renderMode) {
             case RenderMode.BillBoard:
                 return "BillBoard"
-            case RenderMode.LocalSpaceBillBoard:
-                return "LocalSpaceBillBoard";
+            case RenderMode.LocalSpace:
+                return "LocalSpace";
             case RenderMode.StretchedBillBoard:
                 return "StretchedBillBoard";
         }
@@ -153,7 +153,7 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
                     <label className="name">RenderMode</label>
                     <select className="editor-select" onChange={this.onChangeRenderMode} value={this.getValueOfRenderMode(this.props.particleSystem.renderMode)}>
                         <option key={0} value="BillBoard" >BillBoard</option>
-                        <option key={1} value="LocalSpaceBillBoard" >Local Space BillBoard</option>
+                        <option key={1} value="LocalSpace" >Local Space BillBoard</option>
                         <option key={2} value="StretchedBillBoard" >Stretched BillBoard</option>
                     </select>
                 </div>

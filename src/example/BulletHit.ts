@@ -40,7 +40,7 @@ export class BulletHit extends Group {
             startTileIndex: 0,
             uTileCount: 1,
             vTileCount: 1,
-            renderMode: RenderMode.LocalSpaceBillBoard,
+            renderMode: RenderMode.LocalSpace,
             renderOrder: 2,
         };
 
