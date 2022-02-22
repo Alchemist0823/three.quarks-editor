@@ -1,7 +1,7 @@
 {
   "name": "three.quarks-editor",
   "description": "A Editor for three.quarks",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "private": false,
   "homepage": "http://Alchemist0823.github.io/three.quarks-editor",
   "repository": {
@@ -11,6 +11,7 @@
   "keywords": [
     "three.js",
     "particle",
+    "particle system",
     "vfx",
     "graphics",
     "js",
