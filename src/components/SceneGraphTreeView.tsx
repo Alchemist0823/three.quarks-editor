@@ -6,7 +6,7 @@ import './SceneGraphView.scss';
 import {Item, Menu, MenuProvider, Separator, Submenu} from "react-contexify";
 import {MenuItemEventHandler} from "react-contexify/lib/types";
 import 'react-contexify/dist/ReactContexify.min.css';
-import {TreeView} from "@mui/lab";
+import {treeItemClasses, TreeView} from "@mui/lab";
 import {Box, styled, SvgIconProps} from "@mui/material";
 import TreeItem, { TreeItemProps, TreeItemClassKey } from "@mui/lab/TreeItem";
 import {Typography} from "@mui/material";
@@ -23,21 +23,6 @@ interface SceneGraphViewMaterialProps {
     scene: Scene;
 }
 
-
-declare module 'react' {
-    interface CSSProperties {
-        '--tree-view-color'?: string;
-        '--tree-view-bg-color'?: string;
-    }
-}
-
-type StyledTreeItemProps = TreeItemProps & {
-    bgColor?: string;
-    color?: string;
-    labelIcon: React.ElementType<SvgIconProps>;
-    labelInfo?: string;
-    labelText: string;
-};
 /*
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
     color: theme.palette.text.secondary,
@@ -103,6 +88,87 @@ function StyledTreeItem(props: StyledTreeItemProps) {
         />
     );
 }*/
+declare module 'react' {
+    interface CSSProperties {
+        '--tree-view-color'?: string;
+        '--tree-view-bg-color'?: string;
+    }
+}
+
+type StyledTreeItemProps = TreeItemProps & {
+    bgColor?: string;
+    color?: string;
+    labelIcon: React.ElementType<SvgIconProps>;
+    labelInfo?: string;
+    labelText: string;
+    object3d: Object3D;
+};
+
+const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
+    color: theme.palette.text.secondary,
+    [`& .${treeItemClasses.content}`]: {
+        color: theme.palette.text.secondary,
+        borderTopRightRadius: theme.spacing(2),
+        borderBottomRightRadius: theme.spacing(2),
+        paddingRight: theme.spacing(1),
+        fontWeight: theme.typography.fontWeightMedium,
+        '&.Mui-expanded': {
+            fontWeight: theme.typography.fontWeightRegular,
+        },
+        '&:hover': {
+            backgroundColor: theme.palette.action.hover,
+        },
+        '&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused': {
+            backgroundColor: `var(--tree-view-bg-color, ${theme.palette.action.selected})`,
+            color: 'var(--tree-view-color)',
+        },
+        [`& .${treeItemClasses.label}`]: {
+            fontWeight: 'inherit',
+            color: 'inherit',
+        },
+    },
+    [`& .${treeItemClasses.group}`]: {
+        marginLeft: 0,
+        [`& .${treeItemClasses.content}`]: {
+            paddingLeft: theme.spacing(2),
+        },
+    },
+}));
+
+function StyledTreeItem(props: StyledTreeItemProps) {
+    const {
+        bgColor,
+        color,
+        labelIcon: LabelIcon,
+        labelInfo,
+        labelText,
+        object3d,
+        ...other
+    } = props;
+
+    return (
+        <StyledTreeItemRoot
+            label={
+                <MenuProvider id="scene-graph-menu" data={{object3d: object3d}}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', p: 0.5, pr: 0 }}>
+                        <Box component={LabelIcon} color="inherit" sx={{ mr: 1 }} />
+                        <Typography variant="body2" sx={{ fontWeight: 'inherit', flexGrow: 1 }}>
+                            {labelText}
+                        </Typography>
+                        <Typography variant="caption" color="inherit">
+                            {labelInfo}
+                        </Typography>
+                    </Box>
+                </MenuProvider>
+            }
+            style={{
+                '--tree-view-color': color,
+                '--tree-view-bg-color': bgColor,
+            }}
+            {...other}
+        />
+    );
+}
 
 export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props) => {
     const [selected, setSelected] = React.useState<string>("");
@@ -115,10 +181,12 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
             return [object3d, 0];
         index --;
         for (const child of object3d.children) {
-            const [res, newIndex] = countIndex(index, child);
-            if (res)
-                return [res, newIndex];
-            index = newIndex;
+            if (child.type !== 'BatchedParticleRenderer' && child.type !== 'AxesHelper' && child.name !== 'TransformControls') {
+                const [res, newIndex] = countIndex(index, child);
+                if (res)
+                    return [res, newIndex];
+                index = newIndex;
+            }
         }
         return [null, index];
     }
@@ -158,38 +226,43 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
         const originIndex = index;
         index ++;
         for (const child of object3d.children) {
-            const result = renderObject(context, child, index);
-            items.push(result[0]);
-            index = result[1];
+            if (child.type !== 'BatchedParticleRenderer' && child.type !== 'AxesHelper' && child.name !== 'TransformControls') {
+                const result = renderObject(context, child, index);
+                items.push(result[0]);
+                index = result[1];
+            }
         }
         //selected={context.selection.indexOf(object3d) !== -1}
         if (originIndex !== 0) {
-            let icon;
+            let icon:  React.ElementType<SvgIconProps>;
             switch (object3d.type) {
                 case "BatchedParticleRenderer":
-                    icon = <CodeIcon/>;
+                    icon = CodeIcon;
                     break;
                 case "ParticleSystemBatch":
-                    icon = <CodeIcon/>;
+                    icon = CodeIcon;
                     break;
                 case "ParticleEmitter":
-                    icon = <CodeIcon/>;
+                    icon = CodeIcon;
                     break;
                 case "AmbientLight":
-                    icon = <LightbulbIcon/>;
+                    icon = LightbulbIcon;
                     break;
                 case "Group":
-                    icon = <CollectionsIcon/>;
+                    icon = CollectionsIcon;
                     break;
                 default:
-                    icon = <CodeIcon/>;
+                    icon = CodeIcon;
                     break;
             }
 
-            return [<TreeItem key={object3d.uuid} nodeId={originIndex + ""}
-                              label={<MenuProvider id="scene-graph-menu" data={{object3d: object3d}}>{getObjectName(object3d) + " " + originIndex}</MenuProvider>}>
+            return [<StyledTreeItem key={object3d.uuid} nodeId={originIndex + ""}
+                                         labelIcon={icon}
+                                         labelText={getObjectName(object3d)}
+                                         object3d={object3d}>
                 {items}
-            </TreeItem>, index];
+            </StyledTreeItem>
+                , index];
         } else {
             return [<React.Fragment>{items}</React.Fragment>, index];
         }

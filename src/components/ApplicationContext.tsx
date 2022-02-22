@@ -28,6 +28,7 @@ import {Explosion2} from "../example/Explosion2";
 import {EnergyRifleMuzzle} from "../example/EnergyRifleMuzzle";
 import {Blackhole} from "../example/Blackhole";
 import {BatchedParticleRenderer} from "three.quarks";
+import {TransformControls} from "three/examples/jsm/controls/TransformControls";
 
 
 export interface TextureImage {
@@ -41,6 +42,7 @@ export interface AppContext {
     selection: Array<Object3D>;
     textures: Array<TextureImage>;
     batchedRenderer?: BatchedParticleRenderer;
+    transformControls?: TransformControls;
 
     actions: {
         onOpenDemo: (index: number)=>void;
@@ -53,7 +55,7 @@ export interface AppContext {
         duplicateObject3d: (object: Object3D) => void;
         updateParticleSystem: (object: ParticleEmitter) => void;
         addTexture: (textureImage: TextureImage) => void;
-        setBatchedRenderer: (renderer: BatchedParticleRenderer) => void;
+        setRenderer: (renderer: BatchedParticleRenderer, transformControls: TransformControls) => void;
     }
     updateProperties: () => void;
 }
@@ -163,6 +165,8 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                 },
                 select: object => {
                     this.setState({selection: [object]});
+                    this.state.transformControls?.detach();
+                    this.state.transformControls?.attach(object);
                 },
                 selectAddition: object => {
                     if (this.state.selection.indexOf(object) === -1) {
@@ -179,8 +183,8 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                     this.state.textures.push(textureImage);
                     this.setState({textures: this.state.textures});
                 },
-                setBatchedRenderer: (renderer) => {
-                    this.setState({batchedRenderer: renderer});
+                setRenderer: (renderer: BatchedParticleRenderer, transformControls: TransformControls) => {
+                    this.setState({batchedRenderer: renderer, transformControls});
                 },
             },
             updateProperties: this.updateProperties1,
