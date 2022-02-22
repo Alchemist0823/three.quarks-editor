@@ -8902,9 +8902,9 @@ nan@^2.12.1, nan@^2.13.2:
   integrity sha512-M2ufzIiINKCuDfBSAUr1vWQ+vuVcA9kqx8JJUsbQi6yf1uGRyb7HfpdfUr5qLXf3B/t8dPvcjhKMmlfnP47EzQ==
 
 nanoid@^3.1.28:
-  version "3.1.30"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.30.tgz#63f93cc548d2a113dc5dfbc63bfa09e2b9b64362"
-  integrity sha512-zJpuPDwOv8D2zq2WRoMe1HsfZthVewpel9CAvTfc/2mBD1uUT/agc5f7GHGWXlYkFvi1mVxe4IjvP2HNrop7nQ==
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.1.tgz#6347a18cac88af88f58af0b3594b723d5e99bb35"
+  integrity sha512-n6Vs/3KGyxPQd6uO0eH4Bv0ojGSUvuLlIHtC3Y0kEO23YRge8H9x1GCzLn28YX0H66pMkxuaeESFq4tKISKwdw==
 
 nanomatch@^1.2.9:
   version "1.2.13"
@@ -12354,10 +12354,10 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-three.quarks@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/three.quarks/-/three.quarks-0.3.1.tgz#cc77ed8b398b80cecab20293d82c73a30f64c2f1"
-  integrity sha512-/dx7C1UulGgZtmp399gqf1QSI7wXmylIQk7Lo2j3L/cO60SeUz8NUxKH/JyscL4LEfrdnn8fF+jHT2quMnWdMQ==
+three.quarks@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/three.quarks/-/three.quarks-0.4.1.tgz#1c4c81b228ca7cccb4002ff164fa71f02f1e9406"
+  integrity sha512-Jbp3iPUF0E5ajIq3zHfVvtrqY0HoRPu6qHgyNq88sfFIw4tU5m8b07/E5TRGoV95t8jRN0Fetb6FbESl9eZffA==
 
 three@^0.133.1:
   version "0.133.1"
