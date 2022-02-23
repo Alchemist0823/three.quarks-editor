@@ -132,7 +132,6 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
     }
 
     onChangeTexture = (textureImage: TextureImage) => {
-        console.log("change texture");
         this.props.particleSystem.texture = textureImage.texture;
         this.props.updateProperties();
     };
@@ -146,7 +145,6 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
     }
 
     render() {
-        console.log('rendered particleRendererProperties');
         return (
             <div className="property-container">
                 <div className="property">

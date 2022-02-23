@@ -125,9 +125,9 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
         super(props);
         this.textureLoader = new TextureLoader();
         const texture1 = this.textureLoader.load(process.env.PUBLIC_URL + "/textures/texture1.png");
-        texture1.name = "textures/texture1.png";
-        const texture2 = this.textureLoader.load(process.env.PUBLIC_URL + "/textures/texture2.png", ()=>{console.log(texture2);});
-        texture2.name = "textures/texture2.png";
+        texture1.name = "./textures/texture1.png";
+        const texture2 = this.textureLoader.load(process.env.PUBLIC_URL + "/textures/texture2.png");
+        texture2.name = "./textures/texture2.png";
 
 
         const state: AppContext = {
@@ -196,6 +196,14 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
     removeObject3d = (object3D: Object3D) => {
         if (object3D.parent) {
             object3D.parent.remove(object3D);
+            object3D.traverse((obj) => {
+               if (obj.type === 'ParticleEmitter') {
+                   this.state.batchedRenderer!.deleteSystem((obj as ParticleEmitter).system);
+               }
+            });
+            if (this.state.transformControls && this.state.transformControls.object === object3D) {
+                this.state.transformControls.detach();
+            }
         }
     };
 

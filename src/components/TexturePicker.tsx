@@ -68,7 +68,7 @@ export const TexturePicker: React.FC<TexturePickerProps> = (props) => {
     return (
         <Dialog onClose={props.handleClose} aria-labelledby="customized-dialog-title" open={props.open}>
             <DialogTitle id="customized-dialog-title" onClose={props.handleClose}>
-                Picker Texture
+                Pick Texture
             </DialogTitle>
             <DialogContent dividers>
                 <Box sx={{
