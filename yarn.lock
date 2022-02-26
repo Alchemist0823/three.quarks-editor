@@ -12354,10 +12354,10 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-three.quarks@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/three.quarks/-/three.quarks-0.3.1.tgz#cc77ed8b398b80cecab20293d82c73a30f64c2f1"
-  integrity sha512-/dx7C1UulGgZtmp399gqf1QSI7wXmylIQk7Lo2j3L/cO60SeUz8NUxKH/JyscL4LEfrdnn8fF+jHT2quMnWdMQ==
+three.quarks@^0.4.1:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/three.quarks/-/three.quarks-0.4.2.tgz#bad1bc1bbf64e27f46cae29d6404db6b70fd1b29"
+  integrity sha512-Xv4QL/vvDxFJmNDMaGtBKCSAK+T2lhDQ8qIi5LSd1EM0nJK+Hr2UaBB61Zp6vH21l7mPL2NEWLkOK1gTHjZERg==
 
 three@^0.133.1:
   version "0.133.1"
@@ -12772,18 +12772,10 @@ url-loader@4.1.1:
     mime-types "^2.1.27"
     schema-utils "^3.0.0"
 
-url-parse@^1.4.3:
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.4.7.tgz#a8a83535e8c00a316e403a5db4ac1b9b853ae278"
-  integrity sha512-d3uaVyzDB9tQoSXFvuSUNFibTd9zxd2bkVrDRvF5TmvWWQwqE4lgYJ5m+x1DbecWkw+LK4RNl2CU1hHuOKPVlg==
-  dependencies:
-    querystringify "^2.1.1"
-    requires-port "^1.0.0"
-
-url-parse@^1.5.3:
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.5.3.tgz#71c1303d38fb6639ade183c2992c8cc0686df862"
-  integrity sha512-IIORyIQD9rvj0A4CLWsHkBBJuNqWpFQe224b6j9t/ABmquIS0qDU2pY6kl6AuOrL5OkCXHMCFNe1jBcuAggjvQ==
+url-parse@^1.4.3, url-parse@^1.5.3:
+  version "1.5.10"
+  resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.5.10.tgz#9d3c2f736c1d75dd3bd2be507dcc111f1e2ea9c1"
+  integrity sha512-WypcfiRhfeUP9vvF0j6rw0J3hrWrw6iZv3+22h6iRMJ/8z1Tj6XfLP4DsUix5MhMPnXpiHDoKyoZ/bdCkwBCiQ==
   dependencies:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
