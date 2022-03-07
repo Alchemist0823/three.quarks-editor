@@ -176,12 +176,16 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
 
     const [code, setCode] = React.useState<string>('');
 
+    const shouldList = (child: Object3D) => {
+        return child.type !== 'BatchedParticleRenderer' && child.type !== 'AxesHelper' && child.name !== 'TransformControls' && child.userData.listable !== false;
+    }
+
     const countIndex = (index: number, object3d: Object3D): [Object3D | null, number] => {
         if (index === 0)
             return [object3d, 0];
         index --;
         for (const child of object3d.children) {
-            if (child.type !== 'BatchedParticleRenderer' && child.type !== 'AxesHelper' && child.name !== 'TransformControls') {
+            if (shouldList(child)) {
                 const [res, newIndex] = countIndex(index, child);
                 if (res)
                     return [res, newIndex];
@@ -226,7 +230,7 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
         const originIndex = index;
         index ++;
         for (const child of object3d.children) {
-            if (child.type !== 'BatchedParticleRenderer' && child.type !== 'AxesHelper' && child.name !== 'TransformControls') {
+            if (shouldList(child)) {
                 const result = renderObject(context, child, index);
                 items.push(result[0]);
                 index = result[1];

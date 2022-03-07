@@ -104,6 +104,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps, T
         this.cameraControls.enableDamping = true;
         this.cameraControls.dampingFactor = 0.1;
         this.cameraControls.rotateSpeed = 0.2;
+        this.cameraControls.enabled = true;
         this.cameraControls.update();
 
         this.renderer.setPixelRatio( window.devicePixelRatio );
@@ -112,6 +113,8 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps, T
 
         this.transformControls = new TransformControls(this.camera, this.renderer.domElement);
         this.transformControls.name = 'TransformControls';
+        this.transformControls.enabled = false;
+        this.transformControls!.visible = false;
         scene.add(this.transformControls);
 
         this.appContext?.actions.setRenderer(this.batchedRenderer, this.transformControls);
@@ -187,10 +190,13 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps, T
         if (type === 'camera') {
             this.cameraControls!.enabled = true;
             this.transformControls!.enabled = false;
+            this.transformControls!.visible = false;
+
             this.transformControls!.detach();
         } else {
             this.cameraControls!.enabled = false;
             this.transformControls!.enabled = true;
+            this.transformControls!.visible = false;
         }
         if (type === 'translate' || type === 'rotate' || type === 'scale') {
             this.transformControls!.mode = type;

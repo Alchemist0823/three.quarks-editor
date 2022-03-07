@@ -1,6 +1,10 @@
 import * as React from "react";
 import * as THREE from "three";
-import {Object3D, Scene, Texture} from "three";
+import {
+    Object3D,
+    Scene,
+    Texture,
+} from "three";
 import {ParticleEmitter, QuarksLoader} from "three.quarks";
 import {TextureLoader} from "three";
 import {ParticleSystem} from "three.quarks";
@@ -13,10 +17,6 @@ import {Mesh} from "three";
 import {BoxBufferGeometry} from "three";
 import {MeshStandardMaterial} from "three";
 import {ToonProjectile} from "../example/ToonProjectile";
-import {Color} from "three";
-import {AxesHelper} from "three";
-import {PointLight} from "three";
-import {AmbientLight} from "three";
 import {BulletMuzzle} from "../example/BulletMuzzle";
 import {BulletProjectile} from "../example/BulletProjectile";
 import {ToonExplosion} from "../example/ToonExplosion";
@@ -29,6 +29,7 @@ import {EnergyRifleMuzzle} from "../example/EnergyRifleMuzzle";
 import {Blackhole} from "../example/Blackhole";
 import {BatchedParticleRenderer} from "three.quarks";
 import {TransformControls} from "three/examples/jsm/controls/TransformControls";
+import {ParticleSystemPreviewObject} from "../objects/ParticleSystemPreviewObject";
 
 
 export interface TextureImage {
@@ -56,6 +57,7 @@ export interface AppContext {
         updateParticleSystem: (object: ParticleEmitter) => void;
         addTexture: (textureImage: TextureImage) => void;
         setRenderer: (renderer: BatchedParticleRenderer, transformControls: TransformControls) => void;
+        updateEmitterShape: (particleSystem: ParticleSystem) => void;
     }
     updateProperties: () => void;
 }
@@ -108,8 +110,16 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
             demoObject = new Explosion2(this.state.batchedRenderer!, this.state.textures);
             demoObject.name = "Explosion2";
         }
-        if (demoObject)
+
+        if (demoObject) {
+            /*const geometry = new BoxBufferGeometry( 10, 10, 10 );
+            const material = new MeshBasicMaterial( {color: 0x00ff00} );
+            const cube = new Mesh( geometry, material );
+            demoObject.add(cube);*/
+
             this.state.scene.add(demoObject);
+            this.processParticleSystems(demoObject);
+        }
         this.state.updateProperties();
     }
 
@@ -119,6 +129,16 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
 
     updateProperties2 = () => {
         this.setState({updateProperties: this.updateProperties1});
+    }
+
+    processParticleSystems = (object3d: Object3D) => {
+        object3d.traverse(obj => {
+            if (obj.type === "ParticleEmitter") {
+                const particleSystem = (obj as ParticleEmitter).system;
+                const mesh = new ParticleSystemPreviewObject(particleSystem);
+                obj.add(mesh);
+            }
+        });
     }
 
     constructor(props: Readonly<ApplicationContextProviderProps>) {
@@ -160,13 +180,31 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                         loader.setCrossOrigin("");
                         loader.load(jsonURL, this.state.batchedRenderer!, (object3D: Object3D)=>{
                             this.state.scene.add(object3D);
+                            this.processParticleSystems(object3D);
                         }, ()=>{}, ()=>{});
                     }
                 },
                 select: object => {
+                    if (this.state.selection) {
+                        for(const selected of this.state.selection) {
+                            selected.traverse((obj) => {
+                                if (obj.type === "ParticleSystemPreview") {
+                                    (obj as ParticleSystemPreviewObject).selected = false;
+                                }
+                            });
+                        }
+                    }
+                    object.traverse((obj) => {
+                        if (obj.type === "ParticleSystemPreview") {
+                            (obj as ParticleSystemPreviewObject).selected = true;
+                        }
+                    });
+
                     this.setState({selection: [object]});
                     this.state.transformControls?.detach();
                     this.state.transformControls?.attach(object);
+                    this.state.transformControls!.visible = false;
+                    console.log(this.state.transformControls?.visible);
                 },
                 selectAddition: object => {
                     if (this.state.selection.indexOf(object) === -1) {
@@ -186,6 +224,13 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                 setRenderer: (renderer: BatchedParticleRenderer, transformControls: TransformControls) => {
                     this.setState({batchedRenderer: renderer, transformControls});
                 },
+                updateEmitterShape(particleSystem: ParticleSystem) {
+                    particleSystem.emitter.traverse(obj => {
+                       if (obj.type === "ParticleSystemPreview") {
+                           (obj as ParticleSystemPreviewObject).update();
+                       }
+                    });
+                }
             },
             updateProperties: this.updateProperties1,
         };

@@ -119,7 +119,10 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                     <ApplicationContextConsumer>
                         {context => context &&
                             <EmitterShapeProperties particleSystem={(props.object3d as ParticleEmitter).system}
-                                                    updateProperties={context.updateProperties}/>
+                                                    updateProperties={() => {
+                                                        context.updateProperties();
+                                                        context.actions.updateEmitterShape((props.object3d as ParticleEmitter).system);
+                                                    }}/>
                         }
                     </ApplicationContextConsumer>
                 </AccordionDetails>
