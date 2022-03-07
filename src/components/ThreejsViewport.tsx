@@ -196,7 +196,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps, T
         } else {
             this.cameraControls!.enabled = false;
             this.transformControls!.enabled = true;
-            this.transformControls!.visible = false;
+            this.transformControls!.visible = true;
         }
         if (type === 'translate' || type === 'rotate' || type === 'scale') {
             this.transformControls!.mode = type;
