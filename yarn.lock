@@ -10380,22 +10380,13 @@ postcss@7.0.36:
     source-map "^0.6.1"
     supports-color "^6.1.0"
 
-postcss@^7, postcss@^7.0.26:
+postcss@^7, postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.17, postcss@^7.0.2, postcss@^7.0.26, postcss@^7.0.27, postcss@^7.0.32, postcss@^7.0.5, postcss@^7.0.6:
   version "7.0.39"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-7.0.39.tgz#9624375d965630e2e1f2c02a935c82a59cb48309"
   integrity sha512-yioayjNbHn6z1/Bywyb2Y4s3yvDAeXGOyxqD+LnVOinq6Mdmd++SW2wUNVzavyyHxd6+DxzWGIuosg6P1Rj8uA==
   dependencies:
     picocolors "^0.2.1"
     source-map "^0.6.1"
-
-postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.17, postcss@^7.0.2, postcss@^7.0.27, postcss@^7.0.32, postcss@^7.0.5, postcss@^7.0.6:
-  version "7.0.35"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-7.0.35.tgz#d2be00b998f7f211d8a276974079f2e92b970e24"
-  integrity sha512-3QT8bBJeX/S5zKTTjTCIjRF3If4avAT6kqxcASlTWEtAFCb9NH0OUxNDfgZSWdP5fJnBYCMEWkIFfWeugjzYMg==
-  dependencies:
-    chalk "^2.4.2"
-    source-map "^0.6.1"
-    supports-color "^6.1.0"
 
 postcss@^8.1.0:
   version "8.3.9"
@@ -12354,10 +12345,10 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-three.quarks@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/three.quarks/-/three.quarks-0.3.1.tgz#cc77ed8b398b80cecab20293d82c73a30f64c2f1"
-  integrity sha512-/dx7C1UulGgZtmp399gqf1QSI7wXmylIQk7Lo2j3L/cO60SeUz8NUxKH/JyscL4LEfrdnn8fF+jHT2quMnWdMQ==
+three.quarks@^0.4.1:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/three.quarks/-/three.quarks-0.4.3.tgz#803991826ec36385dbc2cc76858c1b59be0f18b5"
+  integrity sha512-+B+WwJF8RYgeeyALnQzCe9izi9qJAEq1rSX09N2kXdFqa53lMuq8aAXWhXHIL6uxb2Jl4vOmpxgiDDFeMjFaVA==
 
 three@^0.133.1:
   version "0.133.1"
