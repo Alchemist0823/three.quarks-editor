@@ -4,7 +4,12 @@ import {FunctionValueGenerator, ValueGenerator} from "three.quarks";
 import {ColorGenerator, ConstantColor, FunctionColorGenerator} from "three.quarks";
 import {Object3D, Vector4} from "three";
 import {ObjectProperties} from "./ObjectProperties";
-import {ApplicationContextConsumer} from "./ApplicationContext";
+import {
+    AppContext,
+    ApplicationContext,
+    ApplicationContextConsumer,
+    ApplicationContextProvider
+} from "./ApplicationContext";
 import {ParticleEmitter} from "three.quarks";
 import {ParticleSystemProperties} from "./ParticleSystemProperties";
 import {ParticleRendererProperties} from "./ParticleRendererProperties";
@@ -20,11 +25,11 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import "./PropertiesEditor.scss";
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import {BehaviorsProperties} from "./BehaviorsProperties";
-import {useState} from "react";
+import {useContext, useState} from "react";
 
 const Accordion = styled((props: AccordionProps) => (
     <MuiAccordion disableGutters elevation={0} square {...props} />
-))(({theme})=>({
+))(({ theme }) => ({
     border: `1px solid ${theme.palette.divider}`,
     '&:not(:last-child)': {
         borderBottom: 0,
@@ -71,6 +76,7 @@ interface PropertiesEditorProps {
 }
 
 export default function PropertiesEditor(props: PropertiesEditorProps) {
+    const context = useContext(ApplicationContext)!;
     const [expanded, setExpanded] = useState(['Object', 'EmitterShape', 'ParticleRenderer','ParticleEmitter','Behaviors','Script']);
 
     const handleChange = (panel: string) => (event: any, isExpanded: boolean) => {
@@ -84,12 +90,8 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
 
     return (
         <Box sx={{width: '100%'}}>
-            <ApplicationContextConsumer>
-                {context => context &&
-                    <ParticleSystemController object3d={props.object3d}
-                                              updateProperties={context.updateProperties}/>
-                }
-            </ApplicationContextConsumer>
+            <ParticleSystemController object3d={props.object3d}
+                                      updateProperties={context.updateProperties}/>
             <Accordion expanded={(expanded.indexOf('Object') !== -1)} onChange={handleChange('Object')}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon/>}
@@ -99,12 +101,8 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                     <StyledHeading>Object</StyledHeading>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <ApplicationContextConsumer>
-                        {context => context &&
-                            <ObjectProperties object3d={props.object3d}
-                                              updateProperties={context.updateProperties}/>
-                        }
-                    </ApplicationContextConsumer>
+                        <ObjectProperties object3d={props.object3d}
+                                          updateProperties={context.updateProperties}/>
                 </AccordionDetails>
             </Accordion>
             {(props.object3d instanceof ParticleEmitter) &&
@@ -116,15 +114,11 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                     <StyledHeading>Emitter Shape</StyledHeading>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <ApplicationContextConsumer>
-                        {context => context &&
-                            <EmitterShapeProperties particleSystem={(props.object3d as ParticleEmitter).system}
-                                                    updateProperties={() => {
-                                                        context.updateProperties();
-                                                        context.actions.updateEmitterShape((props.object3d as ParticleEmitter).system);
-                                                    }}/>
-                        }
-                    </ApplicationContextConsumer>
+                    <EmitterShapeProperties particleSystem={(props.object3d as ParticleEmitter).system}
+                                            updateProperties={() => {
+                                                context.updateProperties();
+                                                context.actions.updateEmitterShape((props.object3d as ParticleEmitter).system);
+                                            }}/>
                 </AccordionDetails>
             </Accordion>
             }
@@ -137,12 +131,8 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                     <StyledHeading>Particle Renderer</StyledHeading>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <ApplicationContextConsumer>
-                        {context => context &&
-                            <ParticleRendererProperties particleSystem={(props.object3d as ParticleEmitter).system}
-                                                        updateProperties={context.updateProperties}/>
-                        }
-                    </ApplicationContextConsumer>
+                    <ParticleRendererProperties particleSystem={(props.object3d as ParticleEmitter).system}
+                                                updateProperties={context.updateProperties}/>
                 </AccordionDetails>
             </Accordion>
             }
@@ -155,12 +145,8 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                     <StyledHeading>Particle Emitter</StyledHeading>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <ApplicationContextConsumer>
-                        {context => context &&
-                            <ParticleSystemProperties particleSystem={(props.object3d as ParticleEmitter).system}
-                                                      updateProperties={context.updateProperties}/>
-                        }
-                    </ApplicationContextConsumer>
+                    <ParticleSystemProperties particleSystem={(props.object3d as ParticleEmitter).system}
+                                          updateProperties={context.updateProperties}/>
                 </AccordionDetails>
             </Accordion>
             }
@@ -173,12 +159,8 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                     <StyledHeading>Behaviors</StyledHeading>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <ApplicationContextConsumer>
-                        {context => context &&
-                            <BehaviorsProperties behaviors={(props.object3d as ParticleEmitter).system.behaviors}
-                                                        updateProperties={context.updateProperties}/>
-                        }
-                    </ApplicationContextConsumer>
+                    <BehaviorsProperties behaviors={(props.object3d as ParticleEmitter).system.behaviors}
+                                                updateProperties={context.updateProperties}/>
                 </AccordionDetails>
             </Accordion>
             }
@@ -191,12 +173,8 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                     <StyledHeading>Script</StyledHeading>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <ApplicationContextConsumer>
-                        {context => context &&
-                            <ScriptProperties object3d={props.object3d}
-                                              updateProperties={context.updateProperties}/>
-                        }
-                    </ApplicationContextConsumer>
+                    <ScriptProperties object3d={props.object3d}
+                                      updateProperties={context.updateProperties}/>
                 </AccordionDetails>
             </Accordion>
         </Box>

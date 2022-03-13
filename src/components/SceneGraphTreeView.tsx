@@ -1,5 +1,5 @@
-import React from "react";
-import {AppContext} from "./ApplicationContext";
+import React, {useContext} from "react";
+import {AppContext, ApplicationContext} from "./ApplicationContext";
 import {Object3D, Scene} from "three";
 import {ParticleEmitter} from "three.quarks";
 import './SceneGraphView.scss';
@@ -19,8 +19,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 interface SceneGraphViewMaterialProps {
-    context: AppContext;
-    scene: Scene;
 }
 
 /*
@@ -171,6 +169,7 @@ function StyledTreeItem(props: StyledTreeItemProps) {
 }
 
 export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props) => {
+    const context = useContext(ApplicationContext)!;
     const [selected, setSelected] = React.useState<string>("");
     const [expanded, setExpanded] = React.useState<string[]>(['1']);
 
@@ -197,9 +196,9 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
     const handleSelect = (event: React.ChangeEvent<any>, nodeIds: string) => {
         if (nodeIds.length > 0) {
             const index = parseInt(nodeIds);
-            const [object3d, ] = countIndex(index, props.scene);
+            const [object3d, ] = countIndex(index, context.scene);
             if (object3d) {
-                props.context.actions.select(object3d);
+                context.actions.select(object3d);
             }
         }
         setSelected(nodeIds);
@@ -276,18 +275,18 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
 
     const onContextMenuAddParticleSystem = ({event, props: contextProps}: MenuItemEventHandler) => {
         if ((contextProps as any).object3d) {
-            props.context.actions.addObject3d('particle', (contextProps! as any).object3d);
+            context.actions.addObject3d('particle', (contextProps! as any).object3d);
         }
     };
     const onContextMenuRemove = ({event, props: contextProps}: MenuItemEventHandler) => {
         if ((contextProps as any).object3d) {
-            props.context.actions.removeObject3d((contextProps! as any).object3d);
+            context.actions.removeObject3d((contextProps! as any).object3d);
         }
     };
 
     const onContextMenuDuplicate = ({event, props: contextProps}: MenuItemEventHandler) => {
         if ((contextProps as any).object3d) {
-            props.context.actions.duplicateObject3d((contextProps! as any).object3d);
+            context.actions.duplicateObject3d((contextProps! as any).object3d);
         }
     };
 
@@ -330,7 +329,7 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
         <Typography sx={{
             fontSize: theme => theme.typography.pxToRem(15),
             fontWeight: theme =>theme.typography.fontWeightRegular}}> Scene Graph </Typography>
-        {renderScene(props.context, props.scene)}
+        {renderScene(context, context.scene)}
         <Menu id="scene-graph-menu">
             <Submenu label="Add">
                 <Item onClick={onContextMenuAddParticleSystem}>Particle System</Item>

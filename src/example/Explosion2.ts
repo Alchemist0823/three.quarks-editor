@@ -12,287 +12,267 @@ import {
 } from "three.quarks";
 import {TextureImage} from "../components/ApplicationContext";
 
-export class Explosion2 extends Group {
+export function createExplosion(renderer: BatchedParticleRenderer, textures: TextureImage[]) {
+    const group = new Group();
+    group.name = "Explosion";
 
-    static yellowColor = new Vector4(0.9, 0.60, 0.25, 1);
-    static yellowColor2 = new Vector4(1, 0.95, 0.4, 1);
+    const yellowColor = new Vector4(0.9, 0.60, 0.25, 1);
+    const yellowColor2 = new Vector4(1, 0.95, 0.4, 1);
 
-    private mainBeam: ParticleSystem;
-    private glowBeam: ParticleSystem;
-    private smoke: ParticleSystem;
-    private particles: ParticleSystem;
-    private beam: ParticleSystem;
-    private circle: ParticleSystem;
-    private circle2: ParticleSystem;
+    const texture = textures[0].texture;
+    const mainColor = yellowColor;
+    const secColor = yellowColor2;
 
-    constructor(renderer: BatchedParticleRenderer, textures: TextureImage[]) {
-        super();
+    const mainBeam = new ParticleSystem(renderer, {
+        duration: 2,
+        looping: false,
+        startLife: new IntervalValue(0.1, 0.3),
+        startSpeed: new IntervalValue(100, 300),
+        startSize: new IntervalValue(1.5, 12.5),
+        startColor: new ConstantColor(new Vector4(1, 1, 1, 1)),
+        worldSpace: false,
 
-        const texture = textures[0].texture;
-        const mainColor = Explosion2.yellowColor;
-        const secColor = Explosion2.yellowColor2;
+        maxParticle: 100,
+        emissionOverTime: new ConstantValue(0),
+        emissionBursts: [{
+            time: 0,
+            count: 8,
+            cycle: 1,
+            interval: 0.01,
+            probability: 1,
+        }],
 
-        this.mainBeam = new ParticleSystem(renderer, {
-            duration: 2,
-            looping: false,
-            startLife: new IntervalValue(0.1, 0.3),
-            startSpeed: new IntervalValue(100, 300),
-            startSize: new IntervalValue(1.5, 12.5),
-            startColor: new ConstantColor(new Vector4(1, 1, 1, 1)),
-            worldSpace: false,
+        shape: new SphereEmitter({
+            radius: 2,
+            thickness: 1,
+            arc: Math.PI * 2,
+        }),
+        texture: texture,
+        blending: AdditiveBlending,
+        startTileIndex: 0,
+        uTileCount: 10,
+        vTileCount: 10,
+        renderMode: RenderMode.BillBoard,
+        renderOrder: 2,
+    });
+    mainBeam.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.25, 0.05, 0), 0]])));
+    mainBeam.emitter.name = 'mainBeam';
+    group.add(mainBeam.emitter);
 
-            maxParticle: 100,
-            emissionOverTime: new ConstantValue(0),
-            emissionBursts: [{
-                time: 0,
-                count: 8,
-                cycle: 1,
-                interval: 0.01,
-                probability: 1,
-            }],
+    const glowBeam = new ParticleSystem(renderer, {
+        duration: 1,
+        looping: false,
 
-            shape: new SphereEmitter({
-                radius: 2,
-                thickness: 1,
-                arc: Math.PI * 2,
-            }),
-            texture: texture,
-            blending: AdditiveBlending,
-            startTileIndex: 0,
-            uTileCount: 10,
-            vTileCount: 10,
-            renderMode: RenderMode.BillBoard,
-            renderOrder: 2,
-        });
-        this.mainBeam.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.25, 0.05, 0), 0]])));
-        this.mainBeam.emitter.name = 'mainBeam';
-        this.add(this.mainBeam.emitter);
+        startLife: new IntervalValue(1, 1.6),
+        startSpeed: new IntervalValue(20, 45),
+        startSize: new IntervalValue(4, 8),
+        startColor: new ConstantColor(mainColor),
+        worldSpace: false,
 
-        this.glowBeam = new ParticleSystem(renderer, {
-            duration: 1,
-            looping: false,
+        maxParticle: 100,
+        emissionOverTime: new ConstantValue(0),
+        emissionBursts: [{
+            time: 0,
+            count: 8,
+            cycle: 1,
+            interval: 0.01,
+            probability: 1,
+        }],
 
-            startLife: new IntervalValue(1, 1.6),
-            startSpeed: new IntervalValue(20, 45),
-            startSize: new IntervalValue(4, 8),
-            startColor: new ConstantColor(mainColor),
-            worldSpace: false,
+        shape: new SphereEmitter({
+            radius: 2,
+            thickness: 1,
+            arc: Math.PI * 2,
+        }),
+        texture: texture,
+        blending: AdditiveBlending,
+        startTileIndex: 0,
+        uTileCount: 10,
+        vTileCount: 10,
+        renderMode: RenderMode.BillBoard,
+        renderOrder: 2,
+    });
+    glowBeam.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.25, 0.05, 0), 0]])));
+    glowBeam.emitter.name = 'glowBeam';
+    group.add(glowBeam.emitter);
 
-            maxParticle: 100,
-            emissionOverTime: new ConstantValue(0),
-            emissionBursts: [{
-                time: 0,
-                count: 8,
-                cycle: 1,
-                interval: 0.01,
-                probability: 1,
-            }],
+    const smoke = new ParticleSystem(renderer, {
+        duration: 1,
+        looping: false,
+        startLife: new IntervalValue(0.8, 1.2),
+        startSpeed: new IntervalValue(20, 50),
+        startSize: new IntervalValue(10, 15),
+        startRotation: new IntervalValue(0, Math.PI * 2),
+        startColor: new ConstantColor(new Vector4(1, 1, 1, .5)),
+        worldSpace: false,
 
-            shape: new SphereEmitter({
-                radius: 2,
-                thickness: 1,
-                arc: Math.PI * 2,
-            }),
-            texture: texture,
-            blending: AdditiveBlending,
-            startTileIndex: 0,
-            uTileCount: 10,
-            vTileCount: 10,
-            renderMode: RenderMode.BillBoard,
-            renderOrder: 2,
-        });
-        this.glowBeam.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.25, 0.05, 0), 0]])));
-        this.glowBeam.emitter.name = 'glowBeam';
-        this.add(this.glowBeam.emitter);
+        maxParticle: 100,
+        emissionOverTime: new ConstantValue(0),
+        emissionBursts: [{
+            time: 0,
+            count: 12,
+            cycle: 1,
+            interval: 0.01,
+            probability: 1,
+        }],
 
-        this.smoke = new ParticleSystem(renderer, {
-            duration: 1,
-            looping: false,
-            startLife: new IntervalValue(0.8, 1.2),
-            startSpeed: new IntervalValue(20, 50),
-            startSize: new IntervalValue(10, 15),
-            startRotation: new IntervalValue(0, Math.PI * 2),
-            startColor: new ConstantColor(new Vector4(1,1,1,.5)),
-            worldSpace: false,
+        shape: new SphereEmitter({
+            radius: 7.5,
+            arc: Math.PI,
+            thickness: 1,
+        }),
 
-            maxParticle: 100,
-            emissionOverTime: new ConstantValue(0),
-            emissionBursts: [{
-                time: 0,
-                count: 12,
-                cycle: 1,
-                interval: 0.01,
-                probability: 1,
-            }],
+        texture: texture,
+        blending: NormalBlending,
+        startTileIndex: 2,
+        uTileCount: 10,
+        vTileCount: 10,
+        renderMode: RenderMode.BillBoard,
+        renderOrder: -2,
+    });
+    smoke.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.95, 0.75, 0), 0]])));
+    smoke.addBehavior(new ColorOverLife(new ColorRange(mainColor, new Vector4(0, 0, 0, 0))));
+    smoke.addBehavior(new RotationOverLife(new IntervalValue(-Math.PI * 2, Math.PI * 2)));
+    smoke.addBehavior(new SpeedOverLife(new PiecewiseBezier([[new Bezier(1, 0.95, 0.75, 0), 0]])));
+    smoke.emitter.name = 'smoke';
+    group.add(smoke.emitter);
 
-            shape: new SphereEmitter({
-                radius: 7.5,
-                arc: Math.PI,
-                thickness: 1,
-            }),
+    const particles = new ParticleSystem(renderer, {
+        duration: 1,
+        looping: false,
+        startLife: new IntervalValue(0.6, 1.2),
+        startSpeed: new IntervalValue(40, 200),
+        startSize: new IntervalValue(1, 4),
+        startColor: new RandomColor(new Vector4(1, 1, 1, 1), mainColor),
+        worldSpace: false,
 
-            texture: texture,
-            blending: NormalBlending,
-            startTileIndex: 2,
-            uTileCount: 10,
-            vTileCount: 10,
-            renderMode: RenderMode.BillBoard,
-            renderOrder: -2,
-        });
-        this.smoke.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.95, 0.75, 0), 0]])));
-        this.smoke.addBehavior(new ColorOverLife(new ColorRange(mainColor, new Vector4(0, 0, 0, 0))));
-        this.smoke.addBehavior(new RotationOverLife(new IntervalValue(-Math.PI * 2, Math.PI * 2)));
-        this.smoke.addBehavior(new SpeedOverLife(new PiecewiseBezier([[new Bezier(1, 0.95, 0.75, 0), 0]])));
-        this.smoke.emitter.name = 'smoke';
-        this.add(this.smoke.emitter);
+        maxParticle: 100,
+        emissionOverTime: new ConstantValue(0),
+        emissionBursts: [{
+            time: 0,
+            count: 12,
+            cycle: 1,
+            interval: 0.01,
+            probability: 1,
+        }],
 
-        this.particles = new ParticleSystem(renderer, {
-            duration: 1,
-            looping: false,
-            startLife: new IntervalValue(0.6, 1.2),
-            startSpeed: new IntervalValue(40, 200),
-            startSize: new IntervalValue(1, 4),
-            startColor: new RandomColor(new Vector4(1,1,1,1), mainColor),
-            worldSpace: false,
+        shape: new SphereEmitter({
+            radius: 2,
+            thickness: 1,
+            arc: Math.PI * 2,
+        }),
+        texture: texture,
+        blending: NormalBlending,
+        startTileIndex: 0,
+        uTileCount: 10,
+        vTileCount: 10,
+        renderMode: RenderMode.StretchedBillBoard,
+        speedFactor: 0.1,
+        renderOrder: 0,
+    });
+    particles.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.25, 0.05, 0), 0]])));
+    particles.emitter.name = 'particles';
+    group.add(particles.emitter);
 
-            maxParticle: 100,
-            emissionOverTime: new ConstantValue(0),
-            emissionBursts: [{
-                time: 0,
-                count: 12,
-                cycle: 1,
-                interval: 0.01,
-                probability: 1,
-            }],
+    const beam = new ParticleSystem(renderer, {
+        duration: 1,
+        looping: false,
 
-            shape: new SphereEmitter({
-                radius: 2,
-                thickness: 1,
-                arc: Math.PI * 2,
-            }),
-            texture: texture,
-            blending: NormalBlending,
-            startTileIndex: 0,
-            uTileCount: 10,
-            vTileCount: 10,
-            renderMode: RenderMode.StretchedBillBoard,
-            speedFactor: 0.1,
-            renderOrder: 0,
-        });
-        this.particles.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.25, 0.05, 0), 0]])));
-        this.particles.emitter.name = 'particles';
-        this.add(this.particles.emitter);
+        startLife: new ConstantValue(0.2),
+        startSpeed: new ConstantValue(0),
+        startSize: new ConstantValue(100),
+        startColor: new ConstantColor(secColor),
+        worldSpace: false,
 
-        this.beam = new ParticleSystem(renderer, {
-            duration: 1,
-            looping: false,
+        maxParticle: 10,
+        emissionOverTime: new ConstantValue(0),
+        emissionBursts: [{
+            time: 0,
+            count: 2,
+            cycle: 1,
+            interval: 0.01,
+            probability: 1,
+        }],
 
-            startLife: new ConstantValue(0.2),
-            startSpeed: new ConstantValue(0),
-            startSize: new ConstantValue(100),
-            startColor: new ConstantColor(secColor),
-            worldSpace: false,
+        shape: new PointEmitter(),
+        texture: texture,
+        blending: AdditiveBlending,
+        startTileIndex: 1,
+        uTileCount: 10,
+        vTileCount: 10,
+        renderMode: RenderMode.BillBoard,
+        renderOrder: -2,
+    });
+    beam.emitter.name = 'beam';
+    beam.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.66666, 0.33333, 0), 0]])));
+    group.add(beam.emitter);
 
-            maxParticle: 10,
-            emissionOverTime: new ConstantValue(0),
-            emissionBursts: [{
-                time: 0,
-                count: 2,
-                cycle: 1,
-                interval: 0.01,
-                probability: 1,
-            }],
+    const circle = new ParticleSystem(renderer, {
+        duration: 1,
+        looping: false,
+        startLife: new ConstantValue(0.4),
+        startSpeed: new ConstantValue(0),
+        startSize: new ConstantValue(40),
+        startColor: new ConstantColor(secColor),
+        worldSpace: false,
 
-            shape: new PointEmitter(),
-            texture: texture,
-            blending: AdditiveBlending,
-            startTileIndex: 1,
-            uTileCount: 10,
-            vTileCount: 10,
-            renderMode: RenderMode.BillBoard,
-            renderOrder: -2,
-        });
-        this.beam.emitter.name = 'beam';
-        this.beam.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.66666, 0.33333, 0), 0]])));
-        this.add(this.beam.emitter);
+        maxParticle: 100,
+        emissionOverTime: new ConstantValue(0),
+        emissionBursts: [{
+            time: 0,
+            count: 1,
+            cycle: 1,
+            interval: 0.01,
+            probability: 1,
+        }],
 
-        this.circle = new ParticleSystem(renderer, {
-            duration: 1,
-            looping: false,
-            startLife: new ConstantValue(0.4),
-            startSpeed: new ConstantValue(0),
-            startSize: new ConstantValue(40),
-            startColor: new ConstantColor(secColor),
-            worldSpace: false,
-
-            maxParticle: 100,
-            emissionOverTime: new ConstantValue(0),
-            emissionBursts: [{
-                time: 0,
-                count: 1,
-                cycle: 1,
-                interval: 0.01,
-                probability: 1,
-            }],
-
-            shape: new PointEmitter(),
-            texture: texture,
-            blending: AdditiveBlending,
-            startTileIndex: 10,
-            uTileCount: 10,
-            vTileCount: 10,
-            renderMode: RenderMode.BillBoard,
-            renderOrder: 2,
-        });
-        this.circle.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(0.3, 0.6, 0.9, 1), 0]])));
-        this.circle.addBehavior(new FrameOverLife(new PiecewiseBezier([[new Bezier(10, 13, 16, 19), 0]])));
-        this.circle.emitter.name = 'circle';
-        this.add(this.circle.emitter);
+        shape: new PointEmitter(),
+        texture: texture,
+        blending: AdditiveBlending,
+        startTileIndex: 10,
+        uTileCount: 10,
+        vTileCount: 10,
+        renderMode: RenderMode.BillBoard,
+        renderOrder: 2,
+    });
+    circle.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(0.3, 0.6, 0.9, 1), 0]])));
+    circle.addBehavior(new FrameOverLife(new PiecewiseBezier([[new Bezier(10, 13, 16, 19), 0]])));
+    circle.emitter.name = 'circle';
+    group.add(circle.emitter);
 
 
-        this.circle2 = new ParticleSystem(renderer, {
-            duration: 1,
-            looping: false,
-            startLife: new ConstantValue(0.4),
-            startSpeed: new ConstantValue(0),
-            startSize: new ConstantValue(40),
-            startColor: new ConstantColor(secColor),
-            worldSpace: false,
+    const circle2 = new ParticleSystem(renderer, {
+        duration: 1,
+        looping: false,
+        startLife: new ConstantValue(0.4),
+        startSpeed: new ConstantValue(0),
+        startSize: new ConstantValue(40),
+        startColor: new ConstantColor(secColor),
+        worldSpace: false,
 
-            maxParticle: 100,
-            emissionOverTime: new ConstantValue(0),
-            emissionBursts: [{
-                time: 0,
-                count: 1,
-                cycle: 1,
-                interval: 0.01,
-                probability: 1,
-            }],
+        maxParticle: 100,
+        emissionOverTime: new ConstantValue(0),
+        emissionBursts: [{
+            time: 0,
+            count: 1,
+            cycle: 1,
+            interval: 0.01,
+            probability: 1,
+        }],
 
-            shape: new PointEmitter(),
-            texture: texture,
-            blending: AdditiveBlending,
-            startTileIndex: 10,
-            uTileCount: 10,
-            vTileCount: 10,
-            renderMode: RenderMode.LocalSpace,
-            renderOrder: 2,
-        });
-        this.circle2.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(0.3, 0.6, 0.9, 1), 0]])));
-        this.circle2.addBehavior(new FrameOverLife(new PiecewiseBezier([[new Bezier(10, 13, 16, 19), 0]])));
-        this.circle2.emitter.name = 'circle';
-        this.circle2.emitter.rotation.x = Math.PI / 2;
-        this.add(this.circle2.emitter);
-    }
-
-    update(delta: number) {
-        //delta /= 1000;
-        this.beam.update(delta);
-        this.mainBeam.update(delta);
-        this.glowBeam.update(delta);
-        this.circle.update(delta);
-        this.smoke.update(delta);
-        this.particles.update(delta);
-        this.circle2.update(delta);
-    }
+        shape: new PointEmitter(),
+        texture: texture,
+        blending: AdditiveBlending,
+        startTileIndex: 10,
+        uTileCount: 10,
+        vTileCount: 10,
+        renderMode: RenderMode.LocalSpace,
+        renderOrder: 2,
+    });
+    circle2.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(0.3, 0.6, 0.9, 1), 0]])));
+    circle2.addBehavior(new FrameOverLife(new PiecewiseBezier([[new Bezier(10, 13, 16, 19), 0]])));
+    circle2.emitter.name = 'circle';
+    circle2.emitter.rotation.x = Math.PI / 2;
+    group.add(circle2.emitter);
+    return group;
 }

@@ -41,9 +41,9 @@ export class ParticleSystemPreviewObject extends LineSegments<BufferGeometry, Li
 
     particleSystem: ParticleSystem;
 
-    constructor(particleSystem: ParticleSystem) {
-        super(new WireframeGeometry(generateEmitterGeometry(particleSystem)));
-        this.particleSystem = particleSystem;
+    constructor(particleSystem?: ParticleSystem) {
+        super(new WireframeGeometry(particleSystem ? generateEmitterGeometry(particleSystem) : undefined));
+        this.particleSystem = particleSystem!;
         this.type = "ParticleSystemPreview";
         //this.material.depthTest = false;
         this.material.opacity = 0.25;
@@ -52,6 +52,13 @@ export class ParticleSystemPreviewObject extends LineSegments<BufferGeometry, Li
         this.rotation.x = - Math.PI / 2;
         this.userData.listable = false;
         this.userData.selectable = false;
+    }
+
+    copy(source: this, recursive?: boolean) {
+        super.copy(source, recursive);
+        this.particleSystem = source.particleSystem;
+        this.geometry = new WireframeGeometry(generateEmitterGeometry(source.particleSystem));
+        return this;
     }
 
     set selected(value: boolean) {

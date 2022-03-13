@@ -16,20 +16,19 @@ import {AdditiveBlending} from "three";
 import {Mesh} from "three";
 import {BoxBufferGeometry} from "three";
 import {MeshStandardMaterial} from "three";
-import {ToonProjectile} from "../example/ToonProjectile";
-import {BulletMuzzle} from "../example/BulletMuzzle";
-import {BulletProjectile} from "../example/BulletProjectile";
-import {ToonExplosion} from "../example/ToonExplosion";
-import {LevelUp} from "../example/LevelUp";
-import {ShipSmoke} from "../example/ShipSmoke";
-import {ElectricBall} from "../example/ElectricBall";
-import {ShipTrail} from "../example/ShipTrail";
-import {Explosion2} from "../example/Explosion2";
-import {EnergyRifleMuzzle} from "../example/EnergyRifleMuzzle";
-import {Blackhole} from "../example/Blackhole";
+import {createBulletMuzzle} from "../example/BulletMuzzle";
+import {createElectricBall} from "../example/ElectricBall";
+import {createEnergyRifleMuzzle} from "../example/EnergyRifleMuzzle";
 import {BatchedParticleRenderer} from "three.quarks";
 import {TransformControls} from "three/examples/jsm/controls/TransformControls";
 import {ParticleSystemPreviewObject} from "../objects/ParticleSystemPreviewObject";
+import {createBlackHole} from "../example/Blackhole";
+import {createBigExplosion} from "../example/Explosion";
+import { createExplosion } from "../example/Explosion2";
+import { createShipTrail } from "../example/ShipTrail";
+import {createToonProjectile} from "../example/ToonProjectile";
+import {createShipSmoke} from "../example/ShipSmoke";
+import {createLevelUp} from "../example/LevelUp";
 
 
 export interface TextureImage {
@@ -48,7 +47,7 @@ export interface AppContext {
     transformControls?: TransformControls;
 
     actions: {
-        onOpenDemo: (index: number)=>void;
+        onOpenDemo: (id: string)=>void;
         onSaveAs: ()=>void;
         onImport: (files: FileList)=>void;
         select: (object: Object3D) => void;
@@ -65,7 +64,7 @@ export interface AppContext {
     updateProperties: () => void;
 }
 
-const ApplicationContext = React.createContext<AppContext | null>(null);
+export const ApplicationContext = React.createContext<AppContext | null>(null);
 
 interface ApplicationContextProviderProps {
 
@@ -77,43 +76,40 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
 
     textureLoader: TextureLoader;
 
-    addDemo(demoIndex: number) {
+    addDemo(demoId: string) {
         let demoObject;
-        if (demoIndex === 0) {
-            demoObject = new ToonProjectile(this.state.batchedRenderer!, this.state.textures);
-            demoObject.name = "Toon Projectile";
-        } else if (demoIndex === 1) {
-            demoObject = new BulletMuzzle(this.state.batchedRenderer!, this.state.textures);
-            demoObject.name = "BulletMuzzle";
-        } else if (demoIndex === 2) {
-            demoObject = new BulletProjectile(this.state.batchedRenderer!);
-            demoObject.name = "BulletProjectile";
-        } else if (demoIndex === 3) {
-            demoObject = new ShipSmoke(this.state.batchedRenderer!, this.state.textures);
-            demoObject.name = "shipSmoke";
-        } else if (demoIndex === 4) {
-            demoObject = new ToonExplosion(this.state.batchedRenderer!, this.state.textures);
-            demoObject.name = "ToonExplosion";
-        } else if (demoIndex === 5) {
-            demoObject = new Blackhole(this.state.batchedRenderer!, this.state.textures);
-            demoObject.name = "Blackhole";
-        } else if (demoIndex === 6) {
-            demoObject = new LevelUp(this.state.batchedRenderer!, this.state.textures);
-            demoObject.name = "LevelUp";
-        } else if (demoIndex === 7) {
-            demoObject = new EnergyRifleMuzzle(this.state.batchedRenderer!, this.state.textures);
-            demoObject.name = "EnergyRifleMuzzle";
-        } else if (demoIndex === 8) {
-            demoObject = new ElectricBall(this.state.batchedRenderer!, this.state.textures);
-            demoObject.name = "ElectricBall";
-        } else if (demoIndex === 9){
-            demoObject = new ShipTrail(this.state.batchedRenderer!, this.state.textures);
-            demoObject.name = "ShipTrail";
-        } else if (demoIndex === 10) {
-            demoObject = new Explosion2(this.state.batchedRenderer!, this.state.textures);
-            demoObject.name = "Explosion2";
+        switch (demoId) {
+            case "Projectile":
+                demoObject = createToonProjectile(this.state.batchedRenderer!, this.state.textures);
+                break;
+            case "BulletMuzzle":
+                demoObject = createBulletMuzzle(this.state.batchedRenderer!, this.state.textures);
+                break;
+            case "ShipSmoke":
+                demoObject = createShipSmoke(this.state.batchedRenderer!, this.state.textures);
+                break;
+            case "BlackHole":
+                demoObject = createBlackHole(this.state.batchedRenderer!, this.state.textures);
+                break;
+            case "LevelUp":
+                demoObject = createLevelUp(this.state.batchedRenderer!, this.state.textures);
+                break;
+            case "EnergyRifleMuzzle":
+                demoObject = createEnergyRifleMuzzle(this.state.batchedRenderer!, this.state.textures);
+                break;
+            case "ElectricBall":
+                demoObject = createElectricBall(this.state.batchedRenderer!, this.state.textures);
+                break;
+            case "ShipTrail":
+                demoObject = createShipTrail(this.state.batchedRenderer!, this.state.textures);
+                break;
+            case "Explosion":
+                demoObject = createExplosion(this.state.batchedRenderer!, this.state.textures);
+                break;
+            case "BigExplosion":
+                demoObject = createBigExplosion(this.state.batchedRenderer!, this.state.textures);
+                break;
         }
-
         if (demoObject) {
             /*const geometry = new BoxBufferGeometry( 10, 10, 10 );
             const material = new MeshBasicMaterial( {color: 0x00ff00} );
@@ -164,8 +160,8 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                 {img: process.env.PUBLIC_URL + '/textures/texture2.png', texture: texture2},
             ],
             actions: {
-                onOpenDemo: (index: number) => {
-                    this.addDemo(index);
+                onOpenDemo: (id: string) => {
+                    this.addDemo(id);
                     //this.setState({scene: scene});
                 },
                 onSaveAs: () => {
@@ -261,12 +257,14 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
             if (this.state.transformControls && this.state.transformControls.object === object3D) {
                 this.state.transformControls.detach();
             }
+            this.setState({});
         }
     };
 
     duplicateObject3d = (object3D: Object3D) => {
         if (object3D.parent) {
             object3D.parent.add(object3D.clone());
+            this.setState({});
         }
     }
 
@@ -292,6 +290,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                 });
                 object = particleSystem.emitter;
                 this.state.scene.add(object);
+                this.processParticleSystems(object);
                 break;
             }
             case 'box':

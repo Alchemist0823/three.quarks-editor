@@ -8,10 +8,8 @@ import {
     ParticleEmitter, PiecewiseBezier, PointEmitter, RandomColor,
     RenderMode, SphereEmitter,
     ValueGenerator,
-    ColorGeneratorFromJSON,
     ColorOverLife, FrameOverLife, OrbitOverLife,
     RotationOverLife, SizeOverLife, SpeedOverLife,
-    ValueGeneratorFromJSON
 } from "three.quarks";
 
 
