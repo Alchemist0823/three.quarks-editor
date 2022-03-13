@@ -19,11 +19,7 @@ interface ThreejsViewportProps {
     height: number;
 }
 
-interface ThreejsViewportStats {
-    viewPortControlType: string;
-}
-
-export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps, ThreejsViewportStats> {
+export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
     container: RefObject<HTMLDivElement>;
     stats?: Stats;
     camera?: PerspectiveCamera;
@@ -38,9 +34,6 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps, T
     constructor(props: Readonly<ThreejsViewportProps>) {
         super(props);
         this.container = React.createRef();
-        this.state = {
-            viewPortControlType: "camera"
-        }
     }
 
     componentDidMount(): void {
@@ -100,7 +93,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps, T
         this.camera.position.set(50, 50, 50);
 
         this.cameraControls = new OrbitControls( this.camera, this.renderer.domElement );
-        this.cameraControls.enableKeys = false;
+        //this.cameraControls.enableKeys = false;
         this.cameraControls.enableDamping = true;
         this.cameraControls.dampingFactor = 0.1;
         this.cameraControls.rotateSpeed = 0.2;
@@ -114,7 +107,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps, T
         this.transformControls = new TransformControls(this.camera, this.renderer.domElement);
         this.transformControls.name = 'TransformControls';
         this.transformControls.enabled = false;
-        this.transformControls!.visible = false;
+        this.transformControls.visible = false;
         scene.add(this.transformControls);
 
         this.appContext?.actions.setRenderer(this.batchedRenderer, this.transformControls);
@@ -201,7 +194,9 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps, T
         if (type === 'translate' || type === 'rotate' || type === 'scale') {
             this.transformControls!.mode = type;
         }
-        this.setState({viewPortControlType: type});
+        if (this.appContext) {
+            this.appContext.actions.setViewPortControlType(type);
+        }
     }
 
     render() {
@@ -212,7 +207,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps, T
                     if (context) {
                         this.appContext = context;
                         return <div ref={this.container} style={{width: '100%', height: '100%', position: 'relative'}}>
-                            <ViewPortControls controlType={this.state.viewPortControlType}
+                            <ViewPortControls controlType={context.viewPortControlType}
                                               setControlType={this.setViewPortControlType}/>
                         </div>;
                     }

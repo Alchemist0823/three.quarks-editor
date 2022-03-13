@@ -19,7 +19,7 @@ function generateEmitterGeometry(particleSystem: ParticleSystem) {
             break;
         }
         case "sphere":
-            geo = new SphereBufferGeometry((particleSystem.emitterShape as SphereEmitter).radius);
+            geo = new SphereBufferGeometry((particleSystem.emitterShape as SphereEmitter).radius, 8, 6);
             break;
         case "point":
             geo = new SphereBufferGeometry(1, 8, 6);

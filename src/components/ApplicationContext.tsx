@@ -43,6 +43,8 @@ export interface AppContext {
     selection: Array<Object3D>;
     textures: Array<TextureImage>;
     batchedRenderer?: BatchedParticleRenderer;
+
+    viewPortControlType: string;
     transformControls?: TransformControls;
 
     actions: {
@@ -58,6 +60,7 @@ export interface AppContext {
         addTexture: (textureImage: TextureImage) => void;
         setRenderer: (renderer: BatchedParticleRenderer, transformControls: TransformControls) => void;
         updateEmitterShape: (particleSystem: ParticleSystem) => void;
+        setViewPortControlType: (type: string) => void;
     }
     updateProperties: () => void;
 }
@@ -155,6 +158,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
             script: this.animate,
             batchedRenderer: undefined,
             selection: [],
+            viewPortControlType: "camera",
             textures: [
                 {img: process.env.PUBLIC_URL + '/textures/texture1.png', texture: texture1},
                 {img: process.env.PUBLIC_URL + '/textures/texture2.png', texture: texture2},
@@ -203,8 +207,13 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                     this.setState({selection: [object]});
                     this.state.transformControls?.detach();
                     this.state.transformControls?.attach(object);
-                    this.state.transformControls!.visible = false;
-                    console.log(this.state.transformControls?.visible);
+                    if (this.state.viewPortControlType !== 'camera') {
+                        this.state.transformControls!.visible = true;
+                        this.state.transformControls!.enabled = true;
+                    } else {
+                        this.state.transformControls!.visible = false;
+                        this.state.transformControls!.enabled = false;
+                    }
                 },
                 selectAddition: object => {
                     if (this.state.selection.indexOf(object) === -1) {
@@ -230,6 +239,9 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                            (obj as ParticleSystemPreviewObject).update();
                        }
                     });
+                },
+                setViewPortControlType: (type: string) => {
+                    this.setState({viewPortControlType: type});
                 }
             },
             updateProperties: this.updateProperties1,
