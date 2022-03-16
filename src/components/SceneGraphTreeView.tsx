@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useCallback, useContext} from "react";
 import {AppContext, ApplicationContext} from "./ApplicationContext";
 import {Object3D, Scene} from "three";
 import {ParticleEmitter} from "three.quarks";
@@ -110,9 +110,9 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
         borderBottomRightRadius: theme.spacing(2),
         paddingRight: theme.spacing(1),
         fontWeight: theme.typography.fontWeightMedium,
-        '&.Mui-expanded': {
+        /*'&.Mui-expanded': {
             fontWeight: theme.typography.fontWeightRegular,
-        },
+        },*/
         '&:hover': {
             backgroundColor: theme.palette.action.hover,
         },
@@ -227,13 +227,13 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
         return `[${type}] ${name}`;
     };
 
-    const renderObject = (context: AppContext, object3d: THREE.Object3D, index: number): [React.ReactNode, number] => {
+    const renderObject = useCallback((object3d: THREE.Object3D, index: number): [React.ReactNode, number] => {
         const items = [];
         const originIndex = index;
         index ++;
         for (const child of object3d.children) {
             if (shouldList(child)) {
-                const result = renderObject(context, child, index);
+                const result = renderObject(child, index);
                 items.push(result[0]);
                 index = result[1];
             }
@@ -272,7 +272,7 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
         } else {
             return [<React.Fragment>{items}</React.Fragment>, index];
         }
-    }
+    }, []);
 
     const onContextMenuClick = ({event, props}: MenuItemEventHandler) => console.log(event,props);
 
@@ -313,14 +313,18 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
     }
 
     const renderScene = () => {
+        //console.log("rerender TreeView");
         let selected: Object3D | null = null;// context.selection.map(obj => obj.uuid);
         if (context.selection.length > 0) {
             selected = context.selection[0];
         }
         if (selected) {
+            //console.log(selected.uuid);
             let current = selected;
             while (current.parent != null) {
-                expanded.push(current.parent.uuid)
+                if (expanded.indexOf(current.parent.uuid) === -1) {
+                    expanded.push(current.parent.uuid);
+                }
                 current = current.parent;
             }
         }
@@ -336,7 +340,7 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
             defaultExpandIcon={<ChevronRightIcon />}
             multiSelect={false}
         >
-            {renderObject(context, context.scene, 0)[0]}
+            {renderObject(context.scene, 0)[0]}
         </TreeView>;
     }
 
@@ -355,8 +359,8 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
             <Item onClick={onContextMenuRemove}>Remove</Item>
             <Separator />
             <Item onClick={onContextMenuExport}>Export</Item>
-            <Item onClick={onContextMenuCopyCode}>Copy JS Code</Item>
         </Menu>
         <ScrollDialog content={code} open={code !== ''} handleClose={()=>{setCode('')}} />
     </Box>;
 }
+//<Item onClick={onContextMenuCopyCode}>Copy JS Code</Item>

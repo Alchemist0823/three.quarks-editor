@@ -147,8 +147,11 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
         });
         const intersects = this.raycaster!.intersectObjects(list, false);
         if (intersects.length > 0) {
-            this.appContext!.actions.select(intersects[0].object.parent!);
             for (let i = 0; i < intersects.length; i++) {
+                if (this.appContext!.selection.length === 0 || intersects[i].object.parent! !== this.appContext!.selection[0]) {
+                    this.appContext!.actions.select(intersects[i].object.parent!);
+                    break;
+                }
                 //intersects[ i ].object.material.color.set( 0xff0000 );
             }
         } else {
