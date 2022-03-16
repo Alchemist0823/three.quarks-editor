@@ -51,6 +51,7 @@ export interface AppContext {
         onSaveAs: ()=>void;
         onImport: (files: FileList)=>void;
         select: (object: Object3D) => void;
+        clearSelection: () => void;
         selectAddition: (object: Object3D) => void;
         addObject3d: (type: string, parent: Object3D) => void;
         removeObject3d: (object: Object3D) => void;
@@ -183,6 +184,19 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                             this.processParticleSystems(object3D);
                         }, ()=>{}, ()=>{});
                     }
+                },
+                clearSelection: () => {
+                    if (this.state.selection) {
+                        for(const selected of this.state.selection) {
+                            selected.traverse((obj) => {
+                                if (obj.type === "ParticleSystemPreview") {
+                                    (obj as ParticleSystemPreviewObject).selected = false;
+                                }
+                            });
+                        }
+                    }
+                    this.setState({selection: []});
+                    this.state.transformControls?.detach();
                 },
                 select: object => {
                     if (this.state.selection) {

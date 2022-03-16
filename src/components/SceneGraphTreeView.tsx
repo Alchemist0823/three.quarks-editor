@@ -170,15 +170,15 @@ function StyledTreeItem(props: StyledTreeItemProps) {
 
 export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props) => {
     const context = useContext(ApplicationContext)!;
-    const [selected, setSelected] = React.useState<string>("");
-    const [expanded, setExpanded] = React.useState<string[]>(['1']);
+    //const [selected, setSelected] = React.useState<string>("");
+    const [expanded, setExpanded] = React.useState<string[]>([]);
 
     const [code, setCode] = React.useState<string>('');
 
     const shouldList = (child: Object3D) => {
         return child.type !== 'BatchedParticleRenderer' && child.type !== 'AxesHelper' && child.name !== 'TransformControls' && child.userData.listable !== false;
     }
-
+/*
     const countIndex = (index: number, object3d: Object3D): [Object3D | null, number] => {
         if (index === 0)
             return [object3d, 0];
@@ -192,16 +192,19 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
             }
         }
         return [null, index];
-    }
+    }*/
     const handleSelect = (event: React.ChangeEvent<any>, nodeIds: string) => {
         if (nodeIds.length > 0) {
-            const index = parseInt(nodeIds);
-            const [object3d, ] = countIndex(index, context.scene);
-            if (object3d) {
-                context.actions.select(object3d);
+            //const index = parseInt(nodeIds);
+            let selected;
+            context.scene.traverse((obj) => {
+                if(obj.uuid === nodeIds) selected = obj;});
+            //const [object3d, ] = countIndex(index, context.scene);
+            if (selected) {
+                context.actions.select(selected);
             }
         }
-        setSelected(nodeIds);
+        //setSelected(nodeIds);
     };
     const handleToggle = (event: React.ChangeEvent<any>, nodeIds: string[]) => {
         //console.log(event.target);
@@ -259,7 +262,7 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
                     break;
             }
 
-            return [<StyledTreeItem key={object3d.uuid} nodeId={originIndex + ""}
+            return [<StyledTreeItem key={object3d.uuid} nodeId={object3d.uuid}
                                          labelIcon={icon}
                                          labelText={getObjectName(object3d)}
                                          object3d={object3d}>
@@ -309,11 +312,23 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
         }
     }
 
-    const renderScene = (context: AppContext, scene: THREE.Scene) => {
+    const renderScene = () => {
+        let selected: Object3D | null = null;// context.selection.map(obj => obj.uuid);
+        if (context.selection.length > 0) {
+            selected = context.selection[0];
+        }
+        if (selected) {
+            let current = selected;
+            while (current.parent != null) {
+                expanded.push(current.parent.uuid)
+                current = current.parent;
+            }
+        }
+
         return <TreeView
             sx={{height: 240,
                 flexGrow: 1}}
-            selected={selected}
+            selected={selected ? selected.uuid : undefined}
             expanded={expanded}
             onNodeToggle={handleToggle}
             onNodeSelect={handleSelect}
@@ -321,7 +336,7 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
             defaultExpandIcon={<ChevronRightIcon />}
             multiSelect={false}
         >
-            {renderObject(context, scene, 0)[0]}
+            {renderObject(context, context.scene, 0)[0]}
         </TreeView>;
     }
 
@@ -329,7 +344,7 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
         <Typography sx={{
             fontSize: theme => theme.typography.pxToRem(15),
             fontWeight: theme =>theme.typography.fontWeightRegular}}> Scene Graph </Typography>
-        {renderScene(context, context.scene)}
+        {renderScene()}
         <Menu id="scene-graph-menu">
             <Submenu label="Add">
                 <Item onClick={onContextMenuAddParticleSystem}>Particle System</Item>

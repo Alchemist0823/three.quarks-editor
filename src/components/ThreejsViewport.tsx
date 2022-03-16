@@ -4,7 +4,7 @@ import {WEBGL} from "../WebGL";
 import {
     PerspectiveCamera,
     WebGLRenderer,
-    Clock, Color, AxesHelper, PointLight, AmbientLight,
+    Clock, Color, AxesHelper, PointLight, AmbientLight, Raycaster, Vector2, Object3D,
 } from "three";
 import {RefObject} from "react";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
@@ -24,6 +24,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
     stats?: Stats;
     camera?: PerspectiveCamera;
     renderer?: WebGLRenderer;
+    raycaster?: Raycaster;
     batchedRenderer?: BatchedParticleRenderer;
     transformControls?: TransformControls;
     private clock?: Clock;
@@ -110,6 +111,8 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
         this.transformControls.visible = false;
         scene.add(this.transformControls);
 
+        this.raycaster = new Raycaster();
+
         this.appContext?.actions.setRenderer(this.batchedRenderer, this.transformControls);
 
         this.stats = new Stats();
@@ -118,12 +121,39 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
         this.stats.dom.style.right = "0";
         this.container.current!.appendChild( this.stats.dom );
 
-        //window.addEventListener( 'resize', this.onWindowResize, false );
+        this.container.current!.addEventListener( 'pointerup', this.onPointerUp );
 
         this.onResize(null);
 
         return true;
 
+    }
+
+    onPointerUp = (event: MouseEvent) => {
+        const rect = (event.target! as HTMLDivElement).getBoundingClientRect();
+        const x = event.clientX - rect.left; //x position within the element.
+        const y = event.clientY - rect.top;
+        const tx = rect.right - rect.left; //x position within the element.
+        const ty = rect.bottom - rect.top;
+
+        const pointer = new Vector2();
+        pointer.x = ( x / tx ) * 2 - 1;
+        pointer.y = - ( y / ty ) * 2 + 1;
+        this.raycaster!.setFromCamera( pointer, this.camera! );
+        const list: Object3D[] = [];
+        this.appContext!.scene.traverse((obj: Object3D) => {
+            if (obj.type === "ParticleSystemPreview")
+                list.push( obj );
+        });
+        const intersects = this.raycaster!.intersectObjects(list, false);
+        if (intersects.length > 0) {
+            this.appContext!.actions.select(intersects[0].object.parent!);
+            for (let i = 0; i < intersects.length; i++) {
+                //intersects[ i ].object.material.color.set( 0xff0000 );
+            }
+        } else {
+            this.appContext!.actions.clearSelection();
+        }
     }
 
     onResize = (event: any ) => {
@@ -200,7 +230,6 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
     }
 
     render() {
-        console.log( "rendering ThreejsViewPort");
         return (
         <ApplicationContextConsumer>
             { context => {
