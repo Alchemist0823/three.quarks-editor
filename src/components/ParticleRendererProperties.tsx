@@ -77,18 +77,12 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
             case "StretchedBillBoard":
                 this.props.particleSystem.renderMode = RenderMode.StretchedBillBoard;
                 break;
+            case "Trail":
+                this.props.particleSystem.renderMode = RenderMode.Trail;
+                this.props.particleSystem.speedFactor = 0;
+                break;
         }
         this.props.updateProperties();
-    }
-    getValueOfRenderMode = (renderMode: RenderMode) => {
-        switch (renderMode) {
-            case RenderMode.BillBoard:
-                return "BillBoard"
-            case RenderMode.LocalSpace:
-                return "LocalSpace";
-            case RenderMode.StretchedBillBoard:
-                return "StretchedBillBoard";
-        }
     }
 
     onChangeWorldSpace = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -149,10 +143,8 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
             <div className="property-container">
                 <div className="property">
                     <label className="name">RenderMode</label>
-                    <select className="editor-select" onChange={this.onChangeRenderMode} value={this.getValueOfRenderMode(this.props.particleSystem.renderMode)}>
-                        <option key={0} value="BillBoard" >BillBoard</option>
-                        <option key={1} value="LocalSpace" >Local Space BillBoard</option>
-                        <option key={2} value="StretchedBillBoard" >Stretched BillBoard</option>
+                    <select className="editor-select" onChange={this.onChangeRenderMode} value={RenderMode[this.props.particleSystem.renderMode]}>
+                        {Object.keys(RenderMode).map((key: any) => RenderMode[key]).filter(value => typeof value === 'string').map((key, index) => <option key={index} value={key} >{key}</option>)}
                     </select>
                 </div>
                 {this.props.particleSystem.renderMode === RenderMode.StretchedBillBoard &&

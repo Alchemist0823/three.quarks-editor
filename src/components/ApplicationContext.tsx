@@ -290,8 +290,8 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                 const particleSystem = new ParticleSystem(this.state.batchedRenderer!, {
                     maxParticle: 10000,
                     shape: new ConeEmitter(),
-                    emissionOverTime: new ConstantValue(100),
-                    startLife: new ConstantValue(30),
+                    emissionOverTime: new ConstantValue(10),
+                    startLife: new ConstantValue(5),
                     startSpeed: new ConstantValue(10),
                     startSize: new ConstantValue(1),
                     startColor: new ConstantColor(new Vector4(1, 1, 1, 1)),
