@@ -1,9 +1,17 @@
 import * as React from 'react';
+import {styled, TextField, TextFieldProps} from "@mui/material";
 
 interface StringInputProps{
     value: string;
     onChange: (value: string)=>void;
 }
+
+export const CustomizedTextField = styled(TextField)<TextFieldProps>(({ theme }) => ({
+    width: 300,
+    '& .MuiInputBase-input': {
+        padding: "2px 4px",
+    }
+}));
 
 export const StringInput : React.FC<StringInputProps> = (props) => {
 
@@ -36,7 +44,7 @@ export const StringInput : React.FC<StringInputProps> = (props) => {
         }
     };
 
-    return <input className="string-input" value={focus? inputValue: props.value} size={20}
+    return <CustomizedTextField className="string-input" value={focus? inputValue: props.value}
             onChange={onInputChange} onBlur={onInputBlur} onFocus={onInputFocus} onKeyDown={onKeyDown}
         />;
 };

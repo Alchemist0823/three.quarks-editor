@@ -3,6 +3,7 @@ import {Euler, Object3D, Vector3} from "three";
 import {Vector3Editor} from "./editors/Vector3Editor";
 import {ApplicationContextConsumer} from "./ApplicationContext";
 import {StringInput} from "./editors/StringInput";
+import {Typography} from "@mui/material";
 
 
 interface ObjectPropertiesProps {
@@ -43,7 +44,7 @@ export class ObjectProperties extends React.PureComponent<ObjectPropertiesProps,
                 <ApplicationContextConsumer>
                     {context => context &&
                         <div className="property">
-                            <label className="name">Name:</label>
+                            <Typography component={"label"} className="name">Name:</Typography>
                             <StringInput value={this.props.object3d.name} onChange={this.onChangeName}/>
                         </div>
                     }

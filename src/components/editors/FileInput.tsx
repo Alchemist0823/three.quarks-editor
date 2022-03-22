@@ -1,5 +1,6 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
+import {Typography} from "@mui/material";
 
 
 interface FileInputProps {
@@ -27,11 +28,11 @@ export class FileInput extends React.Component<FileInputProps>
                 id="contained-button-file"
                 style={{display: 'none'}}
                 onChange={this.handleChange} />
-            <label htmlFor="contained-button-file">
+            <Typography component={"label"} htmlFor="contained-button-file">
                 <Button variant="contained" color="primary" component="span">
                     Upload
                 </Button>
-            </label>
+            </Typography>
         </div>;
     }
 }

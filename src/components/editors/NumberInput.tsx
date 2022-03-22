@@ -1,10 +1,21 @@
 import * as React from 'react';
 import "./NumberInput.scss";
+import {styled, TextField, TextFieldProps} from "@mui/material";
 
 interface NumberInputProps{
+    label?: string;
     value: number;
     onChange: (value: number)=>void;
 }
+
+
+const CustomizedTextField = styled(TextField)<TextFieldProps>(({ theme }) => ({
+    width: 100,
+    '& .MuiInputBase-input': {
+        padding: "2px 4px",
+    }
+}));
+
 
 export const NumberInput : React.FC<NumberInputProps> = (props) => {
 
@@ -39,7 +50,7 @@ export const NumberInput : React.FC<NumberInputProps> = (props) => {
         }
     };
 
-    return <input className="number-input" value={focus? inputValue: props.value} size={5}
-            onChange={onInputChange} onBlur={onInputBlur} onFocus={onInputFocus} onKeyDown={onKeyDown}
-        />;
+    return <CustomizedTextField label={props.label ?? ""} type="number" value={focus? inputValue: props.value}
+                                size={"small"} variant="outlined"
+                                onChange={onInputChange} onBlur={onInputBlur} onFocus={onInputFocus} onKeyDown={onKeyDown} />;
 };

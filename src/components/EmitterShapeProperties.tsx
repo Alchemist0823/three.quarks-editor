@@ -1,7 +1,18 @@
 import {ApplicationContextConsumer} from "./ApplicationContext";
-import {ConeEmitter, DonutEmitter, EmitterShape, ParticleSystem, PointEmitter, SphereEmitter} from "three.quarks";
+import {
+    ConeEmitter,
+    Constructable,
+    DonutEmitter,
+    EmitterShape,
+    EmitterTypes,
+    ParticleSystem,
+    PointEmitter,
+    SphereEmitter
+} from "three.quarks";
 import {NumberInput} from "./editors/NumberInput";
 import React, {ChangeEvent} from "react";
+import {MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
+import {SelectInput} from "./editors/SelectInput";
 
 
 interface EmitterShapePropertiesProps {
@@ -18,45 +29,13 @@ export class EmitterShapeProperties extends React.PureComponent<EmitterShapeProp
         super(props);
     }
 
-    getValueOfShape = (shape: EmitterShape) => {
-        if (this.props.particleSystem.emitterShape instanceof PointEmitter) {
-            return "PointEmitter";
-        } else if (this.props.particleSystem.emitterShape instanceof ConeEmitter) {
-            return "ConeEmitter";
-        } else if (this.props.particleSystem.emitterShape instanceof SphereEmitter) {
-            return "SphereEmitter";
-        } else if (this.props.particleSystem.emitterShape instanceof DonutEmitter) {
-            return "DonutEmitter";
-        } else
-            return "";
-    };
-
-    onChangeShape = (e: ChangeEvent<HTMLSelectElement>) => {
-        switch (e.target.value) {
-            case "PointEmitter":
-                if (!(this.props.particleSystem.emitterShape instanceof PointEmitter)) {
-                    this.props.particleSystem.emitterShape = new PointEmitter();
-                    this.props.updateProperties();
-                }
-                break;
-            case "ConeEmitter":
-                if (!(this.props.particleSystem.emitterShape instanceof ConeEmitter)) {
-                    this.props.particleSystem.emitterShape = new ConeEmitter();
-                    this.props.updateProperties();
-                }
-                break;
-            case "SphereEmitter":
-                if (!(this.props.particleSystem.emitterShape instanceof SphereEmitter)) {
-                    this.props.particleSystem.emitterShape = new SphereEmitter();
-                    this.props.updateProperties();
-                }
-                break;
-            case "DonutEmitter":
-                if (!(this.props.particleSystem.emitterShape instanceof DonutEmitter)) {
-                    this.props.particleSystem.emitterShape = new DonutEmitter();
-                    this.props.updateProperties();
-                }
-                break;
+    onChangeShape = (value: string) => {
+        if (this.props.particleSystem.emitterShape.type !== value) {
+            const entry = EmitterTypes.find(entry => entry[0] === value);
+            if (entry) {
+                this.props.particleSystem.emitterShape = new (entry[1] as Constructable<EmitterShape>)();
+                this.props.updateProperties();
+            }
         }
     };
 
@@ -68,12 +47,15 @@ export class EmitterShapeProperties extends React.PureComponent<EmitterShapeProp
     renderShapeProperties() {
         const properties = [];
         for (const key in this.props.particleSystem.emitterShape) {
-            properties.push(
-                <div key={key} className="property">
-                    <label className="name">{key}:</label>
-                    <NumberInput value={(this.props.particleSystem.emitterShape as any)[key]} onChange={(value) => this.onChangeKeyValue(key, value)}/>
-                </div>
-            );
+            if (key !== 'type') {
+                properties.push(
+                    <div key={key} className="property">
+                        <Typography className="name">{key}:</Typography>
+                        <NumberInput value={(this.props.particleSystem.emitterShape as any)[key]}
+                                     onChange={(value) => this.onChangeKeyValue(key, value)}/>
+                    </div>
+                );
+            }
         }
         return properties;
     }
@@ -84,13 +66,10 @@ export class EmitterShapeProperties extends React.PureComponent<EmitterShapeProp
                 <ApplicationContextConsumer>
                     {context => context &&
                         <div className="property">
-                            <label className="name">Shape</label>
-                            <select className="editor-select" onChange={this.onChangeShape} value={this.getValueOfShape(this.props.particleSystem.emitterShape)}>
-                                <option key={0} value="PointEmitter" >PointEmitter</option>
-                                <option key={1} value="ConeEmitter" >ConeEmitter</option>
-                                <option key={2} value="SphereEmitter" >SphereEmitter</option>
-                                <option key={3} value="DonutEmitter" >DonutEmitter</option>
-                            </select>
+                            <Typography className="name">Shape</Typography>
+                            <SelectInput onChange={this.onChangeShape}
+                                         value={this.props.particleSystem.emitterShape.type}
+                                         options={EmitterTypes.map(type => type[0] as string)} />
                         </div>
                     }
                 </ApplicationContextConsumer>

@@ -4,7 +4,8 @@ import {AppContext, ApplicationContextConsumer, TextureImage} from "./Applicatio
 import {ParticleSystem, RenderMode} from "three.quarks";
 import {NumberInput} from "./editors/NumberInput";
 import {TexturePicker} from "./TexturePicker";
-import {Button} from "@mui/material";
+import {Button, SelectChangeEvent, Typography} from "@mui/material";
+import {SelectInput} from "./editors/SelectInput";
 
 
 interface ParticleRendererPropertiesProps {
@@ -43,8 +44,8 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
         this.props.particleSystem.vTileCount = v;
         this.props.updateProperties();
     };
-    onChangeBlending = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        switch (e.target.value) {
+    onChangeBlending = (value: string) => {
+        switch (value) {
             case "Normal":
                 this.props.particleSystem.blending = NormalBlending;
                 break;
@@ -62,10 +63,11 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
             case AdditiveBlending:
                 return "Additive";
         }
+        return "Normal";
     }
 
-    onChangeRenderMode = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        switch (e.target.value) {
+    onChangeRenderMode = (value: string) => {
+        switch (value) {
             case "BillBoard":
                 this.props.particleSystem.renderMode = RenderMode.BillBoard;
                 this.props.particleSystem.speedFactor = 0;
@@ -85,8 +87,8 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
         this.props.updateProperties();
     }
 
-    onChangeWorldSpace = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        switch (e.target.value) {
+    onChangeWorldSpace = (value: string) => {
+        switch (value) {
             case "True":
                 this.props.particleSystem.worldSpace = true;
                 break;
@@ -142,41 +144,36 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
         return (
             <div className="property-container">
                 <div className="property">
-                    <label className="name">RenderMode</label>
-                    <select className="editor-select" onChange={this.onChangeRenderMode} value={RenderMode[this.props.particleSystem.renderMode]}>
-                        {Object.keys(RenderMode).map((key: any) => RenderMode[key]).filter(value => typeof value === 'string').map((key, index) => <option key={index} value={key} >{key}</option>)}
-                    </select>
+                    <Typography  component={"label"} className="name">RenderMode</Typography>
+                    <SelectInput onChange={this.onChangeRenderMode} value={RenderMode[this.props.particleSystem.renderMode]}
+                                 options={Object.keys(RenderMode).map((key: any) => RenderMode[key]).filter(value => typeof value === 'string')} />
                 </div>
                 {this.props.particleSystem.renderMode === RenderMode.StretchedBillBoard &&
                     <div className="property">
-                        <label className="name">SpeedFactor</label>
+                        <Typography  component={"label"} className="name">SpeedFactor</Typography>
                         <NumberInput value={this.props.particleSystem.speedFactor} onChange={this.onChangeSpeedFactor}/>
                     </div>
                 }
                 <div className="property">
-                    <label className="name">World Space</label>
-                    <select className="editor-select" onChange={this.onChangeWorldSpace} value={this.getValueOfBoolean(this.props.particleSystem.worldSpace)}>
-                        <option key={0} value="True" >True</option>
-                        <option key={1} value="False" >False</option>
-                    </select>
+                    <Typography  component={"label"} className="name">World Space</Typography>
+                    <SelectInput onChange={this.onChangeWorldSpace} value={this.getValueOfBoolean(this.props.particleSystem.worldSpace)}
+                        options={["True", "False"]}/>
                 </div>
                 <div className="property">
-                    <label className="name">Blend Mode</label>
-                    <select className="editor-select" onChange={this.onChangeBlending} value={this.getValueOfBlending(this.props.particleSystem.blending)}>
-                        <option key={0} value="Normal" >Normal</option>
-                        <option key={1} value="Additive" >Additive</option>
-                    </select>
+                    <Typography component={"label"} className="name">Blend Mode</Typography>
+                    <SelectInput onChange={this.onChangeBlending} value={this.getValueOfBlending(this.props.particleSystem.blending)}
+                                 options={["Normal", "Additive"]}/>
                 </div>
                 <div className="property">
-                    <label className="name">RenderOrder:</label><NumberInput value={this.props.particleSystem.renderOrder} onChange={this.onChangeRenderOrder}/>
+                    <Typography component={"label"} className="name">RenderOrder:</Typography><NumberInput value={this.props.particleSystem.renderOrder} onChange={this.onChangeRenderOrder}/>
                 </div>
                 <div className="property">
-                    <label className="name">UVTile</label>
-                    <label>Column:</label><NumberInput value={this.props.particleSystem.uTileCount} onChange={this.onChangeUTileCount}/>
-                    <label>Row:</label><NumberInput value={this.props.particleSystem.vTileCount} onChange={this.onChangeVTileCount}/>
+                    <Typography component={"label"} className="name">UVTile</Typography>
+                    <Typography component={"label"}>Column:</Typography><NumberInput value={this.props.particleSystem.uTileCount} onChange={this.onChangeUTileCount}/>
+                    <Typography component={"label"}>Row:</Typography><NumberInput value={this.props.particleSystem.vTileCount} onChange={this.onChangeVTileCount}/>
                 </div>
                 <div className="property">
-                    <label className="name">Start Tile Index</label><NumberInput value={this.props.particleSystem.startTileIndex} onChange={this.onChangeStartTile}/>
+                    <Typography component={"label"} className="name">Start Tile Index</Typography><NumberInput value={this.props.particleSystem.startTileIndex} onChange={this.onChangeStartTile}/>
                 </div>
                 <ApplicationContextConsumer>
                     {context => {
@@ -192,7 +189,7 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
                             gridHeight = texture.texture.image.height / this.props.particleSystem.vTileCount;
                         }
                         return <div className="property">
-                            <label className="name">Texture</label>
+                            <Typography component={"label"} className="name">Texture</Typography>
                             {texture && <img className="texture-preview" src={texture.img} alt={texture.texture.name}
                                              style={{objectPosition: `-${(this.props.particleSystem.startTileIndex % this.props.particleSystem.uTileCount) * gridWidth}px -${Math.floor(this.props.particleSystem.startTileIndex / this.props.particleSystem.uTileCount) * gridHeight}px`,
                                                  width: gridWidth,

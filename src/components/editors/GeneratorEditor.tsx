@@ -12,6 +12,8 @@ import {NumberInput} from "./NumberInput";
 import {ColorEditor} from "./ColorEditor";
 import "./GeneratorEditor.scss";
 import {BezierCurvesEditor} from "./bezier/BezierCurvesEditor";
+import {Typography} from "@mui/material";
+import {SelectInput} from "./SelectInput";
 
 type EditorType =
     'constant'
@@ -52,8 +54,8 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
             open: false,
         }
     }
-    changeEditor = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const editorType = e.target.value;
+    changeEditor = (value: string) => {
+        const editorType = value;
         let generator: GenericGenerator | null = null;
         switch(editorType) {
             case "constant":
@@ -188,11 +190,10 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
                 break;
         }
         return <div className="property">
-            <label className="name">{name}</label>
+            <Typography component={"label"} className="name">{name}</Typography>
             {editor}
-            <select className="editor-select" onChange={this.changeEditor} value={currentEditor}>
-                {editorTypes.map(editorType => <option key={editorType} value={editorType}>{editorType}</option>)}
-            </select>
+            <SelectInput onChange={this.changeEditor} value={currentEditor}
+                options={editorTypes} />
         </div>;
     }
 }

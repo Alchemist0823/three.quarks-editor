@@ -1,4 +1,6 @@
 .property-container {
+    display: flex;
+    flex-direction: column;
     width: 100%;
 }
 .property {
@@ -6,6 +8,7 @@
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
+    margin: 2px 4px;
     .name {
         width: 100px;
     }

@@ -4,6 +4,7 @@ import {Vector3Editor} from "./editors/Vector3Editor";
 import {ApplicationContextConsumer} from "./ApplicationContext";
 import {StringInput} from "./editors/StringInput";
 import {ScriptEditor} from "./editors/ScriptEditor";
+import {Typography} from "@mui/material";
 
 interface ScriptPropertiesProps {
     object3d: Object3D,
@@ -31,7 +32,7 @@ export class ScriptProperties extends React.PureComponent<ScriptPropertiesProps>
                 <ApplicationContextConsumer>
                     {context => context &&
                         <div className="property">
-                        <label className="script">Script:</label>
+                        <Typography component={"label"} className="script">Script:</Typography>
                         <ScriptEditor value={this.props.object3d.userData.script || ""} onChange={this.onChangeScript}/>
                         </div>
                     }
