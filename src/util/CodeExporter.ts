@@ -9,7 +9,7 @@ import {
     RenderMode, SphereEmitter,
     ValueGenerator,
     ColorOverLife, FrameOverLife, OrbitOverLife,
-    RotationOverLife, SizeOverLife, SpeedOverLife,
+    RotationOverLife, SizeOverLife, SpeedOverLife, ApplyForce,
 } from "three.quarks";
 
 
@@ -128,23 +128,26 @@ export class CodeExporter {
     static exportBehavior(behavior: Behavior) {
         let func;
         switch (behavior.type) {
+            case 'ApplyForce':
+                func = CodeExporter.exportFunction((behavior as ApplyForce).force);
+                break;
             case 'ColorOverLife':
-                func = CodeExporter.exportFunction((behavior as ColorOverLife).func)
+                func = CodeExporter.exportFunction((behavior as ColorOverLife).color);
                 break;
             case 'RotationOverLife':
-                func = CodeExporter.exportFunction((behavior as RotationOverLife).angularVelocityFunc)
+                func = CodeExporter.exportFunction((behavior as RotationOverLife).angularVelocity);
                 break;
             case 'SizeOverLife':
-                func = CodeExporter.exportFunction((behavior as SizeOverLife).func)
+                func = CodeExporter.exportFunction((behavior as SizeOverLife).size);
                 break;
             case 'SpeedOverLife':
-                func = CodeExporter.exportFunction((behavior as SpeedOverLife).func)
+                func = CodeExporter.exportFunction((behavior as SpeedOverLife).speed);
                 break;
             case 'FrameOverLife':
-                func = CodeExporter.exportFunction((behavior as FrameOverLife).func)
+                func = CodeExporter.exportFunction((behavior as FrameOverLife).frame);
                 break;
             case 'OrbitOverLife':
-                func = CodeExporter.exportFunction((behavior as OrbitOverLife).angularVelocityFunc)
+                func = CodeExporter.exportFunction((behavior as OrbitOverLife).orbitSpeed);
                 break;
             default:
                 func = behavior;

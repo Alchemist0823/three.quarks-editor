@@ -38,7 +38,6 @@ export class ObjectProperties extends React.PureComponent<ObjectPropertiesProps,
     };
 
     render() {
-        console.log('rendered objectProperties');
         return (
             <div className="property-container">
                 <ApplicationContextConsumer>

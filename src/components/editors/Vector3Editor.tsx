@@ -13,13 +13,12 @@ interface Vector3Props {
 
 export class Vector3Editor extends React.PureComponent<Vector3Props> {
     render() {
-        console.log('rendered Vector3');
         const {x, y, z, unitConversion = 1, onChange, name} = this.props;
         return(<div className="property">
                 <Typography className="name" component={"label"}>{name}</Typography>
-                <Typography component={"label"}>X:</Typography><NumberInput value={x * unitConversion} onChange={value => {onChange(value / unitConversion, y, z)}}/>
-                <Typography component={"label"}>Y:</Typography><NumberInput value={y * unitConversion} onChange={value => {onChange(x, value / unitConversion, z)}}/>
-                <Typography component={"label"}>Z:</Typography><NumberInput value={z * unitConversion} onChange={value => {onChange(x, y, value / unitConversion)}}/>
+                <Typography component={"label"}>x</Typography><NumberInput value={x * unitConversion} variant="short" onChange={value => {onChange(value / unitConversion, y, z)}}/>
+                <Typography component={"label"}>y</Typography><NumberInput value={y * unitConversion} variant="short" onChange={value => {onChange(x, value / unitConversion, z)}}/>
+                <Typography component={"label"}>z</Typography><NumberInput value={z * unitConversion} variant="short" onChange={value => {onChange(x, y, value / unitConversion)}}/>
             </div>
         );
     }

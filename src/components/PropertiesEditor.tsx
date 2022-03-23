@@ -86,6 +86,7 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
             expanded.splice(expanded.indexOf(panel), 1);
         }
         setExpanded(expanded);
+        context.updateProperties();
     };
 
     return (

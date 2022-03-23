@@ -1,7 +1,7 @@
 import * as React from "react";
 import {ApplicationContextConsumer} from "./ApplicationContext";
 import {GeneratorEditor, GenericGenerator, ValueType} from "./editors/GeneratorEditor";
-import {ParticleSystem} from "three.quarks";
+import {ParticleSystem, RenderMode} from "three.quarks";
 import {FunctionValueGenerator, ValueGenerator} from "three.quarks";
 import {ColorGenerator, FunctionColorGenerator} from "three.quarks";
 
@@ -15,40 +15,37 @@ export class ParticleSystemProperties extends React.PureComponent<ParticleSystem
         super(props);
     }
     onChangeStartSpeed = (g: GenericGenerator) => {
-        console.log("change start speed");
         this.props.particleSystem.startSpeed = g as ValueGenerator | FunctionValueGenerator;
         this.props.updateProperties();
     };
     onChangeStartLife = (g: GenericGenerator) => {
-        console.log("change start life");
         this.props.particleSystem.startLife = g as ValueGenerator | FunctionValueGenerator;
         this.props.updateProperties();
     };
     onChangeStartSize = (g: GenericGenerator) => {
-        console.log("change start size");
         this.props.particleSystem.startSize = g as ValueGenerator | FunctionValueGenerator;
         this.props.updateProperties();
     };
     onChangeStartColor = (g: GenericGenerator) => {
-        console.log("change start color");
         this.props.particleSystem.startColor = g as ColorGenerator | FunctionColorGenerator;
         this.props.updateProperties();
     };
-    OnChangeStartRotation = (g: GenericGenerator) => {
-        console.log("change start rotation");
+    onChangeStartRotation = (g: GenericGenerator) => {
         this.props.particleSystem.startRotation = g as ValueGenerator | FunctionValueGenerator;
         this.props.updateProperties();
     };
-    OnChangeEmissionOverTime = (g: GenericGenerator) => {
-        console.log("change start rotation");
+    onChangeEmissionOverTime = (g: GenericGenerator) => {
         this.props.particleSystem.emissionOverTime = g as ValueGenerator | FunctionValueGenerator;
+        this.props.updateProperties();
+    };
+    onChangeStartLength = (g: GenericGenerator) => {
+        this.props.particleSystem.startLength = g as ValueGenerator | FunctionValueGenerator;
         this.props.updateProperties();
     };
 
     render() {
-        console.log('rendered objectProperties');
-        const valueFunctionTypes = ['value', 'functionValue'] as Array<ValueType>;
-        const colorValueFunctionTypes = ['color', 'functionColor'] as Array<ValueType>;
+        const valueFunctionTypes: ValueType[] = ['value', 'valueFunc'];
+        const colorValueFunctionTypes: ValueType[] = ['color', 'colorFunc'];
         return (
             <div className="property-container">
                 <ApplicationContextConsumer>
@@ -67,6 +64,14 @@ export class ParticleSystemProperties extends React.PureComponent<ParticleSystem
                                          updateGenerator={this.onChangeStartSize}/>
                     }
                 </ApplicationContextConsumer>
+                {this.props.particleSystem.renderMode === RenderMode.Trail && <ApplicationContextConsumer>
+                    {context => context &&
+                        <GeneratorEditor name="Start Length"
+                                         allowedType={valueFunctionTypes}
+                                         generator={this.props.particleSystem.startLength}
+                                         updateGenerator={this.onChangeStartLength}/>
+                    }
+                </ApplicationContextConsumer>}
                 <ApplicationContextConsumer>
                     {context => context &&
                         <GeneratorEditor name="Start Speed"
@@ -88,15 +93,15 @@ export class ParticleSystemProperties extends React.PureComponent<ParticleSystem
                         <GeneratorEditor name="Start Rotation"
                                          allowedType={valueFunctionTypes}
                                          generator={this.props.particleSystem.startRotation}
-                                         updateGenerator={this.OnChangeStartRotation}/>
+                                         updateGenerator={this.onChangeStartRotation}/>
                     }
                 </ApplicationContextConsumer>
                 <ApplicationContextConsumer>
                     {context => context &&
-                        <GeneratorEditor name="Emission Over Time"
+                        <GeneratorEditor name="Emit Over Time"
                                          allowedType={valueFunctionTypes}
                                          generator={this.props.particleSystem.emissionOverTime}
-                                         updateGenerator={this.OnChangeEmissionOverTime}/>
+                                         updateGenerator={this.onChangeEmissionOverTime}/>
                     }
                 </ApplicationContextConsumer>
             </div>

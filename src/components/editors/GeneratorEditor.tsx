@@ -22,14 +22,16 @@ type EditorType =
     | 'color'
     | 'randomColor'
     | 'colorRange'
-    | 'gradient';
-export type ValueType = 'value' | 'functionValue' | 'color' | 'functionColor';
+    | 'gradient'
+    | 'vec3';
+export type ValueType = 'value' | 'valueFunc' | 'color' | 'colorFunc' | 'vec3';
 
 const ValueToEditor: { [a: string]: Array<EditorType> } = {
     'value': ['constant', 'intervalValue'],
-    'functionValue': ['piecewiseBezier'],
+    'valueFunc': ['piecewiseBezier'],
     'color': ['color', 'randomColor'],
-    'functionColor': ['colorRange', 'gradient'],
+    'colorFunc': ['colorRange', 'gradient'],
+    'vec3': ['vec3'],
 };
 
 export type GenericGenerator = ValueGenerator | FunctionValueGenerator | ColorGenerator | FunctionColorGenerator;

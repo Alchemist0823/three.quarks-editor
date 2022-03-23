@@ -2,6 +2,7 @@ import * as React from 'react';
 import {ColorResult, SketchPicker} from "react-color";
 import {Vector4} from "three";
 import "./ColorEditor.scss";
+import {Button} from "@mui/material";
 
 interface ColorEditorProps {
     color: Vector4;
@@ -36,8 +37,8 @@ export const ColorEditor: React.FC<ColorEditorProps> = (props) => {
 
     return (
         <div className="color-editor">
-            <button style={{backgroundColor: ConvertToColor(color), height: '20px'}} onClick={togglePicker}/>
-            {ConvertToColor(color)}
+            <Button variant="outlined" size="small" sx={{backgroundColor: ConvertToColor(color), height: '20px'}} onClick={togglePicker}/>
+            {/*ConvertToColor(color)*/}
             {
                 open ? <div className="popover">
                     <div className="cover" onClick={closePicker}/>

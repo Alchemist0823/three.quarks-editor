@@ -169,8 +169,8 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
                 </div>
                 <div className="property">
                     <Typography component={"label"} className="name">UVTile</Typography>
-                    <Typography component={"label"}>Column:</Typography><NumberInput value={this.props.particleSystem.uTileCount} onChange={this.onChangeUTileCount}/>
-                    <Typography component={"label"}>Row:</Typography><NumberInput value={this.props.particleSystem.vTileCount} onChange={this.onChangeVTileCount}/>
+                    <Typography component={"label"}>Column:</Typography><NumberInput variant="short" value={this.props.particleSystem.uTileCount} onChange={this.onChangeUTileCount}/>
+                    <Typography component={"label"}>Row:</Typography><NumberInput variant="short" value={this.props.particleSystem.vTileCount} onChange={this.onChangeVTileCount}/>
                 </div>
                 <div className="property">
                     <Typography component={"label"} className="name">Start Tile Index</Typography><NumberInput value={this.props.particleSystem.startTileIndex} onChange={this.onChangeStartTile}/>
