@@ -28,6 +28,7 @@ import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 import {Vector3Editor} from "./editors/Vector3Editor";
 import {Vector3} from "three";
+import {NumberInput} from "./editors/NumberInput";
 
 const Accordion = styled((props: AccordionProps) => (
     <MuiAccordion elevation={0} square {...props} />
@@ -98,6 +99,12 @@ export const BehaviorEditor:React.FC<BehaviorEditorProps> = (props) => {
         context.updateProperties();
     }
 
+    const onChangeNumber = (paramName: string) => (x: number) => {
+        const behavior = props.behavior;
+        (behavior as any)[paramName] = x;
+        context.updateProperties();
+    }
+
     const onChangeVec3 = (paramName: string) => (x: number, y: number, z: number) => {
         const behavior = props.behavior;
         (behavior as any)[paramName].x = x;
@@ -115,6 +122,11 @@ export const BehaviorEditor:React.FC<BehaviorEditorProps> = (props) => {
     const entry = BehaviorTypes[behavior.type];
     const editor = entry.params.map(([varName, type]) => {
         switch (type) {
+            case 'number':
+                return <div className="property" key={varName}>
+                    <Typography component={"label"} className="name">{varName}</Typography>
+                    <NumberInput key={varName} value={(behavior as any)[varName]}  onChange={onChangeNumber(varName)}/>
+                </div>;
             case 'vec3':
                 return <Vector3Editor key={varName} name={varName}
                                       x={((behavior as any)[varName] as Vector3).x}

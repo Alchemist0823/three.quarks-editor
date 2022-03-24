@@ -130,32 +130,34 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
     }
 
     onPointerUp = (event: MouseEvent) => {
-        const rect = (event.target! as HTMLDivElement).getBoundingClientRect();
-        const x = event.clientX - rect.left; //x position within the element.
-        const y = event.clientY - rect.top;
-        const tx = rect.right - rect.left; //x position within the element.
-        const ty = rect.bottom - rect.top;
+        if (this.appContext!.viewPortControlType !== 'camera') {
+            const rect = (event.target! as HTMLDivElement).getBoundingClientRect();
+            const x = event.clientX - rect.left; //x position within the element.
+            const y = event.clientY - rect.top;
+            const tx = rect.right - rect.left; //x position within the element.
+            const ty = rect.bottom - rect.top;
 
-        const pointer = new Vector2();
-        pointer.x = ( x / tx ) * 2 - 1;
-        pointer.y = - ( y / ty ) * 2 + 1;
-        this.raycaster!.setFromCamera( pointer, this.camera! );
-        const list: Object3D[] = [];
-        this.appContext!.scene.traverse((obj: Object3D) => {
-            if (obj.type === "ParticleSystemPreview")
-                list.push( obj );
-        });
-        const intersects = this.raycaster!.intersectObjects(list, false);
-        if (intersects.length > 0) {
-            for (let i = 0; i < intersects.length; i++) {
-                if (this.appContext!.selection.length === 0 || intersects[i].object.parent! !== this.appContext!.selection[0]) {
-                    this.appContext!.actions.select(intersects[i].object.parent!);
-                    break;
+            const pointer = new Vector2();
+            pointer.x = (x / tx) * 2 - 1;
+            pointer.y = -(y / ty) * 2 + 1;
+            this.raycaster!.setFromCamera(pointer, this.camera!);
+            const list: Object3D[] = [];
+            this.appContext!.scene.traverse((obj: Object3D) => {
+                if (obj.type === "ParticleSystemPreview")
+                    list.push(obj);
+            });
+            const intersects = this.raycaster!.intersectObjects(list, false);
+            if (intersects.length > 0) {
+                for (let i = 0; i < intersects.length; i++) {
+                    if (this.appContext!.selection.length === 0 || intersects[i].object.parent! !== this.appContext!.selection[0]) {
+                        this.appContext!.actions.select(intersects[i].object.parent!);
+                        break;
+                    }
+                    //intersects[ i ].object.material.color.set( 0xff0000 );
                 }
-                //intersects[ i ].object.material.color.set( 0xff0000 );
+            } else {
+                this.appContext!.actions.clearSelection();
             }
-        } else {
-            this.appContext!.actions.clearSelection();
         }
     }
 

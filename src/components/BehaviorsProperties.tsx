@@ -42,6 +42,9 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
             const params = entry.params as string[][];
             for (let i = 0; i < params.length; i ++) {
                 switch (params[i][1]) {
+                    case "number":
+                        args.push(1);
+                        break;
                     case "vec3":
                         args.push(new Vector3(0, 0, 0));
                         break;
