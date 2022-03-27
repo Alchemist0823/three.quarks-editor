@@ -311,6 +311,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                 this.state.scene.add(this.selectBox);
             } else {
                 this.selectBox.setFromObject(object3D);
+                this.selectBox.visible = true;
             }
         }
 
@@ -330,7 +331,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
         if (this.state.selection.length > 0) {
             if (Selectables.indexOf(this.state.selection[0].type) !== -1) {
                 if (this.selectBox) {
-                    this.selectBox.update();
+                    this.selectBox.visible = false;
                 }
             }
             for (const selected of this.state.selection) {
@@ -347,6 +348,9 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
 
     removeObject3d = (object3D: Object3D) => {
         if (object3D.parent) {
+            if (this.state.selection.length > 0 && object3D === this.state.selection[0]) {
+                this.clearSelection();
+            }
             object3D.parent.remove(object3D);
             object3D.traverse((obj) => {
                 if (obj.type === 'ParticleEmitter') {
@@ -410,6 +414,8 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
         /*this.toonProjectile!.position.x += delta * 30;
         if (this.toonProjectile!.position.x > 20)
             this.toonProjectile!.position.x = -20;*/
+
+        this.selectBox?.update();
 
         this.update += delta;
         if (this.update > 0.1) {

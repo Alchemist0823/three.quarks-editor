@@ -46,7 +46,6 @@ export default class MainMenu extends React.PureComponent<MainMenuProps, MainMen
     };
 
     handleMenuClick = (event: React.MouseEvent<Element, MouseEvent>) => {
-        console.log(event.currentTarget);
         this.setState({anchorEl: event.currentTarget});
     };
 
