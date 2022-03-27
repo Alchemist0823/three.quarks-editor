@@ -13,6 +13,7 @@ import {AppContext, ApplicationContextConsumer} from "./ApplicationContext";
 import * as THREE from "three";
 import {TransformControls} from "three/examples/jsm/controls/TransformControls";
 import {ViewPortControls} from "./ViewPortControls";
+import {TutorialHint} from "./TutorialHint";
 
 interface ThreejsViewportProps {
     width: number;
@@ -97,7 +98,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
 
         this.raycaster = new Raycaster();
 
-        this.appContext?.actions.setRenderer(this.transformControls);
+        this.appContext?.actions.setRenderer(this.transformControls, this.cameraControls);
 
         this.stats = new Stats();
         this.stats.dom.style.position = "absolute";
@@ -217,20 +218,6 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
     }
 
     setViewPortControlType = (type: string) => {
-        if (type === 'camera') {
-            this.cameraControls!.enabled = true;
-            this.transformControls!.enabled = false;
-            this.transformControls!.visible = false;
-
-            this.transformControls!.detach();
-        } else {
-            this.cameraControls!.enabled = false;
-            this.transformControls!.enabled = true;
-            this.transformControls!.visible = true;
-        }
-        if (type === 'translate' || type === 'rotate' || type === 'scale') {
-            this.transformControls!.mode = type;
-        }
         if (this.appContext) {
             this.appContext.actions.setViewPortControlType(type);
         }
@@ -245,6 +232,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
                         return <div ref={this.container} style={{width: '100%', height: '100%', position: 'relative'}}>
                             <ViewPortControls controlType={context.viewPortControlType}
                                               setControlType={this.setViewPortControlType}/>
+                            <TutorialHint controlType={context.viewPortControlType}/>
                         </div>;
                     }
                 }

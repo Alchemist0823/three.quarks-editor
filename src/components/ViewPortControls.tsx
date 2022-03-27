@@ -22,7 +22,7 @@ export const ViewPortControls: React.FC<ViewPortControlsProps> = (props) => {
         exclusive
         onChange={handleControlMode}
         aria-label="controlType"
-        sx={{position: "absolute", top: 8, left: 8}}
+        sx={{position: "absolute", top: 8, left: 8, backgroundColor: "white"}}
     >
         <ToggleButton  value="camera">
             <CameraAlt/>

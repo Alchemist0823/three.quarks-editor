@@ -33,6 +33,7 @@ import {createToonProjectile} from "../example/ToonProjectile";
 import {createShipSmoke} from "../example/ShipSmoke";
 import {createLevelUp} from "../example/LevelUp";
 import {GLTF, GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
 
 export interface TextureImage {
@@ -51,6 +52,7 @@ export interface AppContext {
 
     viewPortControlType: string;
     transformControls?: TransformControls;
+    cameraControls?: OrbitControls;
 
     actions: {
         onOpenDemo: (id: string) => void;
@@ -64,7 +66,7 @@ export interface AppContext {
         duplicateObject3d: (object: Object3D) => void;
         updateParticleSystem: (object: ParticleEmitter) => void;
         addTexture: (textureImage: TextureImage) => void;
-        setRenderer: (transformControls: TransformControls) => void;
+        setRenderer: (transformControls: TransformControls, cameraControls: OrbitControls) => void;
         updateEmitterShape: (particleSystem: ParticleSystem) => void;
         setViewPortControlType: (type: string) => void;
     }
@@ -229,8 +231,8 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                     this.state.textures.push(textureImage);
                     this.setState({textures: this.state.textures});
                 },
-                setRenderer: (transformControls: TransformControls) => {
-                    this.setState({transformControls});
+                setRenderer: (transformControls: TransformControls, cameraControls) => {
+                    this.setState({transformControls, cameraControls});
                 },
                 updateEmitterShape(particleSystem: ParticleSystem) {
                     particleSystem.emitter.traverse(obj => {
@@ -240,6 +242,22 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                     });
                 },
                 setViewPortControlType: (type: string) => {
+                    if (type === 'camera') {
+                        this.state.cameraControls!.enabled = true;
+                        this.state.transformControls!.enabled = false;
+                        this.state.transformControls!.visible = false;
+
+                        this.state.transformControls!.detach();
+                    } else {
+                        this.state.cameraControls!.enabled = false;
+                        if (this.state.selection.length > 0) {
+                            this.state.transformControls!.enabled = true;
+                            this.state.transformControls!.visible = true;
+                        }
+                    }
+                    if (type === 'translate' || type === 'rotate' || type === 'scale') {
+                        this.state.transformControls!.mode = type;
+                    }
                     this.setState({viewPortControlType: type});
                 }
             },
