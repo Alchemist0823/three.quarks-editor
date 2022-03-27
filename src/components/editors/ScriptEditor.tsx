@@ -6,6 +6,7 @@ import "./ScriptEditor.scss";
 interface ScriptEditorProps{
     value: string;
     onChange: (value: string)=>void;
+    className?: string;
 }
 
 export const ScriptEditor : React.FC<ScriptEditorProps> = (props) => {
@@ -41,6 +42,7 @@ export const ScriptEditor : React.FC<ScriptEditorProps> = (props) => {
 
     return(
         <Editor
+            className={props.className}
             value={focus? inputValue: props.value}
             onValueChange={onInputChange}
             highlight={code => highlight(code, languages.javascript, "javascript")}

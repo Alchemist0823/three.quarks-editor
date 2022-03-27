@@ -31,10 +31,12 @@ export class ScriptProperties extends React.PureComponent<ScriptPropertiesProps>
             <div>
                 <ApplicationContextConsumer>
                     {context => context &&
-                        <div className="property">
-                        <Typography component={"label"} className="script">Script:</Typography>
-                        <ScriptEditor value={this.props.object3d.userData.script || ""} onChange={this.onChangeScript}/>
-                        </div>
+                        <React.Fragment>
+                        <Typography component={"label"} className="script">Script:</Typography> <br/>
+                        <Typography component={"code"} className="script">function update(delta) &#123;</Typography>
+                        <ScriptEditor className="editor" value={this.props.object3d.userData.script || ""} onChange={this.onChangeScript}/>
+                        <Typography component={"code"} className="script">&#125;</Typography>
+                        </React.Fragment>
                     }
                 </ApplicationContextConsumer>
             </div>

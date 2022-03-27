@@ -249,6 +249,8 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
                     icon = CodeIcon;
                     break;
                 case "AmbientLight":
+                case "DirectionalLight":
+                case "PointLight":
                     icon = LightbulbIcon;
                     break;
                 case "Group":
