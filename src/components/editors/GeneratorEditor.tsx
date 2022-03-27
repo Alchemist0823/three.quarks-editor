@@ -39,8 +39,8 @@ export type GenericGenerator = ValueGenerator | FunctionValueGenerator | ColorGe
 interface GeneratorEditorProps {
     allowedType: Array<ValueType>;
     name: string;
-    generator: GenericGenerator;
-    updateGenerator: (generator: GenericGenerator) => void;
+    value: GenericGenerator;
+    onChange: (generator: GenericGenerator) => void;
 }
 
 interface GeneratorEditorState {
@@ -80,46 +80,46 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
                 break;
         }
         if (generator)
-            this.props.updateGenerator(generator);
+            this.props.onChange(generator);
     }
 
     changeValue = (x: number) => {
-        this.props.updateGenerator(new ConstantValue(x));
+        this.props.onChange(new ConstantValue(x));
     };
 
     changeColor = (x: Vector4) => {
-        this.props.updateGenerator(new ConstantColor(x));
+        this.props.onChange(new ConstantColor(x));
     };
 
     changeValueA = (x: number) => {
-        const interval = this.props.generator as IntervalValue;
-        this.props.updateGenerator(new IntervalValue(x, interval.b));
+        const interval = this.props.value as IntervalValue;
+        this.props.onChange(new IntervalValue(x, interval.b));
     };
 
     changeValueB = (x: number) => {
-        const interval = this.props.generator as IntervalValue;
-        this.props.updateGenerator(new IntervalValue(interval.a, x));
+        const interval = this.props.value as IntervalValue;
+        this.props.onChange(new IntervalValue(interval.a, x));
     };
 
     changeColorRangeA = (x: Vector4) => {
-        const colorRange = this.props.generator as ColorRange;
-        this.props.updateGenerator(new ColorRange(x, colorRange.b));
+        const colorRange = this.props.value as ColorRange;
+        this.props.onChange(new ColorRange(x, colorRange.b));
     };
     changeColorRangeB = (x: Vector4) => {
-        const colorRange = this.props.generator as ColorRange;
-        this.props.updateGenerator(new ColorRange(colorRange.a, x));
+        const colorRange = this.props.value as ColorRange;
+        this.props.onChange(new ColorRange(colorRange.a, x));
     };
     changeRandomColorA = (x: Vector4) => {
-        const randomColor = this.props.generator as RandomColor;
-        this.props.updateGenerator(new RandomColor(x, randomColor.b));
+        const randomColor = this.props.value as RandomColor;
+        this.props.onChange(new RandomColor(x, randomColor.b));
     };
     changeRandomColorB = (x: Vector4) => {
-        const randomColor = this.props.generator as RandomColor;
-        this.props.updateGenerator(new RandomColor(randomColor.a, x));
+        const randomColor = this.props.value as RandomColor;
+        this.props.onChange(new RandomColor(randomColor.a, x));
     };
 
     changeCurve = (x: PiecewiseBezier) => {
-        this.props.updateGenerator(new PiecewiseBezier(x.functions));
+        this.props.onChange(new PiecewiseBezier(x.functions));
     }
 
     getEditorType(generator: GenericGenerator): EditorType {
@@ -143,7 +143,7 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
 
     render() {
         //console.log('render GeneratorEditor');
-        const {name, generator, allowedType} = this.props;
+        const {name, value, allowedType} = this.props;
 
         const editorTypes = [];
         for (const valueType of allowedType) {
@@ -152,42 +152,43 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
             }
         }
 
-        const currentEditor = this.getEditorType(generator);
+        const currentEditor = this.getEditorType(value);
         //console.log(currentEditor);
 
         let editor;
         switch (currentEditor) {
             case "constant":
                 editor = <React.Fragment>
-                    <NumberInput value={(generator as ConstantValue).value}
+                    <NumberInput value={(value as ConstantValue).value}
                                  onChange={this.changeValue}/></React.Fragment>;
                 break;
             case "color":
                 editor = (<React.Fragment>
-                    <ColorEditor color={(generator as ConstantColor).color} onChange={this.changeColor}/>
+                    <ColorEditor color={(value as ConstantColor).color} onChange={this.changeColor}/>
                 </React.Fragment>);
                 break;
             case "intervalValue":
                 editor = <React.Fragment>
-                    <NumberInput value={(generator as IntervalValue).a}
-                                 onChange={this.changeValueA}/>-<NumberInput
-                    value={(generator as IntervalValue).b} onChange={this.changeValueB}/></React.Fragment>;
+                    <NumberInput variant="short" value={(value as IntervalValue).a}
+                                 onChange={this.changeValueA}/>-
+                    <NumberInput variant="short" value={(value as IntervalValue).b}
+                                 onChange={this.changeValueB}/></React.Fragment>;
                 break;
             case "piecewiseBezier":
                 editor = <React.Fragment>
-                    <BezierCurvesEditor height={40} width={240} value={(generator as PiecewiseBezier)} onChange={this.changeCurve}/>
+                    <BezierCurvesEditor height={40} width={240} value={(value as PiecewiseBezier)} onChange={this.changeCurve}/>
                 </React.Fragment>;
                 break;
             case "colorRange":
                 editor = (<React.Fragment>
-                    <ColorEditor color={(generator as ColorRange).a} onChange={this.changeColorRangeA}/>-
-                    <ColorEditor color={(generator as ColorRange).b} onChange={this.changeColorRangeB}/>
+                    <ColorEditor color={(value as ColorRange).a} onChange={this.changeColorRangeA}/>-
+                    <ColorEditor color={(value as ColorRange).b} onChange={this.changeColorRangeB}/>
                 </React.Fragment>);
                 break;
             case "randomColor":
                 editor = (<React.Fragment>
-                    <ColorEditor color={(generator as RandomColor).a} onChange={this.changeRandomColorA}/>-
-                    <ColorEditor color={(generator as RandomColor).b} onChange={this.changeRandomColorB}/>
+                    <ColorEditor color={(value as RandomColor).a} onChange={this.changeRandomColorA}/>-
+                    <ColorEditor color={(value as RandomColor).b} onChange={this.changeRandomColorB}/>
                 </React.Fragment>);
                 break;
         }

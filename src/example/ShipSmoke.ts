@@ -37,7 +37,7 @@ export function createShipSmoke(renderer: BatchedParticleRenderer, textures: Tex
         }),
         texture: texture,
         blending: NormalBlending,
-        startTileIndex: 2,
+        startTileIndex: new ConstantValue(2),
         uTileCount: 10,
         vTileCount: 10,
         renderMode: RenderMode.BillBoard,

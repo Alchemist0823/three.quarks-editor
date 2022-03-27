@@ -137,8 +137,8 @@ export const BehaviorEditor:React.FC<BehaviorEditorProps> = (props) => {
             case 'value':
                 return <GeneratorEditor key={varName} name={varName}
                                         allowedType={[type]}
-                                        generator={(behavior as any)[varName] as any}
-                                        updateGenerator={onChangeBehaviorFunc(varName)}/>
+                                        value={(behavior as any)[varName] as any}
+                                        onChange={onChangeBehaviorFunc(varName)}/>
         }
     });
 

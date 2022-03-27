@@ -1,11 +1,12 @@
 import * as React from "react";
 import {AdditiveBlending, Blending, NormalBlending, Texture} from "three";
 import {AppContext, ApplicationContextConsumer, TextureImage} from "./ApplicationContext";
-import {ParticleSystem, RenderMode} from "three.quarks";
+import {ParticleSystem, RenderMode, ValueGenerator} from "three.quarks";
 import {NumberInput} from "./editors/NumberInput";
 import {TexturePicker} from "./TexturePicker";
 import {Button, SelectChangeEvent, Typography} from "@mui/material";
 import {SelectInput} from "./editors/SelectInput";
+import {GeneratorEditor, GenericGenerator} from "./editors/GeneratorEditor";
 
 
 interface ParticleRendererPropertiesProps {
@@ -32,8 +33,8 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
         this.props.particleSystem.renderOrder = order;
         this.props.updateProperties();
     };
-    onChangeStartTile = (index: number) => {
-        this.props.particleSystem.startTileIndex = index;
+    onChangeStartTile = (index: GenericGenerator) => {
+        this.props.particleSystem.startTileIndex = index as ValueGenerator;
         this.props.updateProperties();
     };
     onChangeUTileCount = (u: number) => {
@@ -173,7 +174,7 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
                     <Typography component={"label"}>Row:</Typography><NumberInput variant="short" value={this.props.particleSystem.vTileCount} onChange={this.onChangeVTileCount}/>
                 </div>
                 <div className="property">
-                    <Typography component={"label"} className="name">Start Tile Index</Typography><NumberInput value={this.props.particleSystem.startTileIndex} onChange={this.onChangeStartTile}/>
+                    <GeneratorEditor name="Start Tile Index" allowedType={["value"]} onChange={this.onChangeStartTile} value={this.props.particleSystem.startTileIndex}/>
                 </div>
                 <ApplicationContextConsumer>
                     {context => {
@@ -188,10 +189,11 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
                             gridWidth = texture.texture.image.width / this.props.particleSystem.uTileCount;
                             gridHeight = texture.texture.image.height / this.props.particleSystem.vTileCount;
                         }
+                        const index = this.props.particleSystem.startTileIndex.genValue();
                         return <div className="property">
                             <Typography component={"label"} className="name">Texture</Typography>
                             {texture && <img className="texture-preview" src={texture.img} alt={texture.texture.name}
-                                             style={{objectPosition: `-${(this.props.particleSystem.startTileIndex % this.props.particleSystem.uTileCount) * gridWidth}px -${Math.floor(this.props.particleSystem.startTileIndex / this.props.particleSystem.uTileCount) * gridHeight}px`,
+                                             style={{objectPosition: `-${(index % this.props.particleSystem.uTileCount) * gridWidth}px -${Math.floor(index / this.props.particleSystem.uTileCount) * gridHeight}px`,
                                                  width: gridWidth,
                                                  height: gridHeight}}/>}
                             {/*this.props.particleSystem.texture ? this.props.particleSystem.texture.name : ".."*/}

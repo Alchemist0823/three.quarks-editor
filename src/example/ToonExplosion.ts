@@ -46,7 +46,7 @@ export function createToonExplosion(renderer: BatchedParticleRenderer, textures:
         }),
         texture: texture,
         blending: AdditiveBlending,
-        startTileIndex: 0,
+        startTileIndex: new ConstantValue(0),
         uTileCount: 10,
         vTileCount: 10,
         renderOrder: 2,
@@ -83,7 +83,7 @@ export function createToonExplosion(renderer: BatchedParticleRenderer, textures:
         }),
         texture: texture,
         blending: AdditiveBlending,
-        startTileIndex: 0,
+        startTileIndex: new ConstantValue(0),
         uTileCount: 10,
         vTileCount: 10,
         renderOrder: 2,
@@ -119,7 +119,7 @@ export function createToonExplosion(renderer: BatchedParticleRenderer, textures:
 
         texture: texture,
         blending: NormalBlending,
-        startTileIndex: 2,
+        startTileIndex: new ConstantValue(2),
         uTileCount: 10,
         vTileCount: 10,
         renderOrder: -2,
@@ -157,7 +157,7 @@ export function createToonExplosion(renderer: BatchedParticleRenderer, textures:
         }),
         texture: texture,
         blending: NormalBlending,
-        startTileIndex: 0,
+        startTileIndex: new ConstantValue(0),
         uTileCount: 10,
         vTileCount: 10,
         renderMode: RenderMode.StretchedBillBoard,
@@ -191,7 +191,7 @@ export function createToonExplosion(renderer: BatchedParticleRenderer, textures:
         shape: new PointEmitter(),
         texture: texture,
         blending: AdditiveBlending,
-        startTileIndex: 1,
+        startTileIndex: new ConstantValue(1),
         uTileCount: 10,
         vTileCount: 10,
         renderOrder: 0,
@@ -222,7 +222,7 @@ export function createToonExplosion(renderer: BatchedParticleRenderer, textures:
         shape: new PointEmitter(),
         texture: texture,
         blending: AdditiveBlending,
-        startTileIndex: 10,
+        startTileIndex: new ConstantValue(10),
         uTileCount: 10,
         vTileCount: 10,
         renderOrder: 2,
@@ -233,3 +233,4 @@ export function createToonExplosion(renderer: BatchedParticleRenderer, textures:
     group.add(circle.emitter);
     return group;
 }
+
