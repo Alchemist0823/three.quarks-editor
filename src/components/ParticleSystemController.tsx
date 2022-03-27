@@ -7,7 +7,7 @@ import {
 import {Object3D} from "three";
 import {ButtonGroup} from "@mui/material";
 import Button from "@mui/material/Button";
-import ToggleButtonGroup from '@mui/lab/ToggleButtonGroup';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 interface ParticleSystemControllerProps {
     object3d: Object3D,

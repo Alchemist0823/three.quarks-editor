@@ -330,7 +330,7 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
         return <TreeView
             sx={{height: 240,
                 flexGrow: 1}}
-            selected={selected ? selected.uuid : undefined}
+            selected={selected != null ? selected.uuid : ""}
             expanded={expanded}
             onNodeToggle={handleToggle}
             onNodeSelect={handleSelect}
