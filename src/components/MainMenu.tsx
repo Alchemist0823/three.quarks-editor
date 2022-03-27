@@ -9,7 +9,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 interface MainMenuProps {
     onSaveAs: () => void;
-    onImport: (files: FileList) => void;
+    onImport: (type: string, files: FileList) => void;
     onOpenDemo: (demoId: string) => void;
 }
 
@@ -18,7 +18,8 @@ interface MainMenuState {
 }
 
 export default class MainMenu extends React.PureComponent<MainMenuProps, MainMenuState> {
-    private fileRef: React.RefObject<HTMLInputElement>;
+    private fileRefGLTF: React.RefObject<HTMLInputElement>;
+    private fileRefParticleSystem: React.RefObject<HTMLInputElement>;
 
     constructor(props: Readonly<MainMenuProps>) {
         super(props);
@@ -26,17 +27,18 @@ export default class MainMenu extends React.PureComponent<MainMenuProps, MainMen
             anchorEl: undefined
         }
 
-        this.fileRef = React.createRef();
+        this.fileRefGLTF = React.createRef();
+        this.fileRefParticleSystem = React.createRef();
     }
 
-    openFileDialog = (e: React.MouseEvent<Element, MouseEvent>) => {
-        if (this.fileRef.current)
-            this.fileRef.current.click();
+    openFileDialog = (ref: React.RefObject<HTMLInputElement>) => () => {
+        if (ref.current)
+            ref.current.click();
     };
 
-    importFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    importFile = (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files)
-            this.props.onImport(e.target.files);
+            this.props.onImport(type, e.target.files);
     };
 
     openDemo = (demoId: string) => {
@@ -79,11 +81,15 @@ export default class MainMenu extends React.PureComponent<MainMenuProps, MainMen
                             onClose={this.handleMenuClose}
                         >
                             <MenuItem>New</MenuItem>
-                            <MenuItem onClick={this.openFileDialog}>Import</MenuItem>
-                            <MenuItem onClick={this.props.onSaveAs}>Download</MenuItem>
-                            <input ref={this.fileRef} type="file" id="fileElem" multiple accept="application/json"
+                            <MenuItem onClick={this.openFileDialog(this.fileRefParticleSystem)}>Import Particle System</MenuItem>
+                            <MenuItem onClick={this.openFileDialog(this.fileRefGLTF)}>Import GLTF Model</MenuItem>
+                            <MenuItem onClick={this.props.onSaveAs}>Export Scene</MenuItem>
+                            <input ref={this.fileRefParticleSystem} type="file" id="fileElem" multiple accept="application/json"
                                    style={{display: "none"}}
-                                   onChange={this.importFile}/>
+                                   onChange={this.importFile("json")}/>
+                            <input ref={this.fileRefGLTF} type="file" id="fileElemGLTF" multiple accept="model/gltf-binary, model/gltf+json"
+                                   style={{display: "none"}}
+                                   onChange={this.importFile("gltf")}/>
                         </Menu>
                         <Button color="inherit" sx={{marginRight: theme => theme.spacing(1)}} aria-controls="simple-menu"
                                 aria-haspopup="true" onClick={this.handleMenuClick} id="demo-button">

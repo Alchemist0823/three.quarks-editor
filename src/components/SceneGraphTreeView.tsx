@@ -126,7 +126,7 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
         },
     },
     [`& .${treeItemClasses.group}`]: {
-        marginLeft: 0,
+        //marginLeft: 0,
         [`& .${treeItemClasses.content}`]: {
             paddingLeft: theme.spacing(2),
         },
@@ -176,7 +176,7 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
     const [code, setCode] = React.useState<string>('');
 
     const shouldList = (child: Object3D) => {
-        return child.type !== 'BatchedParticleRenderer' && child.type !== 'AxesHelper' && child.name !== 'TransformControls' && child.userData.listable !== false;
+        return child.type !== 'BatchedParticleRenderer' && child.type !== 'AxesHelper' && child.type !== 'BoxHelper' && child.name !== 'TransformControls' && child.userData.listable !== false;
     }
 /*
     const countIndex = (index: number, object3d: Object3D): [Object3D | null, number] => {
@@ -201,7 +201,7 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
                 if(obj.uuid === nodeIds) selected = obj;});
             //const [object3d, ] = countIndex(index, context.scene);
             if (selected) {
-                context.actions.select(selected);
+                context.actions.selectObject3d(selected);
             }
         }
         //setSelected(nodeIds);
@@ -227,19 +227,16 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
         return `[${type}] ${name}`;
     };
 
-    const renderObject = useCallback((object3d: THREE.Object3D, index: number): [React.ReactNode, number] => {
+    const renderObject = useCallback((object3d: Object3D): React.ReactNode => {
         const items = [];
-        const originIndex = index;
-        index ++;
         for (const child of object3d.children) {
             if (shouldList(child)) {
-                const result = renderObject(child, index);
-                items.push(result[0]);
-                index = result[1];
+                const result = renderObject(child);
+                items.push(result);
             }
         }
         //selected={context.selection.indexOf(object3d) !== -1}
-        if (originIndex !== 0) {
+        /*if (originIndex !== 0) {*/
             let icon:  React.ElementType<SvgIconProps>;
             switch (object3d.type) {
                 case "BatchedParticleRenderer":
@@ -262,16 +259,15 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
                     break;
             }
 
-            return [<StyledTreeItem key={object3d.uuid} nodeId={object3d.uuid}
+            return <StyledTreeItem key={object3d.uuid} nodeId={object3d.uuid}
                                          labelIcon={icon}
                                          labelText={getObjectName(object3d)}
                                          object3d={object3d}>
                 {items}
-            </StyledTreeItem>
-                , index];
-        } else {
+            </StyledTreeItem>;
+        /*} else {
             return [<React.Fragment>{items}</React.Fragment>, index];
-        }
+        }*/
     }, []);
 
     const onContextMenuClick = ({event, props}: MenuItemEventHandler) => console.log(event,props);
@@ -340,7 +336,7 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
             defaultExpandIcon={<ChevronRightIcon />}
             multiSelect={false}
         >
-            {renderObject(context.scene, 0)[0]}
+            {renderObject(context.scene)}
         </TreeView>;
     }
 

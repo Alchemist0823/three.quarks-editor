@@ -128,6 +128,6 @@ export class SceneGraphView extends React.Component<SceneGraphViewProps, SceneGr
 
     onClick = (context: AppContext, object3d: Object3D) => {
         //if (object3d.children.length === 0)
-        context.actions.select(object3d);
+        context.actions.selectObject3d(object3d);
     };
 }

@@ -62,23 +62,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
         this.renderer = new WebGLRenderer();
 
         const scene = this.appContext!.scene;
-
-        this.batchedRenderer = new BatchedParticleRenderer();
-        this.batchedRenderer.name = "batched particle renderer";
-        scene.add(this.batchedRenderer);
-
-        scene.background = new Color(0x666666);
-
-        const axisHelper = new AxesHelper(100);
-        axisHelper.name = "axisHelper";
-        scene.add(axisHelper);
-
-        const light = new PointLight(new Color(1, 1, 1), 0.8, 200);
-        light.position.set(50, 50, 50);
-        scene.add(light);
-
-        const ambientLight = new AmbientLight(new Color(1, 1, 1), 0.2);
-        scene.add(ambientLight);
+        this.batchedRenderer = this.appContext!.batchedRenderer;
 
         /*if ( this.renderer.extensions.get( 'ANGLE_instanced_arrays' ) === null ) {
             document.getElementById( 'notSupported' )!.style.display = '';
@@ -113,7 +97,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
 
         this.raycaster = new Raycaster();
 
-        this.appContext?.actions.setRenderer(this.batchedRenderer, this.transformControls);
+        this.appContext?.actions.setRenderer(this.transformControls);
 
         this.stats = new Stats();
         this.stats.dom.style.position = "absolute";
@@ -122,6 +106,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
         this.container.current!.appendChild( this.stats.dom );
 
         this.container.current!.addEventListener( 'pointerup', this.onPointerUp );
+        this.container.current!.addEventListener('contextmenu', event => event.preventDefault());
 
         this.onResize(null);
 
@@ -130,7 +115,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
     }
 
     onPointerUp = (event: MouseEvent) => {
-        if (this.appContext!.viewPortControlType !== 'camera') {
+        if (/*this.appContext!.viewPortControlType !== 'camera'*/event.button === 2) {
             const rect = (event.target! as HTMLDivElement).getBoundingClientRect();
             const x = event.clientX - rect.left; //x position within the element.
             const y = event.clientY - rect.top;
@@ -142,23 +127,40 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
             pointer.y = -(y / ty) * 2 + 1;
             this.raycaster!.setFromCamera(pointer, this.camera!);
             const list: Object3D[] = [];
-            this.appContext!.scene.traverse((obj: Object3D) => {
-                if (obj.type === "ParticleSystemPreview")
+
+            const traverseManipulable = (obj: Object3D) => {
+                if (obj.type === "Mesh" || obj.type === "ParticleSystemPreview" || obj.type === "PointLight" || obj.type === "AmbientLight")
                     list.push(obj);
-            });
+                const children = obj.children;
+                for ( let i = 0, l = children.length; i < l; i ++ ) {
+                    if (children[i].type === "Group" || children[i].type === "Mesh" || children[i].type === "ParticleSystemPreview")
+                        traverseManipulable(children[ i ]);
+                }
+            }
+            traverseManipulable(this.appContext!.scene);
+            let selected = false;
             const intersects = this.raycaster!.intersectObjects(list, false);
             if (intersects.length > 0) {
                 for (let i = 0; i < intersects.length; i++) {
-                    if (this.appContext!.selection.length === 0 || intersects[i].object.parent! !== this.appContext!.selection[0]) {
-                        this.appContext!.actions.select(intersects[i].object.parent!);
+                    let selection;
+                    if (intersects[i].object.type === "ParticleSystemPreview") {
+                        selection = intersects[i].object.parent!;
+                    } else {
+                        selection = intersects[i].object;
+                    }
+                    if (this.appContext!.selection.length === 0 || selection!== this.appContext!.selection[0]) {
+                        this.appContext!.actions.selectObject3d(selection);
+                        selected = true;
                         break;
                     }
                     //intersects[ i ].object.material.color.set( 0xff0000 );
                 }
-            } else {
+            }
+            if (!selected) {
                 this.appContext!.actions.clearSelection();
             }
         }
+
     }
 
     onResize = (event: any ) => {

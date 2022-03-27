@@ -1,7 +1,10 @@
 import * as React from "react";
 import * as THREE from "three";
 import {
-    Object3D,
+    AmbientLight,
+    AxesHelper,
+    BoxHelper, Color, DirectionalLight,
+    Object3D, PointLight,
     Scene,
     Texture,
 } from "three";
@@ -24,17 +27,20 @@ import {TransformControls} from "three/examples/jsm/controls/TransformControls";
 import {ParticleSystemPreviewObject} from "../objects/ParticleSystemPreviewObject";
 import {createBlackHole} from "../example/Blackhole";
 import {createBigExplosion} from "../example/Explosion";
-import { createExplosion } from "../example/Explosion2";
-import { createShipTrail } from "../example/ShipTrail";
+import {createExplosion} from "../example/Explosion2";
+import {createShipTrail} from "../example/ShipTrail";
 import {createToonProjectile} from "../example/ToonProjectile";
 import {createShipSmoke} from "../example/ShipSmoke";
 import {createLevelUp} from "../example/LevelUp";
+import {GLTF, GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 
 
 export interface TextureImage {
     img: string,
     texture: Texture,
 }
+
+const Selectables = ["Mesh", "AmbientLight", "DirectionalLight", "PointLight", "Group"];
 
 export interface AppContext {
     scene: THREE.Scene;
@@ -47,10 +53,10 @@ export interface AppContext {
     transformControls?: TransformControls;
 
     actions: {
-        onOpenDemo: (id: string)=>void;
-        onSaveAs: ()=>void;
-        onImport: (files: FileList)=>void;
-        select: (object: Object3D) => void;
+        onOpenDemo: (id: string) => void;
+        onSaveAs: () => void;
+        onImport: (type: string, files: FileList) => void;
+        selectObject3d: (object: Object3D) => void;
         clearSelection: () => void;
         selectAddition: (object: Object3D) => void;
         addObject3d: (type: string, parent: Object3D) => void;
@@ -58,7 +64,7 @@ export interface AppContext {
         duplicateObject3d: (object: Object3D) => void;
         updateParticleSystem: (object: ParticleEmitter) => void;
         addTexture: (textureImage: TextureImage) => void;
-        setRenderer: (renderer: BatchedParticleRenderer, transformControls: TransformControls) => void;
+        setRenderer: (transformControls: TransformControls) => void;
         updateEmitterShape: (particleSystem: ParticleSystem) => void;
         setViewPortControlType: (type: string) => void;
     }
@@ -76,6 +82,7 @@ export const ApplicationContextConsumer = ApplicationContext.Consumer;
 export class ApplicationContextProvider extends React.Component<ApplicationContextProviderProps, AppContext> {
 
     textureLoader: TextureLoader;
+    selectBox?: BoxHelper;
 
     addDemo(demoId: string) {
         let demoObject;
@@ -141,6 +148,38 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
         });
     }
 
+    importFile = (type: string, files: FileList) => {
+        const nFiles = files.length;
+        for (let nFileId = 0; nFileId < nFiles; nFileId++) {
+            const fileURL = URL.createObjectURL(files[nFileId]);
+            const extension = fileURL.split('.').pop();
+            switch (type) {
+                case "gltf": {
+                    const gltfLoader = new GLTFLoader();
+                    gltfLoader.setCrossOrigin("");
+                    gltfLoader.load(fileURL, (gltf: GLTF) => {
+                        this.state.scene.add(gltf.scene);
+                    }, () => {
+                    }, () => {
+                    });
+                }
+                    break;
+                case "json": {
+                    const loader = new QuarksLoader();
+                    loader.setCrossOrigin("");
+                    loader.load(fileURL, this.state.batchedRenderer!, (object3D: Object3D) => {
+                        this.state.scene.add(object3D);
+                        this.processParticleSystems(object3D);
+                    }, () => {
+                    }, () => {
+                    });
+                }
+                    break;
+            }
+        }
+        this.state.updateProperties();
+    }
+
     constructor(props: Readonly<ApplicationContextProviderProps>) {
         super(props);
         this.textureLoader = new TextureLoader();
@@ -172,61 +211,11 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                     a.download = "scene.json";
                     a.click();
                 },
-                onImport: (files: FileList) => {
-                    const nFiles = files.length;
-                    for (let nFileId = 0; nFileId < nFiles; nFileId++) {
-                        const jsonURL = URL.createObjectURL( files[nFileId] );
-
-                        const loader = new QuarksLoader();
-                        loader.setCrossOrigin("");
-                        loader.load(jsonURL, this.state.batchedRenderer!, (object3D: Object3D)=>{
-                            this.state.scene.add(object3D);
-                            this.processParticleSystems(object3D);
-                        }, ()=>{}, ()=>{});
-                    }
-                },
-                clearSelection: () => {
-                    if (this.state.selection) {
-                        for(const selected of this.state.selection) {
-                            selected.traverse((obj) => {
-                                if (obj.type === "ParticleSystemPreview") {
-                                    (obj as ParticleSystemPreviewObject).selected = false;
-                                }
-                            });
-                        }
-                    }
-                    this.setState({selection: []});
-                    this.state.transformControls?.detach();
-                },
-                select: object => {
-                    if (this.state.selection) {
-                        for(const selected of this.state.selection) {
-                            selected.traverse((obj) => {
-                                if (obj.type === "ParticleSystemPreview") {
-                                    (obj as ParticleSystemPreviewObject).selected = false;
-                                }
-                            });
-                        }
-                    }
-                    object.traverse((obj) => {
-                        if (obj.type === "ParticleSystemPreview") {
-                            (obj as ParticleSystemPreviewObject).selected = true;
-                        }
-                    });
-
-                    this.setState({selection: [object]});
-                    this.state.transformControls?.detach();
-                    this.state.transformControls?.attach(object);
-                    if (this.state.viewPortControlType !== 'camera') {
-                        this.state.transformControls!.visible = true;
-                        this.state.transformControls!.enabled = true;
-                    } else {
-                        this.state.transformControls!.visible = false;
-                        this.state.transformControls!.enabled = false;
-                    }
-                },
+                onImport: this.importFile,
+                clearSelection: this.clearSelection,
+                selectObject3d: this.selectObject,
                 selectAddition: object => {
-                    if (this.state.selection.indexOf(object) === -1) {
+                    if (this.state.selection.indexOf(object)=== - 1) {
                         this.state.selection.push(object);
                         this.setState({selection: this.state.selection});
                     }
@@ -240,14 +229,14 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                     this.state.textures.push(textureImage);
                     this.setState({textures: this.state.textures});
                 },
-                setRenderer: (renderer: BatchedParticleRenderer, transformControls: TransformControls) => {
-                    this.setState({batchedRenderer: renderer, transformControls});
+                setRenderer: (transformControls: TransformControls) => {
+                    this.setState({transformControls});
                 },
                 updateEmitterShape(particleSystem: ParticleSystem) {
                     particleSystem.emitter.traverse(obj => {
-                       if (obj.type === "ParticleSystemPreview") {
-                           (obj as ParticleSystemPreviewObject).update();
-                       }
+                        if (obj.type === "ParticleSystemPreview") {
+                            (obj as ParticleSystemPreviewObject).update();
+                        }
                     });
                 },
                 setViewPortControlType: (type: string) => {
@@ -257,16 +246,94 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
             updateProperties: this.updateProperties1,
         };
 
+
+
+        state.batchedRenderer = new BatchedParticleRenderer();
+        state.batchedRenderer.name = "batched particle renderer";
+        state.scene.add(state.batchedRenderer);
+
+        state.scene.background = new Color(0x666666);
+
+        const axisHelper = new AxesHelper(100);
+        axisHelper.name = "axisHelper";
+        state.scene.add(axisHelper);
+
+        const light = new DirectionalLight(new Color(1, 1, 1), 2.2);
+        light.position.set(10, 10, 0);
+        state.scene.add(light);
+
+        const ambientLight = new AmbientLight(new Color(1, 1, 1), 1.0);
+        state.scene.add(ambientLight);
+
         this.state = state;
+    }
+
+    selectObject = (object3D: Object3D) => {
+        if (object3D.parent === null) {
+            this.clearSelection();
+            return;
+        }
+        if (this.state.selection) {
+            for (const selected of this.state.selection) {
+                selected.traverse((obj) => {
+                    if (obj.type === "ParticleSystemPreview") {
+                        (obj as ParticleSystemPreviewObject).selected = false;
+                    }
+                });
+            }
+        }
+        object3D.traverse((obj) => {
+            if (obj.type === "ParticleSystemPreview") {
+                (obj as ParticleSystemPreviewObject).selected = true;
+            }
+        });
+        if (Selectables.indexOf(object3D.type) !== -1) {
+            if (!this.selectBox) {
+                this.selectBox = new BoxHelper(object3D, new Color(0xffffff));
+                this.state.scene.add(this.selectBox);
+            } else {
+                this.selectBox.setFromObject(object3D);
+            }
+        }
+
+        this.setState({selection: [object3D]});
+        this.state.transformControls?.detach();
+        this.state.transformControls?.attach(object3D);
+        if (this.state.viewPortControlType !== 'camera') {
+            this.state.transformControls!.visible = true;
+            this.state.transformControls!.enabled = true;
+        } else {
+            this.state.transformControls!.visible = false;
+            this.state.transformControls!.enabled = false;
+        }
+    };
+
+    clearSelection = () => {
+        if (this.state.selection.length > 0) {
+            if (Selectables.indexOf(this.state.selection[0].type) !== -1) {
+                if (this.selectBox) {
+                    this.selectBox.update();
+                }
+            }
+            for (const selected of this.state.selection) {
+                selected.traverse((obj) => {
+                    if (obj.type === "ParticleSystemPreview") {
+                        (obj as ParticleSystemPreviewObject).selected = false;
+                    }
+                });
+            }
+        }
+        this.setState({selection: []});
+        this.state.transformControls?.detach();
     }
 
     removeObject3d = (object3D: Object3D) => {
         if (object3D.parent) {
             object3D.parent.remove(object3D);
             object3D.traverse((obj) => {
-               if (obj.type === 'ParticleEmitter') {
-                   this.state.batchedRenderer!.deleteSystem((obj as ParticleEmitter).system);
-               }
+                if (obj.type === 'ParticleEmitter') {
+                    this.state.batchedRenderer!.deleteSystem((obj as ParticleEmitter).system);
+                }
             });
             if (this.state.transformControls && this.state.transformControls.object === object3D) {
                 this.state.transformControls.detach();
@@ -314,7 +381,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
         }
         if (object) {
             parent.add(object);
-            this.state.actions.select(object);
+            this.state.actions.selectObject3d(object);
             this.setState({});
         }
     };
@@ -342,6 +409,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
         )
     }
 }
+
 /*
         this.particleSystem = new ParticleSystem(renderer, {
             maxParticle: 10000,
