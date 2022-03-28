@@ -1,82 +1,90 @@
-import {ApplicationContextConsumer} from "./ApplicationContext";
+import {
+    ApplicationContext,
+    ApplicationContextConsumer,
+    listObjects,
+    Selectables,
+    SelectableSearchable
+} from "./ApplicationContext";
 import {
     ConeEmitter,
     Constructable,
     DonutEmitter,
     EmitterShape,
-    EmitterTypes,
+    EmitterTypes, MeshSurfaceEmitter, ParticleEmitter,
     ParticleSystem,
     PointEmitter,
     SphereEmitter
 } from "three.quarks";
 import {NumberInput} from "./editors/NumberInput";
-import React, {ChangeEvent} from "react";
+import React, {useContext} from "react";
 import {MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
 import {SelectInput} from "./editors/SelectInput";
+import {Mesh} from "three";
 
 
 interface EmitterShapePropertiesProps {
     particleSystem: ParticleSystem,
-    updateProperties: ()=>void,
 }
 
-interface EmitterShapePropertiesState {
+export const EmitterShapeProperties: React.FC<EmitterShapePropertiesProps> = (props) => {
+    const context = useContext(ApplicationContext)!;
 
-}
-
-export class EmitterShapeProperties extends React.PureComponent<EmitterShapePropertiesProps, EmitterShapePropertiesState> {
-    constructor(props: Readonly<EmitterShapePropertiesProps>) {
-        super(props);
-    }
-
-    onChangeShape = (value: string) => {
-        if (this.props.particleSystem.emitterShape.type !== value) {
+    const onChangeShape = (value: string) => {
+        if (props.particleSystem.emitterShape.type !== value) {
             const entry = EmitterTypes.find(entry => entry[0] === value);
             if (entry) {
-                this.props.particleSystem.emitterShape = new (entry[1] as Constructable<EmitterShape>)();
-                this.props.updateProperties();
+                props.particleSystem.emitterShape = new (entry[1] as Constructable<EmitterShape>)();
+                context.actions.updateEmitterShape(props.particleSystem);
+                context.updateProperties();
             }
         }
     };
 
-    onChangeKeyValue = (k: string, v: number) => {
-        (this.props.particleSystem.emitterShape as any)[k] = v;
-        this.props.updateProperties();
+    const onChangeKeyValue = <T,>(k: string, v: T) => {
+        (props.particleSystem.emitterShape as any)[k] = v;
+        context.actions.updateEmitterShape(props.particleSystem);
+        context.updateProperties();
     };
 
-    renderShapeProperties() {
+    const renderShapeProperties = () => {
         const properties = [];
-        for (const key in this.props.particleSystem.emitterShape) {
-            if (key !== 'type') {
+        for (const key of Object.getOwnPropertyNames(props.particleSystem.emitterShape)) {
+            if (key !== 'type' && !key.startsWith('_')) {
                 properties.push(
                     <div key={key} className="property">
                         <Typography className="name">{key}:</Typography>
-                        <NumberInput value={(this.props.particleSystem.emitterShape as any)[key]}
-                                     onChange={(value) => this.onChangeKeyValue(key, value)}/>
+                        <NumberInput value={(props.particleSystem.emitterShape as any)[key]}
+                                     onChange={(value) => onChangeKeyValue(key, value)}/>
                     </div>
                 );
             }
         }
+        if (props.particleSystem.emitterShape.type === "mesh_surface") {
+            const listObjs: Mesh[] = [];
+            listObjects(context.scene, listObjs, SelectableSearchable, ["Mesh"]);
+            properties.push(
+                <div key={"mesh"} className="property">
+                    <Typography className="name">Mesh:</Typography>
+                    <SelectInput value={(props.particleSystem.emitterShape as MeshSurfaceEmitter).mesh ?? ""}
+                                 options={listObjs}
+                                 onChange={(value) => onChangeKeyValue("mesh", value)}
+                                 optionToStr={(obj) => obj.name}
+                    />
+                </div>
+            );
+        }
         return properties;
     }
 
-    render() {
-        return (
-            <div className="property-container">
-                <ApplicationContextConsumer>
-                    {context => context &&
-                        <div className="property">
-                            <Typography className="name">Shape</Typography>
-                            <SelectInput onChange={this.onChangeShape}
-                                         value={this.props.particleSystem.emitterShape.type}
-                                         options={EmitterTypes.map(type => type[0] as string)} />
-                        </div>
-                    }
-                </ApplicationContextConsumer>
-                <ApplicationContextConsumer>
-                    {context => context && this.renderShapeProperties()}
-                </ApplicationContextConsumer>
+    return (
+        <div className="property-container">
+            <div className="property">
+                <Typography className="name">Shape</Typography>
+                <SelectInput onChange={onChangeShape}
+                             value={props.particleSystem.emitterShape.type}
+                             options={EmitterTypes.map(type => type[0] as string)} />
             </div>
-        );
-    }
+            {renderShapeProperties()}
+        </div>
+    );
 }

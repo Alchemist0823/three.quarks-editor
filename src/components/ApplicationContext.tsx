@@ -41,7 +41,20 @@ export interface TextureImage {
     texture: Texture,
 }
 
-const Selectables = ["Mesh", "AmbientLight", "DirectionalLight", "PointLight", "Group"];
+export const ObjectWithBoundingBox = ["Mesh", "AmbientLight", "DirectionalLight", "PointLight", "Group"];
+
+export const Selectables = ["Mesh", "ParticleSystemPreview", "PointLight", "AmbientLight", "DirectionalLight"];
+export const SelectableSearchable = ["Group", "Mesh", "ParticleSystemPreview"];
+
+export const listObjects = (obj: Object3D, list: Object3D[], traversableTypes: string[], listableTypes: string[]) => {
+    if (listableTypes.indexOf(obj.type) !== -1)
+        list.push(obj);
+    const children = obj.children;
+    for ( let i = 0, l = children.length; i < l; i ++ ) {
+        if (traversableTypes.indexOf(children[i].type) !== -1)
+            listObjects(children[ i ], list, traversableTypes, listableTypes);
+    }
+}
 
 export interface AppContext {
     scene: THREE.Scene;
@@ -305,7 +318,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                 (obj as ParticleSystemPreviewObject).selected = true;
             }
         });
-        if (Selectables.indexOf(object3D.type) !== -1) {
+        if (ObjectWithBoundingBox.indexOf(object3D.type) !== -1) {
             if (!this.selectBox) {
                 this.selectBox = new BoxHelper(object3D, new Color(0xffffff));
                 this.state.scene.add(this.selectBox);
@@ -329,7 +342,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
 
     clearSelection = () => {
         if (this.state.selection.length > 0) {
-            if (Selectables.indexOf(this.state.selection[0].type) !== -1) {
+            if (ObjectWithBoundingBox.indexOf(this.state.selection[0].type) !== -1) {
                 if (this.selectBox) {
                     this.selectBox.visible = false;
                 }

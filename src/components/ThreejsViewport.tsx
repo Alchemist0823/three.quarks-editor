@@ -9,7 +9,13 @@ import {
 import {RefObject} from "react";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {BatchedParticleRenderer, ParticleEmitter} from "three.quarks";
-import {AppContext, ApplicationContextConsumer} from "./ApplicationContext";
+import {
+    AppContext,
+    ApplicationContextConsumer,
+    listObjects,
+    Selectables,
+    SelectableSearchable
+} from "./ApplicationContext";
 import * as THREE from "three";
 import {TransformControls} from "three/examples/jsm/controls/TransformControls";
 import {ViewPortControls} from "./ViewPortControls";
@@ -128,17 +134,7 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
             pointer.y = -(y / ty) * 2 + 1;
             this.raycaster!.setFromCamera(pointer, this.camera!);
             const list: Object3D[] = [];
-
-            const traverseManipulable = (obj: Object3D) => {
-                if (obj.type === "Mesh" || obj.type === "ParticleSystemPreview" || obj.type === "PointLight" || obj.type === "AmbientLight")
-                    list.push(obj);
-                const children = obj.children;
-                for ( let i = 0, l = children.length; i < l; i ++ ) {
-                    if (children[i].type === "Group" || children[i].type === "Mesh" || children[i].type === "ParticleSystemPreview")
-                        traverseManipulable(children[ i ]);
-                }
-            }
-            traverseManipulable(this.appContext!.scene);
+            listObjects(this.appContext!.scene, list, SelectableSearchable, Selectables);
             let selected = false;
             const intersects = this.raycaster!.intersectObjects(list, false);
             if (intersects.length > 0) {

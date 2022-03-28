@@ -1,30 +1,34 @@
 import * as React from 'react';
 import "./NumberInput.scss";
 import {MenuItem, Select, SelectChangeEvent, SelectProps, styled, TextField, TextFieldProps} from "@mui/material";
+import {PropsWithChildren} from "react";
+import {StyledComponent} from "@emotion/styled";
+import {Theme} from "@mui/material/styles";
 
-interface SelectInputProps{
+interface SelectInputProps<T>{
     label?: string;
-    value: string;
-    onChange: (value: string)=>void;
-    options: string[];
+    value: T;
+    onChange: (value: T)=>void;
+    options: T[];
+    optionToStr?: (a: T) => string;
 }
 
-const CustomizedSelect = styled(Select)<SelectProps<string>>(({ theme }) => ({
+const CustomizedSelect: StyledComponent<SelectProps<any>> = styled(Select)<SelectProps>(({ theme }) => ({
     width: 100,
     '& .MuiInputBase-input': {
         padding: "2px 4px",
     }
 }));
 
-export const SelectInput : React.FC<SelectInputProps> = (props) => {
+export const SelectInput = <T,> (props: PropsWithChildren<SelectInputProps<T>>) => {
 
-    const onInputChange = (e: SelectChangeEvent<unknown>) => {
-        props.onChange(e.target.value as string);
+    const onInputChange = (e: SelectChangeEvent<T>) => {
+        props.onChange(e.target.value as T);
     };
 
     return <CustomizedSelect label={props.label ?? ""} value={props.value}
                                 size={"small"} variant="outlined"
                                 onChange={onInputChange}>
-        {props.options.map((option, index) => <MenuItem key={index} value={option}>{option}</MenuItem>)}
+        {props.options.map((option, index) => <MenuItem key={index} value={option as any}>{props.optionToStr ? props.optionToStr(option): option as unknown as string}</MenuItem>)}
     </CustomizedSelect>;
 };

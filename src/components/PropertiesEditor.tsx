@@ -115,11 +115,7 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                     <StyledHeading>Emitter Shape</StyledHeading>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <EmitterShapeProperties particleSystem={(props.object3d as ParticleEmitter).system}
-                                            updateProperties={() => {
-                                                context.updateProperties();
-                                                context.actions.updateEmitterShape((props.object3d as ParticleEmitter).system);
-                                            }}/>
+                    <EmitterShapeProperties particleSystem={(props.object3d as ParticleEmitter).system}/>
                 </AccordionDetails>
             </Accordion>
             }
