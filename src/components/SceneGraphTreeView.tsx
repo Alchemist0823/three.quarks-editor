@@ -17,6 +17,7 @@ import CollectionsIcon from '@mui/icons-material/Collections';
 import CodeIcon from '@mui/icons-material/Code';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import {SceneGraphContextMenu} from "./SceneGraphContextMenu";
 
 interface SceneGraphViewMaterialProps {
 }
@@ -173,8 +174,6 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
     //const [selected, setSelected] = React.useState<string>("");
     const [expanded, setExpanded] = React.useState<string[]>([]);
 
-    const [code, setCode] = React.useState<string>('');
-
     const shouldList = (child: Object3D) => {
         return child.type !== 'BatchedParticleRenderer' && child.type !== 'AxesHelper' && child.type !== 'BoxHelper' && child.name !== 'TransformControls' && child.userData.listable !== false;
     }
@@ -272,44 +271,6 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
         }*/
     }, []);
 
-    const onContextMenuClick = ({event, props}: MenuItemEventHandler) => console.log(event,props);
-
-    const onContextMenuAddParticleSystem = ({event, props: contextProps}: MenuItemEventHandler) => {
-        if ((contextProps as any).object3d) {
-            context.actions.addObject3d('particle', (contextProps! as any).object3d);
-        }
-    };
-    const onContextMenuRemove = ({event, props: contextProps}: MenuItemEventHandler) => {
-        if ((contextProps as any).object3d) {
-            context.actions.removeObject3d((contextProps! as any).object3d);
-        }
-    };
-
-    const onContextMenuDuplicate = ({event, props: contextProps}: MenuItemEventHandler) => {
-        if ((contextProps as any).object3d) {
-            context.actions.duplicateObject3d((contextProps! as any).object3d);
-        }
-    };
-
-    const onContextMenuExport = ({event, props: contextProps}: MenuItemEventHandler) => {
-        console.log(contextProps);
-        if ((contextProps! as any).object3d) {
-            const a = document.createElement("a");
-            const json = (contextProps! as any).object3d.toJSON();
-            //json.images.forEach((image: any) => image.url = "http://localhost:3000/textures/texture1.png");
-            const file = new Blob([JSON.stringify(json)], {type: "application/json"});
-            a.href = URL.createObjectURL(file);
-            a.download = "scene.json";
-            a.click();
-        }
-    };
-
-    const onContextMenuCopyCode = ({event, props: contextProps}: MenuItemEventHandler) => {
-        if ((contextProps! as any).object3d) {
-            setCode(CodeExporter.exportCode((contextProps! as any).object3d));
-        }
-    }
-
     const renderScene = () => {
         //console.log("rerender TreeView");
         let selected: Object3D | null = null;// context.selection.map(obj => obj.uuid);
@@ -345,20 +306,11 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
     return <Box sx={{height: 270, flexGrow: 1, overflow: 'auto' }}>
         <Typography sx={{
             fontSize: theme => theme.typography.pxToRem(15),
-            fontWeight: theme =>theme.typography.fontWeightRegular}}> Scene Graph </Typography>
+            fontWeight: theme =>theme.typography.fontWeightRegular}}> Outline </Typography>
         {renderScene()}
-        <Menu id="scene-graph-menu">
-            <Submenu label="Add">
-                <Item onClick={onContextMenuAddParticleSystem}>Particle System</Item>
-                <Item onClick={onContextMenuClick}>Ball</Item>
-            </Submenu>
-            <Separator />
-            <Item onClick={onContextMenuDuplicate}>Duplicate</Item>
-            <Item onClick={onContextMenuRemove}>Remove</Item>
-            <Separator />
-            <Item onClick={onContextMenuExport}>Export</Item>
-        </Menu>
-        <ScrollDialog content={code} open={code !== ''} handleClose={()=>{setCode('')}} />
+        <SceneGraphContextMenu/>
     </Box>;
 }
+//     const [code, setCode] = React.useState<string>('');
+//     <ScrollDialog content={code} open={code !== ''} handleClose={()=>{setCode('')}} />
 //<Item onClick={onContextMenuCopyCode}>Copy JS Code</Item>
