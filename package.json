@@ -1,7 +1,7 @@
 {
   "name": "three.quarks-editor",
   "description": "A Editor for three.quarks",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "private": false,
   "homepage": "http://Alchemist0823.github.io/three.quarks-editor",
   "repository": {
@@ -63,7 +63,7 @@
     "react-simple-code-editor": "^0.11.0",
     "stats.js": "^0.17.0",
     "three": "^0.138.3",
-    "three.quarks": "^0.5.2"
+    "three.quarks": "^0.5.5"
   },
   "devDependencies": {
     "@types/jest": "26.0.13",

@@ -44,7 +44,7 @@ export interface TextureImage {
 export const ObjectWithBoundingBox = ["Mesh", "AmbientLight", "DirectionalLight", "PointLight", "Group"];
 
 export const Selectables = ["Mesh", "ParticleSystemPreview", "PointLight", "AmbientLight", "DirectionalLight"];
-export const SelectableSearchable = ["Group", "Mesh", "ParticleSystemPreview"];
+export const SelectableSearchable = ["Group", "Mesh", "PointLight", "AmbientLight", "DirectionalLight", "ParticleSystemPreview", "ParticleEmitter"];
 
 export const listObjects = (obj: Object3D, list: Object3D[], traversableTypes: string[], listableTypes: string[]) => {
     if (listableTypes.indexOf(obj.type) !== -1)
