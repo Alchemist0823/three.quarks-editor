@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/three.quarks-editor/static/css/main.0d206ab5.chunk.css",
-    "main.js": "/three.quarks-editor/static/js/main.dd7d28a7.chunk.js",
-    "main.js.map": "/three.quarks-editor/static/js/main.dd7d28a7.chunk.js.map",
+    "main.js": "/three.quarks-editor/static/js/main.323bef2d.chunk.js",
+    "main.js.map": "/three.quarks-editor/static/js/main.323bef2d.chunk.js.map",
     "runtime-main.js": "/three.quarks-editor/static/js/runtime-main.c850f1be.js",
     "runtime-main.js.map": "/three.quarks-editor/static/js/runtime-main.c850f1be.js.map",
     "static/js/2.f2a0753b.chunk.js": "/three.quarks-editor/static/js/2.f2a0753b.chunk.js",
@@ -15,6 +15,6 @@
     "static/js/runtime-main.c850f1be.js",
     "static/js/2.f2a0753b.chunk.js",
     "static/css/main.0d206ab5.chunk.css",
-    "static/js/main.dd7d28a7.chunk.js"
+    "static/js/main.323bef2d.chunk.js"
   ]
 }
