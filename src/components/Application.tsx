@@ -2,10 +2,9 @@ import * as React from "react";
 import MainMenu from "./MainMenu";
 import {ThreejsViewport} from "./ThreejsViewport";
 import PropertiesEditor from "./PropertiesEditor";
-
 import './layout.scss';
 import {ApplicationContextConsumer, ApplicationContextProvider} from "./ApplicationContext";
-import {SceneGraphTreeView} from "./SceneGraphTreeView";
+import {SceneGraphDraggableView} from "./SceneGraphDraggableView";
 
 export interface ApplicationProps {
 
@@ -30,7 +29,7 @@ export const Application: React.FC<ApplicationProps> = (props) => {
                         <ThreejsViewport width={600} height={600}/>
                     </div>
                     <div className="sidebar">
-                        <SceneGraphTreeView/>
+                        <SceneGraphDraggableView/>
                         <ApplicationContextConsumer>
                             {context => context && context.selection.length > 0 &&
                                 <PropertiesEditor object3d={context.selection[0]}/>

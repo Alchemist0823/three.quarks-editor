@@ -3,6 +3,7 @@ import {Application} from "./components/Application";
 import blue from "@mui/material/colors/blue";
 import red from "@mui/material/colors/red";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
+import "./Global.scss";
 
 const theme = createTheme({
     palette: {

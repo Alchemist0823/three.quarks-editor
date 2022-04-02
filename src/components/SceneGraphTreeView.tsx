@@ -1,14 +1,12 @@
-import React, {useCallback, useContext} from "react";
+import React, {DragEvent, DragEventHandler, useCallback, useContext, useState} from "react";
 import {AppContext, ApplicationContext} from "./ApplicationContext";
 import {Object3D, Scene} from "three";
 import {ParticleEmitter} from "three.quarks";
 import './SceneGraphView.scss';
-import {Item, Menu, MenuProvider, Separator, Submenu} from "react-contexify";
-import {MenuItemEventHandler} from "react-contexify/lib/types";
 import 'react-contexify/dist/ReactContexify.min.css';
 import {treeItemClasses, TreeView} from "@mui/lab";
 import {Box, styled, SvgIconProps} from "@mui/material";
-import TreeItem, { TreeItemProps, TreeItemClassKey } from "@mui/lab/TreeItem";
+import TreeItem, {TreeItemProps, TreeItemClassKey} from "@mui/lab/TreeItem";
 import {Typography} from "@mui/material";
 import {CodeExporter} from "../util/CodeExporter";
 import {ScrollDialog} from "./ScrollDialog";
@@ -94,16 +92,7 @@ declare module 'react' {
     }
 }
 
-type StyledTreeItemProps = TreeItemProps & {
-    bgColor?: string;
-    color?: string;
-    labelIcon: React.ElementType<SvgIconProps>;
-    labelInfo?: string;
-    labelText: string;
-    object3d: Object3D;
-};
-
-const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
+const StyledTreeItemRoot = styled(TreeItem)(({theme}) => ({
     color: theme.palette.text.secondary,
     [`& .${treeItemClasses.content}`]: {
         color: theme.palette.text.secondary,
@@ -134,6 +123,19 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
     },
 }));
 
+
+type StyledTreeItemProps = TreeItemProps & {
+    bgColor?: string;
+    color?: string;
+    labelIcon: React.ElementType<SvgIconProps>;
+    labelInfo?: string;
+    labelText: string;
+    object3d: Object3D;
+    onDragStart: DragEventHandler<HTMLDivElement>;
+    onDragOver: DragEventHandler<HTMLDivElement>;
+    draggable: boolean;
+};
+
 function StyledTreeItem(props: StyledTreeItemProps) {
     const {
         bgColor,
@@ -142,23 +144,24 @@ function StyledTreeItem(props: StyledTreeItemProps) {
         labelInfo,
         labelText,
         object3d,
+        onDragStart,
+        onDragOver,
+        draggable,
         ...other
     } = props;
 
     return (
         <StyledTreeItemRoot
             label={
-                <MenuProvider id="scene-graph-menu" data={{object3d: object3d}}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', p: 0.5, pr: 0 }}>
-                        <Box component={LabelIcon} color="inherit" sx={{ mr: 1 }} />
-                        <Typography variant="body2" sx={{ fontWeight: 'inherit', flexGrow: 1 }}>
+                    <Box sx={{display: 'flex', alignItems: 'center', p: 0.5, pr: 0}} onDragStart={onDragStart} onDragOver={onDragOver} draggable>
+                        <Box component={LabelIcon} color="inherit" sx={{mr: 1}}/>
+                        <Typography variant="body2" sx={{fontWeight: 'inherit', flexGrow: 1}}>
                             {labelText}
                         </Typography>
                         <Typography variant="caption" color="inherit">
                             {labelInfo}
                         </Typography>
                     </Box>
-                </MenuProvider>
             }
             style={{
                 '--tree-view-color': color,
@@ -177,27 +180,28 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
     const shouldList = (child: Object3D) => {
         return child.type !== 'BatchedParticleRenderer' && child.type !== 'AxesHelper' && child.type !== 'BoxHelper' && child.name !== 'TransformControls' && child.userData.listable !== false;
     }
-/*
-    const countIndex = (index: number, object3d: Object3D): [Object3D | null, number] => {
-        if (index === 0)
-            return [object3d, 0];
-        index --;
-        for (const child of object3d.children) {
-            if (shouldList(child)) {
-                const [res, newIndex] = countIndex(index, child);
-                if (res)
-                    return [res, newIndex];
-                index = newIndex;
+    /*
+        const countIndex = (index: number, object3d: Object3D): [Object3D | null, number] => {
+            if (index === 0)
+                return [object3d, 0];
+            index --;
+            for (const child of object3d.children) {
+                if (shouldList(child)) {
+                    const [res, newIndex] = countIndex(index, child);
+                    if (res)
+                        return [res, newIndex];
+                    index = newIndex;
+                }
             }
-        }
-        return [null, index];
-    }*/
+            return [null, index];
+        }*/
     const handleSelect = (event: React.ChangeEvent<any>, nodeIds: string) => {
         if (nodeIds.length > 0) {
             //const index = parseInt(nodeIds);
             let selected;
             context.scene.traverse((obj) => {
-                if(obj.uuid === nodeIds) selected = obj;});
+                if (obj.uuid === nodeIds) selected = obj;
+            });
             //const [object3d, ] = countIndex(index, context.scene);
             if (selected) {
                 context.actions.selectObject3d(selected);
@@ -217,7 +221,7 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
         if (object3d instanceof ParticleEmitter) {
             type = 'ParticleSystem';
         } else {
-            type =  object3d.type;
+            type = object3d.type;
         }
         let name = 'unnamed';
         if (object3d.name) {
@@ -225,6 +229,22 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
         }
         return `[${type}] ${name}`;
     };
+
+    const [dragged, setDragged] = useState<Object3D | null>(null);
+
+    const onDragOver = (object3d: Object3D) => (event: DragEvent<any>) => {
+        if (dragged) {
+            object3d.attach(dragged);
+            context.updateProperties();
+        }
+    }
+
+    const onDragStart = (object3d: Object3D) => (event: DragEvent<any>) => {
+        console.log("dragstart");
+        if (object3d !== context.scene) {
+            setDragged(object3d);
+        }
+    }
 
     const renderObject = useCallback((object3d: Object3D): React.ReactNode => {
         const items = [];
@@ -234,41 +254,40 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
                 items.push(result);
             }
         }
-        //selected={context.selection.indexOf(object3d) !== -1}
-        /*if (originIndex !== 0) {*/
-            let icon:  React.ElementType<SvgIconProps>;
-            switch (object3d.type) {
-                case "BatchedParticleRenderer":
-                    icon = CodeIcon;
-                    break;
-                case "ParticleSystemBatch":
-                    icon = CodeIcon;
-                    break;
-                case "ParticleEmitter":
-                    icon = CodeIcon;
-                    break;
-                case "AmbientLight":
-                case "DirectionalLight":
-                case "PointLight":
-                    icon = LightbulbIcon;
-                    break;
-                case "Group":
-                    icon = CollectionsIcon;
-                    break;
-                default:
-                    icon = CodeIcon;
-                    break;
-            }
+        let icon: React.ElementType<SvgIconProps>;
+        switch (object3d.type) {
+            case "BatchedParticleRenderer":
+                icon = CodeIcon;
+                break;
+            case "ParticleSystemBatch":
+                icon = CodeIcon;
+                break;
+            case "ParticleEmitter":
+                icon = CodeIcon;
+                break;
+            case "AmbientLight":
+            case "DirectionalLight":
+            case "PointLight":
+                icon = LightbulbIcon;
+                break;
+            case "Group":
+                icon = CollectionsIcon;
+                break;
+            default:
+                icon = CodeIcon;
+                break;
+        }
 
-            return <StyledTreeItem key={object3d.uuid} nodeId={object3d.uuid}
-                                         labelIcon={icon}
-                                         labelText={getObjectName(object3d)}
-                                         object3d={object3d}>
-                {items}
-            </StyledTreeItem>;
-        /*} else {
-            return [<React.Fragment>{items}</React.Fragment>, index];
-        }*/
+        return <StyledTreeItem key={object3d.uuid}
+                               draggable={object3d !== context.scene}
+                               onDragOver={onDragOver(object3d)}
+                               onDragStart={onDragStart(object3d)}
+                               nodeId={object3d.uuid}
+                               labelIcon={icon}
+                               labelText={getObjectName(object3d)}
+                               object3d={object3d}>
+            {items}
+        </StyledTreeItem>;
     }, []);
 
     const renderScene = () => {
@@ -289,26 +308,29 @@ export const SceneGraphTreeView: React.FC<SceneGraphViewMaterialProps> = (props)
         }
 
         return <TreeView
-            sx={{height: 240,
-                flexGrow: 1}}
+            sx={{
+                height: 240,
+                flexGrow: 1
+            }}
             selected={selected != null ? selected.uuid : ""}
             expanded={expanded}
             onNodeToggle={handleToggle}
             onNodeSelect={handleSelect}
-            defaultCollapseIcon={<ExpandMoreIcon />}
-            defaultExpandIcon={<ChevronRightIcon />}
+            defaultCollapseIcon={<ExpandMoreIcon/>}
+            defaultExpandIcon={<ChevronRightIcon/>}
             multiSelect={false}
         >
             {renderObject(context.scene)}
         </TreeView>;
     }
 
-    return <Box sx={{height: 270, flexGrow: 1, overflow: 'auto' }}>
+
+    return <Box sx={{height: 270, flexGrow: 1, overflow: 'auto'}}>
         <Typography sx={{
             fontSize: theme => theme.typography.pxToRem(15),
-            fontWeight: theme =>theme.typography.fontWeightRegular}}> Outline </Typography>
+            fontWeight: theme => theme.typography.fontWeightRegular
+        }}> Outline </Typography>
         {renderScene()}
-        <SceneGraphContextMenu/>
     </Box>;
 }
 //     const [code, setCode] = React.useState<string>('');
