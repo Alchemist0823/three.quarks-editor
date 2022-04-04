@@ -128,8 +128,7 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                     <StyledHeading>Particle Renderer</StyledHeading>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <ParticleRendererProperties particleSystem={(props.object3d as ParticleEmitter).system}
-                                                updateProperties={context.updateProperties}/>
+                    <ParticleRendererProperties particleSystem={(props.object3d as ParticleEmitter).system}/>
                 </AccordionDetails>
             </Accordion>
             }

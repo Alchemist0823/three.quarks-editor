@@ -46,7 +46,7 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
                         args.push(1);
                         break;
                     case "vec3":
-                        args.push(new Vector3(0, 0, 0));
+                        args.push(new Vector3(0, 1, 0));
                         break;
                     case "valueFunc":
                         args.push(genDefaultBezier());

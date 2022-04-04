@@ -1,63 +1,57 @@
 import * as React from "react";
 import {AdditiveBlending, Blending, NormalBlending, Texture} from "three";
-import {AppContext, ApplicationContextConsumer, TextureImage} from "./ApplicationContext";
+import {AppContext, ApplicationContext, ApplicationContextConsumer, TextureImage} from "./ApplicationContext";
 import {ParticleSystem, RenderMode, ValueGenerator} from "three.quarks";
 import {NumberInput} from "./editors/NumberInput";
 import {TexturePicker} from "./TexturePicker";
 import {Button, SelectChangeEvent, Typography} from "@mui/material";
 import {SelectInput} from "./editors/SelectInput";
 import {GeneratorEditor, GenericGenerator} from "./editors/GeneratorEditor";
+import {useContext, useState} from "react";
 
 
 interface ParticleRendererPropertiesProps {
     particleSystem: ParticleSystem,
-    updateProperties: ()=>void,
 }
 
-interface ParticleRendererPropertiesState {
-    texturePickerOpen: boolean,
-}
+export const ParticleRendererProperties: React.FC<ParticleRendererPropertiesProps> = (props) => {
 
-export class ParticleRendererProperties extends React.PureComponent<ParticleRendererPropertiesProps, ParticleRendererPropertiesState> {
-    constructor(props: Readonly<ParticleRendererPropertiesProps>) {
-        super(props);
-        this.state = {
-            texturePickerOpen: false,
-        };
-    }
-    onChangeSpeedFactor = (order: number) => {
-        this.props.particleSystem.speedFactor = order;
-        this.props.updateProperties();
+    const context = useContext(ApplicationContext)!;
+    const [texturePickerOpen, setTexturePickerOpen] = useState(false);
+
+    const onChangeSpeedFactor = (order: number) => {
+        props.particleSystem.speedFactor = order;
+        context.updateProperties();
     };
-    onChangeRenderOrder = (order: number) => {
-        this.props.particleSystem.renderOrder = order;
-        this.props.updateProperties();
+    const onChangeRenderOrder = (order: number) => {
+        props.particleSystem.renderOrder = order;
+        context.updateProperties();
     };
-    onChangeStartTile = (index: GenericGenerator) => {
-        this.props.particleSystem.startTileIndex = index as ValueGenerator;
-        this.props.updateProperties();
+    const onChangeStartTile = (index: GenericGenerator) => {
+        props.particleSystem.startTileIndex = index as ValueGenerator;
+        context.updateProperties();
     };
-    onChangeUTileCount = (u: number) => {
-        this.props.particleSystem.uTileCount = u;
-        this.props.updateProperties();
+    const onChangeUTileCount = (u: number) => {
+        props.particleSystem.uTileCount = u;
+        context.updateProperties();
     };
-    onChangeVTileCount = (v: number) => {
-        this.props.particleSystem.vTileCount = v;
-        this.props.updateProperties();
+    const onChangeVTileCount = (v: number) => {
+        props.particleSystem.vTileCount = v;
+        context.updateProperties();
     };
-    onChangeBlending = (value: string) => {
+    const onChangeBlending = (value: string) => {
         switch (value) {
             case "Normal":
-                this.props.particleSystem.blending = NormalBlending;
+                props.particleSystem.blending = NormalBlending;
                 break;
             case "Additive":
-                this.props.particleSystem.blending = AdditiveBlending;
+                props.particleSystem.blending = AdditiveBlending;
                 break;
         }
-        this.props.updateProperties();
+        context.updateProperties();
     }
 
-    getValueOfBlending = (blending: Blending) => {
+    const getValueOfBlending = (blending: Blending) => {
         switch (blending) {
             case NormalBlending:
                 return "Normal"
@@ -67,48 +61,48 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
         return "Normal";
     }
 
-    onChangeRenderMode = (value: string) => {
+    const onChangeRenderMode = (value: string) => {
         switch (value) {
             case "BillBoard":
-                this.props.particleSystem.renderMode = RenderMode.BillBoard;
-                this.props.particleSystem.speedFactor = 0;
+                props.particleSystem.renderMode = RenderMode.BillBoard;
+                props.particleSystem.speedFactor = 0;
                 break;
             case "LocalSpace":
-                this.props.particleSystem.renderMode = RenderMode.LocalSpace;
-                this.props.particleSystem.speedFactor = 0;
+                props.particleSystem.renderMode = RenderMode.LocalSpace;
+                props.particleSystem.speedFactor = 0;
                 break;
             case "StretchedBillBoard":
-                this.props.particleSystem.renderMode = RenderMode.StretchedBillBoard;
+                props.particleSystem.renderMode = RenderMode.StretchedBillBoard;
                 break;
             case "Trail":
-                this.props.particleSystem.renderMode = RenderMode.Trail;
-                this.props.particleSystem.speedFactor = 0;
+                props.particleSystem.renderMode = RenderMode.Trail;
+                props.particleSystem.speedFactor = 0;
                 break;
         }
-        this.props.updateProperties();
+        context.updateProperties();
     }
 
-    onChangeWorldSpace = (value: string) => {
+    const onChangeWorldSpace = (value: string) => {
         switch (value) {
             case "True":
-                this.props.particleSystem.worldSpace = true;
+                props.particleSystem.worldSpace = true;
                 break;
             case "False":
-                this.props.particleSystem.worldSpace = false;
+                props.particleSystem.worldSpace = false;
                 break;
         }
-        this.props.updateProperties();
+        context.updateProperties();
     }
 
-    getValueOfBoolean = (worldSpace: boolean) => {
-        return worldSpace ? 'True': 'False';
+    const getValueOfBoolean = (worldSpace: boolean) => {
+        return worldSpace ? 'True' : 'False';
     }
 
-    onUploadTexture = (context: AppContext) => (files: FileList) => {
+    const onUploadTexture = (context: AppContext) => (files: FileList) => {
         console.log("upload texture");
-        const image = document.createElement( 'img' );
-        const texture = new Texture( image );
-        image.onload = function()  {
+        const image = document.createElement('img');
+        const texture = new Texture(image);
+        image.onload = function () {
             texture.needsUpdate = true;
         };
         if (files && files[0]) {
@@ -128,85 +122,77 @@ export class ParticleRendererProperties extends React.PureComponent<ParticleRend
 
     }
 
-    onChangeTexture = (textureImage: TextureImage) => {
-        this.props.particleSystem.texture = textureImage.texture;
-        this.props.updateProperties();
+    const onChangeTexture = (textureImage: TextureImage) => {
+        props.particleSystem.texture = textureImage.texture;
+        context.updateProperties();
     };
 
-    closeTexturePicker = () => {
-        this.setState({texturePickerOpen: false});
+    let texture;
+    for (let i = 0; i < context!.textures.length; i++) {
+        if (context!.textures[i].texture === props.particleSystem.texture) {
+            texture = context!.textures[i];
+        }
     }
-
-    openTexturePicker = () => {
-        this.setState({texturePickerOpen: true});
+    let gridWidth = 1, gridHeight = 1;
+    if (texture && texture.texture.image) {
+        gridWidth = texture.texture.image.width / props.particleSystem.uTileCount;
+        gridHeight = texture.texture.image.height / props.particleSystem.vTileCount;
     }
-
-    render() {
-        return (
-            <div className="property-container">
-                <div className="property">
-                    <Typography  component={"label"} className="name">RenderMode</Typography>
-                    <SelectInput onChange={this.onChangeRenderMode} value={RenderMode[this.props.particleSystem.renderMode]}
-                                 options={Object.keys(RenderMode).map((key: any) => RenderMode[key]).filter(value => typeof value === 'string')} />
-                </div>
-                {this.props.particleSystem.renderMode === RenderMode.StretchedBillBoard &&
-                    <div className="property">
-                        <Typography  component={"label"} className="name">SpeedFactor</Typography>
-                        <NumberInput value={this.props.particleSystem.speedFactor} onChange={this.onChangeSpeedFactor}/>
-                    </div>
-                }
-                <div className="property">
-                    <Typography  component={"label"} className="name">World Space</Typography>
-                    <SelectInput onChange={this.onChangeWorldSpace} value={this.getValueOfBoolean(this.props.particleSystem.worldSpace)}
-                        options={["True", "False"]}/>
-                </div>
-                <div className="property">
-                    <Typography component={"label"} className="name">Blend Mode</Typography>
-                    <SelectInput onChange={this.onChangeBlending} value={this.getValueOfBlending(this.props.particleSystem.blending)}
-                                 options={["Normal", "Additive"]}/>
-                </div>
-                <div className="property">
-                    <Typography component={"label"} className="name">RenderOrder:</Typography><NumberInput value={this.props.particleSystem.renderOrder} onChange={this.onChangeRenderOrder}/>
-                </div>
-                <div className="property">
-                    <Typography component={"label"} className="name">UVTile</Typography>
-                    <Typography component={"label"}>Column:</Typography><NumberInput variant="short" value={this.props.particleSystem.uTileCount} onChange={this.onChangeUTileCount}/>
-                    <Typography component={"label"}>Row:</Typography><NumberInput variant="short" value={this.props.particleSystem.vTileCount} onChange={this.onChangeVTileCount}/>
-                </div>
-                <div className="property">
-                    <GeneratorEditor name="Start Tile Index" allowedType={["value"]} onChange={this.onChangeStartTile} value={this.props.particleSystem.startTileIndex}/>
-                </div>
-                <ApplicationContextConsumer>
-                    {context => {
-                        let texture;
-                        for (let i = 0; i < context!.textures.length; i ++) {
-                            if (context!.textures[i].texture === this.props.particleSystem.texture) {
-                                texture = context!.textures[i];
-                            }
-                        }
-                        let gridWidth=1, gridHeight=1;
-                        if (texture && texture.texture.image) {
-                            gridWidth = texture.texture.image.width / this.props.particleSystem.uTileCount;
-                            gridHeight = texture.texture.image.height / this.props.particleSystem.vTileCount;
-                        }
-                        const index = this.props.particleSystem.startTileIndex.genValue();
-                        return <div className="property">
-                            <Typography component={"label"} className="name">Texture</Typography>
-                            {texture && <img className="texture-preview" src={texture.img} alt={texture.texture.name}
-                                             style={{objectPosition: `-${(index % this.props.particleSystem.uTileCount) * gridWidth}px -${Math.floor(index / this.props.particleSystem.uTileCount) * gridHeight}px`,
-                                                 width: gridWidth,
-                                                 height: gridHeight}}/>}
-                            {/*this.props.particleSystem.texture ? this.props.particleSystem.texture.name : ".."*/}
-                            <Button onClick={this.openTexturePicker} variant={'contained'}>Pick</Button>
-                        </div>;
-                    }}
-                </ApplicationContextConsumer>
-                <ApplicationContextConsumer>
-                    {context => context &&
-                    <TexturePicker handleClose={this.closeTexturePicker} handleSelect={this.onChangeTexture} handleUpload={this.onUploadTexture(context)} open={this.state.texturePickerOpen} textures={context.textures}/>
-                    }
-                </ApplicationContextConsumer>
+    const index = props.particleSystem.startTileIndex.genValue();
+    return (
+        <div className="property-container">
+            <div className="property">
+                <Typography component={"label"} className="name">RenderMode</Typography>
+                <SelectInput onChange={onChangeRenderMode} value={RenderMode[props.particleSystem.renderMode]}
+                             options={Object.keys(RenderMode).map((key: any) => RenderMode[key]).filter(value => typeof value === 'string')}/>
             </div>
-        );
-    }
+            {props.particleSystem.renderMode === RenderMode.StretchedBillBoard &&
+                <div className="property">
+                    <Typography component={"label"} className="name">SpeedFactor</Typography>
+                    <NumberInput value={props.particleSystem.speedFactor} onChange={onChangeSpeedFactor}/>
+                </div>
+            }
+            <div className="property">
+                <Typography component={"label"} className="name">World Space</Typography>
+                <SelectInput onChange={onChangeWorldSpace} value={getValueOfBoolean(props.particleSystem.worldSpace)}
+                             options={["True", "False"]}/>
+            </div>
+            <div className="property">
+                <Typography component={"label"} className="name">Blend Mode</Typography>
+                <SelectInput onChange={onChangeBlending} value={getValueOfBlending(props.particleSystem.blending)}
+                             options={["Normal", "Additive"]}/>
+            </div>
+            <div className="property">
+                <Typography component={"label"} className="name">RenderOrder:</Typography><NumberInput
+                value={props.particleSystem.renderOrder} onChange={onChangeRenderOrder}/>
+            </div>
+            <div className="property">
+                <Typography component={"label"} className="name">UVTile</Typography>
+                <Typography component={"label"}>Column:</Typography><NumberInput variant="short"
+                                                                                 value={props.particleSystem.uTileCount}
+                                                                                 onChange={onChangeUTileCount}/>
+                <Typography component={"label"}>Row:</Typography><NumberInput variant="short"
+                                                                              value={props.particleSystem.vTileCount}
+                                                                              onChange={onChangeVTileCount}/>
+            </div>
+            <div className="property">
+                <GeneratorEditor name="Start Tile Index" allowedType={["value"]} onChange={onChangeStartTile}
+                                 value={props.particleSystem.startTileIndex}/>
+            </div>
+            <div className="property">
+                <Typography component={"label"} className="name">Texture</Typography>
+                {texture && <img className="texture-preview" src={texture.img} alt={texture.texture.name}
+                                 style={{
+                                     objectPosition: `-${(index % props.particleSystem.uTileCount) * gridWidth}px -${Math.floor(index / props.particleSystem.uTileCount) * gridHeight}px`,
+                                     width: gridWidth,
+                                     height: gridHeight
+                                 }}/>}
+                {/*props.particleSystem.texture ? props.particleSystem.texture.name : ".."*/}
+                <Button onClick={() => setTexturePickerOpen(true)} variant={'contained'}>Pick</Button>
+            </div>
+            <TexturePicker handleClose={() => setTexturePickerOpen(false)} handleSelect={onChangeTexture}
+                           handleUpload={onUploadTexture(context)} open={texturePickerOpen}
+                           textures={context.textures}/>
+        </div>
+    );
 }
