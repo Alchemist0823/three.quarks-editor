@@ -29,6 +29,6 @@ export const SelectInput = <T,> (props: PropsWithChildren<SelectInputProps<T>>) 
     return <CustomizedSelect label={props.label ?? ""} value={props.value}
                                 size={"small"} variant="outlined"
                                 onChange={onInputChange}>
-        {props.options.map((option, index) => <MenuItem key={index} value={option as any}>{props.optionToStr ? props.optionToStr(option): option as unknown as string}</MenuItem>)}
+        {props.options.map((option, index) => <MenuItem key={index} value={option as any}>{props.optionToStr ? props.optionToStr(option): option + ""}</MenuItem>)}
     </CustomizedSelect>;
 };

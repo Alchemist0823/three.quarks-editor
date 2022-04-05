@@ -5,6 +5,7 @@ import {FunctionValueGenerator, ValueGenerator} from "three.quarks";
 import {ColorGenerator, FunctionColorGenerator} from "three.quarks";
 import {Typography} from "@mui/material";
 import {SelectInput} from "./editors/SelectInput";
+import {NumberInput} from "./editors/NumberInput";
 
 interface ParticleSystemPropertiesProps {
     particleSystem: ParticleSystem,
@@ -12,6 +13,14 @@ interface ParticleSystemPropertiesProps {
 }
 
 export const ParticleSystemProperties: React.FC<ParticleSystemPropertiesProps> = (props) => {
+    const onChangeLooping = (value: boolean) => {
+        props.particleSystem.looping = value;
+        props.updateProperties();
+    };
+    const onChangeDuration = (value: number) => {
+        props.particleSystem.duration = value;
+        props.updateProperties();
+    };
     const onChangeStartSpeed = (g: GenericGenerator) => {
         props.particleSystem.startSpeed = g as ValueGenerator | FunctionValueGenerator;
         props.updateProperties();
@@ -48,6 +57,18 @@ export const ParticleSystemProperties: React.FC<ParticleSystemPropertiesProps> =
     const colorValueFunctionTypes: ValueType[] = ['color', 'colorFunc'];
     return (
         <div className="property-container">
+            <div className="property">
+                <Typography component={"label"} className="name">Looping</Typography>
+                <SelectInput onChange={onChangeLooping}
+                             value={props.particleSystem.looping}
+                             options={[true, false]} />
+            </div>
+            <div className="property">
+                <Typography component={"label"} className="name">Duration</Typography>
+                <NumberInput onChange={onChangeDuration}
+                             value={props.particleSystem.duration}
+                             variant={"short"}/>
+            </div>
             <GeneratorEditor name="Start Life"
                              allowedType={valueFunctionTypes}
                              value={props.particleSystem.startLife}

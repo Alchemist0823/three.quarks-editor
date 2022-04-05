@@ -26,6 +26,7 @@ import "./PropertiesEditor.scss";
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import {BehaviorsProperties} from "./BehaviorsProperties";
 import {useContext, useState} from "react";
+import {BurstEmitterProperties} from "./BurstEmitterProperties";
 
 const Accordion = styled((props: AccordionProps) => (
     <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -133,18 +134,32 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
             </Accordion>
             }
             {(props.object3d instanceof ParticleEmitter) &&
-            <Accordion expanded={(expanded.indexOf('ParticleEmitter') !== -1)} onChange={handleChange('ParticleEmitter')}>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon/>}
-                    aria-controls="particle-emitter-content"
-                    id="particle-emitter-header">
-                    <StyledHeading>Particle Emitter</StyledHeading>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <ParticleSystemProperties particleSystem={(props.object3d as ParticleEmitter).system}
-                                          updateProperties={context.updateProperties}/>
-                </AccordionDetails>
-            </Accordion>
+                <Accordion expanded={(expanded.indexOf('ParticleEmitter') !== -1)} onChange={handleChange('ParticleEmitter')}>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon/>}
+                        aria-controls="particle-emitter-content"
+                        id="particle-emitter-header">
+                        <StyledHeading>Particle Emitter</StyledHeading>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <ParticleSystemProperties particleSystem={(props.object3d as ParticleEmitter).system}
+                                                  updateProperties={context.updateProperties}/>
+                    </AccordionDetails>
+                </Accordion>
+            }
+            {(props.object3d instanceof ParticleEmitter) &&
+                <Accordion expanded={(expanded.indexOf('EmissionBursts') !== -1)} onChange={handleChange('EmissionBursts')}>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon/>}
+                        aria-controls="emit-burst-content"
+                        id="emit-burst-header">
+                        <StyledHeading>Emission Bursts</StyledHeading>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <BurstEmitterProperties bursts={(props.object3d as ParticleEmitter).system.emissionBursts}
+                                                  updateProperties={context.updateProperties}/>
+                    </AccordionDetails>
+                </Accordion>
             }
             {(props.object3d instanceof ParticleEmitter) &&
             <Accordion expanded={(expanded.indexOf('Behaviors') !== -1)} onChange={handleChange('Behaviors')}>
