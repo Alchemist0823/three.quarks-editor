@@ -15,7 +15,7 @@ import {ParticleSystemProperties} from "./ParticleSystemProperties";
 import {ParticleRendererProperties} from "./ParticleRendererProperties";
 import {ScriptProperties} from "./ScriptProperties";
 import {EmitterShapeProperties} from "./EmitterShapeProperties";
-import {ParticleSystemController} from "./ParticleSystemController";
+import {PlayController} from "./PlayController";
 import {AccordionProps, AccordionSummaryProps, Box, createStyles, makeStyles, styled, Theme} from "@mui/material";
 import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
@@ -92,8 +92,6 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
 
     return (
         <Box sx={{width: '100%'}}>
-            <ParticleSystemController object3d={props.object3d}
-                                      updateProperties={context.updateProperties}/>
             <Accordion expanded={(expanded.indexOf('Object') !== -1)} onChange={handleChange('Object')}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon/>}

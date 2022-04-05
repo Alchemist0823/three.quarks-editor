@@ -46,11 +46,14 @@ export const ObjectWithBoundingBox = ["Mesh", "AmbientLight", "DirectionalLight"
 export const Selectables = ["Mesh", "ParticleSystemPreview", "PointLight", "AmbientLight", "DirectionalLight"];
 export const SelectableSearchable = ["Group", "Mesh", "PointLight", "AmbientLight", "DirectionalLight", "ParticleSystemPreview", "ParticleEmitter"];
 
+
+export const GUIObjectTypes = ["AxesHelper", "ParticleSystemPreview"];
+
 export const listObjects = (obj: Object3D, list: Object3D[], traversableTypes: string[], listableTypes: string[]) => {
-    if (listableTypes.indexOf(obj.type) !== -1)
-        list.push(obj);
     const children = obj.children;
     for ( let i = 0, l = children.length; i < l; i ++ ) {
+        if (listableTypes.indexOf(children[i].type) !== -1)
+            list.push(children[i]);
         if (traversableTypes.indexOf(children[i].type) !== -1)
             listObjects(children[ i ], list, traversableTypes, listableTypes);
     }
@@ -63,6 +66,7 @@ export interface AppContext {
     textures: Array<TextureImage>;
     batchedRenderer?: BatchedParticleRenderer;
 
+    showGUI: boolean;
     viewPortControlType: string;
     transformControls?: TransformControls;
     cameraControls?: OrbitControls;
@@ -82,6 +86,7 @@ export interface AppContext {
         setRenderer: (transformControls: TransformControls, cameraControls: OrbitControls) => void;
         updateEmitterShape: (particleSystem: ParticleSystem) => void;
         setViewPortControlType: (type: string) => void;
+        toggleGUI:()=>void;
     }
     updateProperties: () => void;
 }
@@ -210,6 +215,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
             batchedRenderer: undefined,
             selection: [],
             viewPortControlType: "camera",
+            showGUI: true,
             textures: [
                 {img: process.env.PUBLIC_URL + '/textures/texture1.png', texture: texture1},
                 {img: process.env.PUBLIC_URL + '/textures/texture2.png', texture: texture2},
@@ -272,12 +278,20 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                         this.state.transformControls!.mode = type;
                     }
                     this.setState({viewPortControlType: type});
+                },
+                toggleGUI: () => {
+                    const list: Object3D<Event>[] = [];
+                    listObjects(this.state.scene, list, SelectableSearchable, GUIObjectTypes);
+                    if (!this.state.showGUI) {
+                        list.forEach(obj => obj.visible = true);
+                    } else {
+                        list.forEach(obj => obj.visible = false);
+                    }
+                    this.setState({showGUI: !this.state.showGUI});
                 }
             },
             updateProperties: this.updateProperties1,
         };
-
-
 
         state.batchedRenderer = new BatchedParticleRenderer();
         state.batchedRenderer.name = "batched particle renderer";

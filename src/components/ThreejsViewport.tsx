@@ -6,123 +6,125 @@ import {
     WebGLRenderer,
     Clock, Color, AxesHelper, PointLight, AmbientLight, Raycaster, Vector2, Object3D,
 } from "three";
-import {RefObject} from "react";
+import {RefObject, useContext, useEffect, useRef} from "react";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {BatchedParticleRenderer, ParticleEmitter} from "three.quarks";
 import {
     AppContext,
+    ApplicationContext,
     ApplicationContextConsumer,
     listObjects,
     Selectables,
     SelectableSearchable
 } from "./ApplicationContext";
-import * as THREE from "three";
 import {TransformControls} from "three/examples/jsm/controls/TransformControls";
 import {ViewPortControls} from "./ViewPortControls";
 import {TutorialHint} from "./TutorialHint";
+import {PlayController} from "./PlayController";
 
 interface ThreejsViewportProps {
     width: number;
     height: number;
 }
 
-export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
-    container: RefObject<HTMLDivElement>;
-    stats?: Stats;
-    camera?: PerspectiveCamera;
-    renderer?: WebGLRenderer;
-    raycaster?: Raycaster;
-    batchedRenderer?: BatchedParticleRenderer;
-    transformControls?: TransformControls;
-    private clock?: Clock;
-    private cameraControls?: OrbitControls;
+export const ThreejsViewport: React.FC<ThreejsViewportProps> = (props) => {
+    const context = useContext(ApplicationContext)!;
+    const container = useRef<HTMLDivElement>(null);
+    let render: WebGLRenderer;
+    let stats: Stats;
+    let camera: PerspectiveCamera;
+    let renderer: WebGLRenderer;
+    let raycaster: Raycaster;
+    let batchedRenderer: BatchedParticleRenderer;
+    let transformControls: TransformControls;
+    let clock: Clock;
+    let cameraControls: OrbitControls;
 
-    private appContext?: AppContext;
 
-    constructor(props: Readonly<ThreejsViewportProps>) {
-        super(props);
-        this.container = React.createRef();
-    }
-
-    componentDidMount(): void {
-        if ( this.init() ) {
-            this.animate();
+    useEffect(() => {
+        if ( init() ) {
+            animate();
         }
-    }
+    }, []);
 
-    componentDidUpdate(prevProps: Readonly<ThreejsViewportProps>, prevState: Readonly<any>, snapshot?: any): void {
-        this.camera!.aspect = this.props.width / this.props.height;
-        this.camera!.updateProjectionMatrix();
-        this.renderer!.setSize( this.props.width, this.props.height );
-    }
+    useEffect(() => {
+        camera!.aspect = props.width / props.height;
+        camera!.updateProjectionMatrix();
+        renderer!.setSize( props.width, props.height );
+    }, [props.width, props.height]);
 
-    init() {
-        if (!this.container.current) {
+    const init = () => {
+        if (!container.current) {
             return false;
         }
 
         if ( !WEBGL.isWebGLAvailable() ) {
-            document.body.appendChild( WEBGL.getWebGLErrorMessage() );
+            container.current.appendChild( WEBGL.getWebGLErrorMessage() );
             return false;
         }
 
-        this.renderer = new WebGLRenderer();
+        if (!context.batchedRenderer) {
+            return false;
+        }
 
-        const scene = this.appContext!.scene;
-        this.batchedRenderer = this.appContext!.batchedRenderer;
+        renderer = new WebGLRenderer();
 
-        /*if ( this.renderer.extensions.get( 'ANGLE_instanced_arrays' ) === null ) {
+        const scene = context.scene;
+        batchedRenderer = context.batchedRenderer;
+        /*if ( renderer.extensions.get( 'ANGLE_instanced_arrays' ) === null ) {
             document.getElementById( 'notSupported' )!.style.display = '';
             return false;
         }*/
 
-        const width = this.props.width;
-        const height = this.props.height;
+        const width = props.width;
+        const height = props.height;
 
-        this.clock = new Clock();
+        clock = new Clock();
 
-        this.camera = new PerspectiveCamera( 50, width / height, 1, 1000 );
-        this.camera.position.set(50, 50, 50);
+        camera = new PerspectiveCamera( 50, width / height, 1, 1000 );
+        camera.position.set(50, 50, 50);
 
-        this.cameraControls = new OrbitControls( this.camera, this.renderer.domElement );
-        //this.cameraControls.enableKeys = false;
-        this.cameraControls.enableDamping = true;
-        this.cameraControls.dampingFactor = 0.1;
-        this.cameraControls.rotateSpeed = 0.2;
-        this.cameraControls.enabled = true;
-        this.cameraControls.update();
+        cameraControls = new OrbitControls( camera, renderer.domElement );
+        //cameraControls.enableKeys = false;
+        cameraControls.enableDamping = true;
+        cameraControls.dampingFactor = 0.1;
+        cameraControls.rotateSpeed = 0.2;
+        cameraControls.enabled = true;
+        cameraControls.update();
 
-        this.renderer.setPixelRatio( window.devicePixelRatio );
-        this.renderer.setSize( width, height );
-        this.container.current!.appendChild( this.renderer.domElement );
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize( width, height );
+        container.current!.appendChild( renderer.domElement );
 
-        this.transformControls = new TransformControls(this.camera, this.renderer.domElement);
-        this.transformControls.name = 'TransformControls';
-        this.transformControls.enabled = false;
-        this.transformControls.visible = false;
-        scene.add(this.transformControls);
+        transformControls = new TransformControls(camera, renderer.domElement);
+        transformControls.name = 'TransformControls';
+        transformControls.enabled = false;
+        transformControls.visible = false;
+        scene.add(transformControls);
 
-        this.raycaster = new Raycaster();
+        raycaster = new Raycaster();
 
-        this.appContext?.actions.setRenderer(this.transformControls, this.cameraControls);
+        context.actions.setRenderer(transformControls, cameraControls);
 
-        this.stats = new Stats();
-        this.stats.dom.style.position = "absolute";
-        this.stats.dom.style.left = "";
-        this.stats.dom.style.right = "0";
-        this.container.current!.appendChild( this.stats.dom );
+        stats = new Stats();
+        stats.dom.style.position = "absolute";
+        stats.dom.style.left = "0";
+        stats.dom.style.right = "";
+        stats.dom.style.top = "";
+        stats.dom.style.bottom = "0";
+        container.current!.appendChild( stats.dom );
 
-        this.container.current!.addEventListener( 'pointerup', this.onPointerUp );
-        this.container.current!.addEventListener('contextmenu', event => event.preventDefault());
+        container.current!.addEventListener( 'pointerup', onPointerUp );
+        container.current!.addEventListener('contextmenu', event => event.preventDefault());
 
-        this.onResize(null);
+        onResize(null);
 
         return true;
 
     }
 
-    onPointerUp = (event: MouseEvent) => {
-        if (/*this.appContext!.viewPortControlType !== 'camera'*/event.button === 2) {
+    const onPointerUp = (event: MouseEvent) => {
+        if (/*context.viewPortControlType !== 'camera'*/event.button === 2) {
             const rect = (event.target! as HTMLDivElement).getBoundingClientRect();
             const x = event.clientX - rect.left; //x position within the element.
             const y = event.clientY - rect.top;
@@ -132,11 +134,11 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
             const pointer = new Vector2();
             pointer.x = (x / tx) * 2 - 1;
             pointer.y = -(y / ty) * 2 + 1;
-            this.raycaster!.setFromCamera(pointer, this.camera!);
+            raycaster!.setFromCamera(pointer, camera!);
             const list: Object3D[] = [];
-            listObjects(this.appContext!.scene, list, SelectableSearchable, Selectables);
+            listObjects(context.scene, list, SelectableSearchable, Selectables);
             let selected = false;
-            const intersects = this.raycaster!.intersectObjects(list, false);
+            const intersects = raycaster!.intersectObjects(list, false);
             if (intersects.length > 0) {
                 for (let i = 0; i < intersects.length; i++) {
                     let selection;
@@ -145,8 +147,8 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
                     } else {
                         selection = intersects[i].object;
                     }
-                    if (this.appContext!.selection.length === 0 || selection!== this.appContext!.selection[0]) {
-                        this.appContext!.actions.selectObject3d(selection);
+                    if (context.selection.length === 0 || selection!== context.selection[0]) {
+                        context.actions.selectObject3d(selection);
                         selected = true;
                         break;
                     }
@@ -154,85 +156,68 @@ export class ThreejsViewport extends React.PureComponent<ThreejsViewportProps> {
                 }
             }
             if (!selected) {
-                this.appContext!.actions.clearSelection();
+                context.actions.clearSelection();
             }
         }
 
     }
 
-    onResize = (event: any ) => {
+    const onResize = (event: any ) => {
 
-        if (this.renderer!.domElement.parentElement!.clientWidth - 10 !== this.renderer!.domElement.width ||
-            this.renderer!.domElement.parentElement!.clientHeight - 10 !== this.renderer!.domElement.height) {
+        if (renderer!.domElement.parentElement!.clientWidth - 10 !== renderer!.domElement.width ||
+            renderer!.domElement.parentElement!.clientHeight - 10 !== renderer!.domElement.height) {
 
-            const newWidth = this.renderer!.domElement.parentElement!.clientWidth - 10;
-            const newHeight = this.renderer!.domElement.parentElement!.clientHeight - 10;
+            const newWidth = renderer!.domElement.parentElement!.clientWidth - 10;
+            const newHeight = renderer!.domElement.parentElement!.clientHeight - 10;
 
-            this.camera!.aspect = newWidth / newHeight;
-            this.camera!.updateProjectionMatrix();
-            this.renderer!.domElement.style.width = '100%';
-            this.renderer!.domElement.style.height = '100%';
-            this.renderer!.setSize(newWidth, newHeight);
+            camera!.aspect = newWidth / newHeight;
+            camera!.updateProjectionMatrix();
+            renderer!.domElement.style.width = '100%';
+            renderer!.domElement.style.height = '100%';
+            renderer!.setSize(newWidth, newHeight);
         }
     };
 
-    animate = () => {
-        requestAnimationFrame( this.animate );
+    const animate = () => {
+        requestAnimationFrame( animate );
 
-        this.onResize(null);
-        this.renderScene();
-        this.stats!.update();
+        onResize(null);
+        renderScene();
+        stats!.update();
     };
 
-    renderScene() {
-        if (this.appContext) {
-            this.cameraControls!.update();
-            const delta = this.clock!.getDelta();
-            //console.log(delta);
-            //let time = performance.now() * 0.0005;
-            //this.particleSystem!.update(this.clock!.getDelta());
-            this.appContext.script(delta);
-            //this.particleSystem!.emitter.rotation.y = this.clock!.getElapsedTime();
-            //this.particleSystem!.emitter.position.set(Math.cos(this.clock!.getElapsedTime()) * 20, 0, Math.sin(this.clock!.getElapsedTime()) * 20);
-            //console.log(this.particleSystem!.emitter.modelViewMatrix);
+    const renderScene = () => {
+        cameraControls!.update();
+        const delta = clock!.getDelta();
+        //console.log(delta);
+        //let time = performance.now() * 0.0005;
+        //particleSystem!.update(clock!.getDelta());
+        context.script(delta);
+        //particleSystem!.emitter.rotation.y = clock!.getElapsedTime();
+        //particleSystem!.emitter.position.set(Math.cos(clock!.getElapsedTime()) * 20, 0, Math.sin(clock!.getElapsedTime()) * 20);
+        //console.log(particleSystem!.emitter.modelViewMatrix);
 
-            this.appContext.scene.traverse(object => {
-                if (object.userData && object.userData.func) {
-                    object.userData.func.call(object, delta);
-                }
-                if (object instanceof ParticleEmitter) {
-                    /*if (object.name === 'muzzle1' && object.system.particleNum > 0) {
-                        console.log(object.system.particles);
-                    }*/
-                    object.system.update(delta);
-                }
-            });
-
-            this.batchedRenderer!.update();
-            this.renderer!.render(this.appContext.scene, this.camera!);
-        }
-    }
-
-    setViewPortControlType = (type: string) => {
-        if (this.appContext) {
-            this.appContext.actions.setViewPortControlType(type);
-        }
-    }
-
-    render() {
-        return (
-        <ApplicationContextConsumer>
-            { context => {
-                    if (context) {
-                        this.appContext = context;
-                        return <div ref={this.container} style={{width: '100%', height: '100%', position: 'relative'}}>
-                            <ViewPortControls controlType={context.viewPortControlType}
-                                              setControlType={this.setViewPortControlType}/>
-                            <TutorialHint controlType={context.viewPortControlType}/>
-                        </div>;
-                    }
-                }
+        context.scene.traverse(object => {
+            if (object.userData && object.userData.func) {
+                object.userData.func.call(object, delta);
             }
-        </ApplicationContextConsumer>);
+            if (object instanceof ParticleEmitter) {
+                /*if (object.name === 'muzzle1' && object.system.particleNum > 0) {
+                    console.log(object.system.particles);
+                }*/
+                object.system.update(delta);
+            }
+        });
+
+        batchedRenderer!.update();
+        renderer!.render(context.scene, camera!);
     }
+
+    return <div ref={container} style={{width: '100%', height: '100%', position: 'relative'}}>
+        <ViewPortControls controlType={context.viewPortControlType}
+                          setControlType={context.actions.setViewPortControlType}/>
+        <TutorialHint controlType={context.viewPortControlType}/>
+        <PlayController object3d={context.selection[0]}
+                        updateProperties={context.updateProperties}/>
+    </div>;
 }

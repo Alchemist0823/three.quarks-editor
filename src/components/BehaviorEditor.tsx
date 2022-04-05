@@ -65,6 +65,10 @@ export const BehaviorEditor:React.FC<BehaviorEditorProps> = (props) => {
                                       y={((behavior as any)[varName] as Vector3).y}
                                       z={((behavior as any)[varName] as Vector3).z} onChange={onChangeVec3(varName)} />
             case 'valueFunc':
+                return <GeneratorEditor key={varName} name={varName}
+                                        allowedType={[type, "value"]}
+                                        value={(behavior as any)[varName] as any}
+                                        onChange={onChangeBehaviorFunc(varName)}/>
             case 'colorFunc':
             case 'value':
                 return <GeneratorEditor key={varName} name={varName}
