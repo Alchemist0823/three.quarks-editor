@@ -1,19 +1,13 @@
 import {
     ApplicationContext,
-    ApplicationContextConsumer,
     listObjects,
-    Selectables,
     SelectableSearchable
 } from "./ApplicationContext";
 import {
-    ConeEmitter,
-    Constructable,
-    DonutEmitter,
-    EmitterShape,
-    EmitterTypes, MeshSurfaceEmitter, ParticleEmitter,
+    EmitterShapePlugin,
+    EmitterShapes,
+    MeshSurfaceEmitter,
     ParticleSystem,
-    PointEmitter,
-    SphereEmitter
 } from "three.quarks";
 import {NumberInput} from "./editors/NumberInput";
 import React, {useContext} from "react";
@@ -31,9 +25,9 @@ export const EmitterShapeProperties: React.FC<EmitterShapePropertiesProps> = (pr
 
     const onChangeShape = (value: string) => {
         if (props.particleSystem.emitterShape.type !== value) {
-            const entry = EmitterTypes.find(entry => entry[0] === value);
+            const entry: EmitterShapePlugin = EmitterShapes[value];
             if (entry) {
-                props.particleSystem.emitterShape = new (entry[1] as Constructable<EmitterShape>)();
+                props.particleSystem.emitterShape = new entry.constructor();
                 context.actions.updateEmitterShape(props.particleSystem);
                 context.updateProperties();
             }
@@ -82,7 +76,7 @@ export const EmitterShapeProperties: React.FC<EmitterShapePropertiesProps> = (pr
                 <Typography className="name">Shape</Typography>
                 <SelectInput onChange={onChangeShape}
                              value={props.particleSystem.emitterShape.type}
-                             options={EmitterTypes.map(type => type[0] as string)} />
+                             options={Object.keys(EmitterShapes)} />
             </div>
             {renderShapeProperties()}
         </div>
