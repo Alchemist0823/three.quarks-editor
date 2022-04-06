@@ -1,7 +1,4 @@
 import * as React from "react";
-import {ConstantValue} from "three.quarks";
-import {FunctionValueGenerator, ValueGenerator} from "three.quarks";
-import {ColorGenerator, ConstantColor, FunctionColorGenerator} from "three.quarks";
 import {Object3D, Vector4} from "three";
 import {ObjectProperties} from "./ObjectProperties";
 import {
@@ -26,7 +23,7 @@ import "./PropertiesEditor.scss";
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import {BehaviorsProperties} from "./BehaviorsProperties";
 import {useContext, useState} from "react";
-import {BurstEmitterProperties} from "./BurstEmitterProperties";
+import {EmissionProperties} from "./EmissionProperties";
 
 const Accordion = styled((props: AccordionProps) => (
     <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -78,7 +75,7 @@ interface PropertiesEditorProps {
 
 export default function PropertiesEditor(props: PropertiesEditorProps) {
     const context = useContext(ApplicationContext)!;
-    const [expanded, setExpanded] = useState(['Object', 'EmitterShape', 'ParticleRenderer','ParticleEmitter','Behaviors','Script']);
+    const [expanded, setExpanded] = useState(['Object', 'EmitterShape', 'ParticleRenderer', 'Emission','ParticleEmitter','Behaviors','Script']);
 
     const handleChange = (panel: string) => (event: any, isExpanded: boolean) => {
         if (isExpanded) {
@@ -132,29 +129,29 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
             </Accordion>
             }
             {(props.object3d instanceof ParticleEmitter) &&
+                <Accordion expanded={(expanded.indexOf('Emission') !== -1)} onChange={handleChange('Emission')}>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon/>}
+                        aria-controls="emit-burst-content"
+                        id="emit-burst-header">
+                        <StyledHeading>Emission</StyledHeading>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <EmissionProperties particleSystem={(props.object3d as ParticleEmitter).system}
+                                            updateProperties={context.updateProperties}/>
+                    </AccordionDetails>
+                </Accordion>
+            }
+            {(props.object3d instanceof ParticleEmitter) &&
                 <Accordion expanded={(expanded.indexOf('ParticleEmitter') !== -1)} onChange={handleChange('ParticleEmitter')}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon/>}
                         aria-controls="particle-emitter-content"
                         id="particle-emitter-header">
-                        <StyledHeading>Particle Emitter</StyledHeading>
+                        <StyledHeading>Particle Initialization</StyledHeading>
                     </AccordionSummary>
                     <AccordionDetails>
                         <ParticleSystemProperties particleSystem={(props.object3d as ParticleEmitter).system}
-                                                  updateProperties={context.updateProperties}/>
-                    </AccordionDetails>
-                </Accordion>
-            }
-            {(props.object3d instanceof ParticleEmitter) &&
-                <Accordion expanded={(expanded.indexOf('EmissionBursts') !== -1)} onChange={handleChange('EmissionBursts')}>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon/>}
-                        aria-controls="emit-burst-content"
-                        id="emit-burst-header">
-                        <StyledHeading>Emission Bursts</StyledHeading>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <BurstEmitterProperties bursts={(props.object3d as ParticleEmitter).system.emissionBursts}
                                                   updateProperties={context.updateProperties}/>
                     </AccordionDetails>
                 </Accordion>

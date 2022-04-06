@@ -13,14 +13,6 @@ interface ParticleSystemPropertiesProps {
 }
 
 export const ParticleSystemProperties: React.FC<ParticleSystemPropertiesProps> = (props) => {
-    const onChangeLooping = (value: boolean) => {
-        props.particleSystem.looping = value;
-        props.updateProperties();
-    };
-    const onChangeDuration = (value: number) => {
-        props.particleSystem.duration = value;
-        props.updateProperties();
-    };
     const onChangeStartSpeed = (g: GenericGenerator) => {
         props.particleSystem.startSpeed = g as ValueGenerator | FunctionValueGenerator;
         props.updateProperties();
@@ -41,10 +33,6 @@ export const ParticleSystemProperties: React.FC<ParticleSystemPropertiesProps> =
         props.particleSystem.startRotation = g as ValueGenerator | FunctionValueGenerator;
         props.updateProperties();
     };
-    const onChangeEmissionOverTime = (g: GenericGenerator) => {
-        props.particleSystem.emissionOverTime = g as ValueGenerator | FunctionValueGenerator;
-        props.updateProperties();
-    };
     const onChangeStartLength = (g: GenericGenerator) => {
         (props.particleSystem.rendererEmitterSettings as TrailSettings).startLength = g as ValueGenerator | FunctionValueGenerator;
         props.updateProperties();
@@ -57,18 +45,6 @@ export const ParticleSystemProperties: React.FC<ParticleSystemPropertiesProps> =
     const colorValueFunctionTypes: ValueType[] = ['color', 'colorFunc'];
     return (
         <div className="property-container">
-            <div className="property">
-                <Typography component={"label"} className="name">Looping</Typography>
-                <SelectInput onChange={onChangeLooping}
-                             value={props.particleSystem.looping}
-                             options={[true, false]} />
-            </div>
-            <div className="property">
-                <Typography component={"label"} className="name">Duration</Typography>
-                <NumberInput onChange={onChangeDuration}
-                             value={props.particleSystem.duration}
-                             variant={"short"}/>
-            </div>
             <GeneratorEditor name="Start Life"
                              allowedType={valueFunctionTypes}
                              value={props.particleSystem.startLife}
@@ -102,10 +78,6 @@ export const ParticleSystemProperties: React.FC<ParticleSystemPropertiesProps> =
                                  value={(props.particleSystem.rendererEmitterSettings as TrailSettings).followLocalOrigin ? "True" : "False"}
                                  options={["True", "False"]} />
                 </div>}
-            <GeneratorEditor name="Emit Over Time"
-                             allowedType={valueFunctionTypes}
-                             value={props.particleSystem.emissionOverTime}
-                             onChange={onChangeEmissionOverTime}/>
         </div>
     );
 };
