@@ -14,6 +14,7 @@ import React, {useContext} from "react";
 import {MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
 import {SelectInput} from "./editors/SelectInput";
 import {Mesh} from "three";
+import {FieldEditor} from "./editors/FieldEditor";
 
 
 interface EmitterShapePropertiesProps {
@@ -34,15 +35,16 @@ export const EmitterShapeProperties: React.FC<EmitterShapePropertiesProps> = (pr
         }
     };
 
-    const onChangeKeyValue = <T,>(k: string, v: T) => {
-        (props.particleSystem.emitterShape as any)[k] = v;
+    const onChangeKeyValue = () => {
         context.actions.updateEmitterShape(props.particleSystem);
         context.updateProperties();
     };
 
     const renderShapeProperties = () => {
-        const properties = [];
-        for (const key of Object.getOwnPropertyNames(props.particleSystem.emitterShape)) {
+        const entry = EmitterShapes[props.particleSystem.emitterShape.type];
+        return entry.params.map(([varName, type]) =>
+            <FieldEditor key={varName}  fieldName={varName} target={props.particleSystem.emitterShape} onChange={onChangeKeyValue} type={type}/>);
+        /*for (const key of Object.getOwnPropertyNames(props.particleSystem.emitterShape)) {
             if (key !== 'type' && !key.startsWith('_')) {
                 properties.push(
                     <div key={key} className="property">
@@ -66,8 +68,7 @@ export const EmitterShapeProperties: React.FC<EmitterShapePropertiesProps> = (pr
                     />
                 </div>
             );
-        }
-        return properties;
+        }*/
     }
 
     return (

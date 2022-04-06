@@ -7,6 +7,7 @@ interface NumberInputProps{
     value: number;
     variant?: string;
     onChange: (value: number)=>void;
+    unitConversion?: number;
 }
 
 
@@ -20,7 +21,9 @@ const CustomizedTextField = styled(TextField)<TextFieldProps>(({ theme }) => ({
 
 export const NumberInput : React.FC<NumberInputProps> = (props) => {
 
-    const [inputValue, setInputValue] = React.useState(props.value + '');
+    const unitConversion = props.unitConversion ?? 1;
+    const valueDisplay = props.value * unitConversion;
+    const [inputValue, setInputValue] = React.useState(valueDisplay + '');
     const [focus, setFocus] = React.useState(false);
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,14 +34,14 @@ export const NumberInput : React.FC<NumberInputProps> = (props) => {
 
     const onInputBlur = (e: React.FocusEvent) => {
         const x = parseFloat(inputValue);
-        if (x !== props.value)
-            props.onChange(x);
+        if (x !== valueDisplay)
+            props.onChange(x / unitConversion);
         setFocus(false);
     };
 
     const onInputFocus = (e: React.FocusEvent) => {
-        if (inputValue !== props.value + '') {
-            setInputValue(props.value + '');
+        if (inputValue !== valueDisplay + '') {
+            setInputValue(valueDisplay + '');
         }
         setFocus(true);
     };
@@ -46,12 +49,11 @@ export const NumberInput : React.FC<NumberInputProps> = (props) => {
     const onKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             const x = parseFloat(inputValue);
-            if (x !== props.value)
-                props.onChange(x);
+            if (x !== valueDisplay)
+                props.onChange(x / unitConversion);
         }
     };
-
-    return <CustomizedTextField label={props.label ?? ""} type="number" value={focus? inputValue: props.value}
+    return <CustomizedTextField label={props.label ?? ""} type="number" value={focus? inputValue: valueDisplay}
                                 size={"small"} variant="outlined" sx={{width: props.variant === 'short' ? 100: 200}}
                                 onChange={onInputChange} onBlur={onInputBlur} onFocus={onInputFocus} onKeyDown={onKeyDown} />;
 };
