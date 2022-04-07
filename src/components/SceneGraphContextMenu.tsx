@@ -17,6 +17,13 @@ export const SceneGraphContextMenu: React.FC<SceneGraphContextMenuProps> = (prop
     const context = useContext(ApplicationContext)!;
     const onContextMenuClick = () => console.log(props);
 
+    const onContextMenuAddGroup = () => {
+        if (props.object3d) {
+            context.actions.addObject3d('group', props.object3d);
+        }
+        props.close();
+    };
+
     const onContextMenuAddParticleSystem = () => {
         if (props.object3d) {
             context.actions.addObject3d('particle', props.object3d);
@@ -111,6 +118,7 @@ export const SceneGraphContextMenu: React.FC<SceneGraphContextMenuProps> = (prop
                         <NestedMenuItem
                             label={"Add"}
                             parentMenuOpen={props.open}>
+                            <MenuItem onClick={onContextMenuAddGroup}>Group</MenuItem>
                             <MenuItem onClick={onContextMenuAddParticleSystem}>Particle System</MenuItem>
                         </NestedMenuItem>
                         <Divider/>

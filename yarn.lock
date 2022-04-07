@@ -4233,9 +4233,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001125, caniuse-lite@^1.0.30001173, caniuse-lite@^1.0.30001265:
-  version "1.0.30001267"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001267.tgz"
-  integrity sha512-r1mjTzAuJ9W8cPBGbbus8E0SKcUP7gn03R14Wk8FlAlqhH9hroy9nLqmpuXlfKEw/oILW+FGz47ipXV2O7x8lg==
+  version "1.0.30001325"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001325.tgz"
+  integrity sha512-sB1bZHjseSjDtijV1Hb7PB2Zd58Kyx+n/9EotvZ4Qcz2K3d0lWB8dB4nb8wN/TsOGFq3UuAm0zQZNQ4SoR7TrQ==
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -12406,10 +12406,10 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-three.quarks@^0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/three.quarks/-/three.quarks-0.5.2.tgz#51e3fb14bab4bc8806aee510cb905845f1787a6b"
-  integrity sha512-a504g2b4CYaj51Gz+F+ZzDjnEMLRw3U8IbCBXNO8g5cZty39JUcyV27dwgeLgyvITWXIEGuDYXA8qiRO4dKI2Q==
+three.quarks@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/three.quarks/-/three.quarks-0.6.0.tgz#ac0c034eef5f4a4b028381ad962043bd5262928c"
+  integrity sha512-/xbMLEp6CBfToRpWXobgN1BytvgeIahaCglnT7B5TT8g5aP3Q3ZPdVGd7F7ONXDBuzCklI4ECE0MmE8i9w1r0A==
 
 three@^0.138.3:
   version "0.138.3"

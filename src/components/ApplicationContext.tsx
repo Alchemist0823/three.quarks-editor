@@ -4,6 +4,7 @@ import {
     AmbientLight,
     AxesHelper,
     BoxHelper, Color, DirectionalLight,
+    Group,
     Object3D, PointLight,
     Scene,
     Texture,
@@ -425,6 +426,10 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
             }
             case 'box':
                 object = new Mesh(new BoxBufferGeometry(10, 10, 10), new MeshStandardMaterial({color: 0xcccccc}));
+                this.state.scene.add(object);
+                break;
+            case 'group':
+                object = new Group();
                 this.state.scene.add(object);
                 break;
         }
