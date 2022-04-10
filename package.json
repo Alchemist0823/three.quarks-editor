@@ -62,8 +62,8 @@
     "react-scripts": "^4.0.3",
     "react-simple-code-editor": "^0.11.0",
     "stats.js": "^0.17.0",
-    "three": "^0.138.3",
-    "three.quarks": "^0.6.0"
+    "three": "^0.139.2",
+    "three.quarks": "^0.7.0"
   },
   "devDependencies": {
     "@types/jest": "26.0.13",
@@ -72,7 +72,7 @@
     "@types/react-color": "^3.0.5",
     "@types/react-dom": "17.0.9",
     "@types/stats.js": "^0.17.0",
-    "@types/three": "0.138.0",
+    "@types/three": "^0.139.0",
     "gh-pages": "^3.2.3",
     "node-sass": "^6.0.1",
     "typescript": "^4.6.2"
