@@ -11,10 +11,10 @@ interface MeshSelectProps {
     value?: Object3D
 }
 
-export const MeshSelect: React.FC<MeshSelectProps> = (props) => {
+export const Object3DSelect: React.FC<MeshSelectProps> = (props) => {
     const context = useContext(ApplicationContext)!;
     const listObjs: Mesh[] = [];
-    listObjects(context.scene, listObjs, SelectableSearchable, ["Mesh"]);
+    listObjects(context.scene, listObjs, SelectableSearchable, props.listableTypes);
     return <div key={"mesh"} className="property">
         <Typography className="name">{props.name}</Typography>
         <SelectInput value={(props.value ?? "") as Object3D}

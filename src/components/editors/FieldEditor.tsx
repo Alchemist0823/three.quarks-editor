@@ -7,7 +7,7 @@ import {GeneratorEditor, GenericGenerator} from "./GeneratorEditor";
 import {EditorType, MeshSurfaceEmitter} from "three.quarks";
 import {SelectInput} from "./SelectInput";
 import {listObjects, SelectableSearchable} from "../ApplicationContext";
-import {MeshSelect} from "./MeshSelect";
+import {Object3DSelect} from "./Object3DSelect";
 
 export interface FieldEditorProps<T> {
     target: {[k: string]: any};
@@ -29,7 +29,12 @@ export const FieldEditor = <T, > (props: PropsWithChildren<FieldEditorProps<T>>)
         onChange(target[fieldName]);
     }
 
-    const onChangeMesh = (x: Object3D) => {
+    const onChangeBoolean = (x: boolean) => {
+        target[fieldName] = x;
+        onChange(target[fieldName]);
+    }
+
+    const onChangeObject3D = (x: Object3D) => {
         target[fieldName] = x;
         onChange(target[fieldName]);
     }
@@ -52,13 +57,20 @@ export const FieldEditor = <T, > (props: PropsWithChildren<FieldEditorProps<T>>)
                 <Typography component={"label"} className="name">{fieldName}</Typography>
                 <NumberInput key={fieldName} value={target[fieldName]}  onChange={onChangeNumber}/>
             </div>;
+        case 'boolean':
+            return <div className="property" key={fieldName}>
+                <Typography component={"label"} className="name">{fieldName}</Typography>
+                <SelectInput key={fieldName} value={target[fieldName] as boolean} onChange={onChangeBoolean} options={[true, false]}/>
+            </div>;
         case 'vec3':
             return <Vector3Editor key={fieldName} name={fieldName}
                                   x={(target[fieldName] as Vector3).x}
                                   y={(target[fieldName] as Vector3).y}
                                   z={(target[fieldName] as Vector3).z} onChange={onChangeVec3} />
         case 'mesh':
-            return <MeshSelect key={fieldName} name={fieldName} listableTypes={["Mesh"]} onChange={onChangeMesh} value={target[fieldName] as Object3D}/>
+            return <Object3DSelect key={fieldName} name={fieldName} listableTypes={["Mesh"]} onChange={onChangeObject3D} value={target[fieldName] as Object3D}/>
+        case 'particleSystem':
+            return <Object3DSelect key={fieldName} name={fieldName} listableTypes={["ParticleEmitter"]} onChange={onChangeObject3D} value={target[fieldName] as Object3D}/>
         case 'valueFunc':
             return <GeneratorEditor key={fieldName} name={fieldName}
                                     allowedType={[type, "value"]}

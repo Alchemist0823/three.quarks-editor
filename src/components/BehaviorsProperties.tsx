@@ -1,7 +1,7 @@
 import * as React from "react";
 import {
     Behavior, BehaviorTypes, Bezier,
-    ColorRange, ConstantValue, Constructable,
+    ColorRange, ConstantValue, Constructable, ParticleSystem,
     PiecewiseBezier,
 } from "three.quarks";
 import {Box, IconButton} from "@mui/material";
@@ -13,6 +13,7 @@ import {BehaviorEditor} from "./BehaviorEditor";
 import AddIcon from '@mui/icons-material/Add';
 
 interface BehaviorsPropertiesProps {
+    system: ParticleSystem,
     behaviors: Array<Behavior>,
     updateProperties: ()=>void,
 }
@@ -56,6 +57,16 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
                         break;
                     case "colorFunc":
                         args.push(genDefaultColor());
+                        break;
+                    case "boolean":
+                        args.push(false);
+                        break;
+                    case "self":
+                        args.push(props.system);
+                        break;
+                    case "particleSystem":
+                    case "mesh":
+                        args.push(undefined);
                         break;
                 }
             }

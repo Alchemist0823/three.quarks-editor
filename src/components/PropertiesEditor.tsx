@@ -166,7 +166,7 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                 </AccordionSummary>
                 <AccordionDetails>
                     <BehaviorsProperties behaviors={(props.object3d as ParticleEmitter).system.behaviors}
-                                                updateProperties={context.updateProperties}/>
+                                                updateProperties={context.updateProperties} system={(props.object3d as ParticleEmitter).system}/>
                 </AccordionDetails>
             </Accordion>
             }

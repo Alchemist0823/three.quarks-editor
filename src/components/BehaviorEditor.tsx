@@ -1,6 +1,6 @@
 import React, {ChangeEvent, useContext} from "react";
 import {
-    Behavior, BehaviorTypes,
+    Behavior, BehaviorTypes, EditorType,
 } from "three.quarks";
 import {GeneratorEditor, GenericGenerator, ValueType} from "./editors/GeneratorEditor";
 import {
@@ -33,8 +33,11 @@ export const BehaviorEditor:React.FC<BehaviorEditorProps> = (props) => {
     const behavior = props.behavior;
     //behavior.type
     const entry = BehaviorTypes[behavior.type];
-    const editor = entry.params.map(([varName, type]) =>
-        <FieldEditor key={varName}  fieldName={varName} target={behavior} onChange={context.updateProperties} type={type}/>);
+    const editor = entry.params
+        .filter(([varName, type]) => type !== "self")
+        .map(([varName, type]) =>
+        <FieldEditor key={varName}  fieldName={varName} target={behavior}
+                     onChange={context.updateProperties} type={type as EditorType}/>);
 
     return (
         <Accordion defaultExpanded={true}>

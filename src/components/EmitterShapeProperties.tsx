@@ -4,6 +4,7 @@ import {
     SelectableSearchable
 } from "./ApplicationContext";
 import {
+    EditorType,
     EmitterShapePlugin,
     EmitterShapes,
     MeshSurfaceEmitter,
@@ -43,7 +44,7 @@ export const EmitterShapeProperties: React.FC<EmitterShapePropertiesProps> = (pr
     const renderShapeProperties = () => {
         const entry = EmitterShapes[props.particleSystem.emitterShape.type];
         return entry.params.map(([varName, type]) =>
-            <FieldEditor key={varName}  fieldName={varName} target={props.particleSystem.emitterShape} onChange={onChangeKeyValue} type={type}/>);
+            <FieldEditor key={varName}  fieldName={varName} target={props.particleSystem.emitterShape} onChange={onChangeKeyValue} type={type as EditorType}/>);
         /*for (const key of Object.getOwnPropertyNames(props.particleSystem.emitterShape)) {
             if (key !== 'type' && !key.startsWith('_')) {
                 properties.push(

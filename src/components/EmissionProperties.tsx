@@ -43,6 +43,10 @@ export const EmissionProperties: React.FC<BurstEmitterPropertiesProps> = React.m
         props.particleSystem.duration = value;
         props.updateProperties();
     };
+    const onChangeOnlyUsedByOther = (value: boolean) => {
+        props.particleSystem.onlyUsedByOther = value;
+        props.updateProperties();
+    };
 
     const onChangeEmissionOverTime = (g: GenericGenerator) => {
         props.particleSystem.emissionOverTime = g as ValueGenerator | FunctionValueGenerator;
@@ -63,6 +67,12 @@ export const EmissionProperties: React.FC<BurstEmitterPropertiesProps> = React.m
             <NumberInput onChange={onChangeDuration}
                          value={props.particleSystem.duration}
                          variant={"short"}/>
+        </div>
+        <div className="property">
+            <Typography component={"label"} className="name">Used by other system</Typography>
+            <SelectInput onChange={onChangeOnlyUsedByOther}
+                         value={props.particleSystem.onlyUsedByOther}
+                         options={[true, false]} />
         </div>
         <GeneratorEditor name="Emit Over Time"
                          allowedType={valueFunctionTypes}

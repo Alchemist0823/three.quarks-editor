@@ -201,15 +201,9 @@ export const ThreejsViewport: React.FC<ThreejsViewportProps> = (props) => {
             if (object.userData && object.userData.func) {
                 object.userData.func.call(object, delta);
             }
-            if (object instanceof ParticleEmitter) {
-                /*if (object.name === 'muzzle1' && object.system.particleNum > 0) {
-                    console.log(object.system.particles);
-                }*/
-                object.system.update(delta);
-            }
         });
 
-        batchedRenderer!.update();
+        batchedRenderer!.update(delta);
         renderer!.render(context.scene, camera!);
     }
 
