@@ -8387,6 +8387,11 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+linear-gradient-parser@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/linear-gradient-parser/-/linear-gradient-parser-1.1.8.tgz#a226445b023863c93411c6f889a7f0c065dce06a"
+  integrity sha512-p7kv4dH4uQf0eO7EeULcE7+xgViS/kHIdsQaah3T4TxGfAWvZR7TX5kkZu2zHyhXlWTLLP6mUwm2fKlD61n7Ag==
+
 lines-and-columns@^1.1.6:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
@@ -10825,6 +10830,13 @@ react-is@^17.0.1, react-is@^17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
+
+react-linear-gradient-picker@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/react-linear-gradient-picker/-/react-linear-gradient-picker-2.0.3.tgz#9fcd0eb9bb388c5fe41cf4f2b74fef2d65241162"
+  integrity sha512-6hGDgeOujYS5zod0GGpSf2zsUHpoMGGsAsU6Rmo0ER0ANDeLgYSAuP9LSXRJ8/rRl51Z+9LqaIqc27lYHfJTeA==
+  dependencies:
+    linear-gradient-parser "^1.1.8"
 
 react-redux@^7.2.5:
   version "7.2.5"

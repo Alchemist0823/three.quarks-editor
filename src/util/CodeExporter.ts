@@ -81,7 +81,6 @@ export class CodeExporter {
         code += `            startSize: ${CodeExporter.exportFunction(system.startSize)},\n`;
         code += `            startColor: ${CodeExporter.exportFunction(system.startColor)},\n`;
         code += `            worldSpace: ${system.worldSpace},\n`;
-        code += `            maxParticle: ${system.maxParticle},\n`;
         code += `            emissionOverTime: ${CodeExporter.exportFunction(system.emissionOverTime)},\n`;
         code += `            emissionBursts: ${system.emissionBursts},\n`;
         code += `            shape: ${CodeExporter.exportShape(system.emitterShape)},\n`;

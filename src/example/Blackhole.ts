@@ -24,7 +24,7 @@ export function createBlackHole(renderer: BatchedParticleRenderer, textures: Tex
         startSize: new ConstantValue(40),
         startColor: new ConstantColor(new Vector4(0, 0, 0, 1)),
         worldSpace: false,
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(1),
         emissionBursts: [],
         shape: new PointEmitter(),
@@ -48,7 +48,7 @@ export function createBlackHole(renderer: BatchedParticleRenderer, textures: Tex
         startSize: new ConstantValue(4),
         startColor: new ConstantColor(new Vector4(1, 1, 1, 1)),
         worldSpace: false,
-        maxParticle: 10000,
+        
         emissionOverTime: new ConstantValue(8),
         emissionBursts: [],
         shape: new SphereEmitter({
@@ -81,7 +81,7 @@ export function createBlackHole(renderer: BatchedParticleRenderer, textures: Tex
         startSize: new ConstantValue(30),
         startColor: new ConstantColor(new Vector4(0.9254901960784314, 0.788235294117647, 0.1607843137254902, 1)),
         worldSpace: false,
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(1),
         emissionBursts: [],
         shape: new PointEmitter(),

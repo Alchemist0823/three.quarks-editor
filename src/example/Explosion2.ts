@@ -32,7 +32,7 @@ export function createExplosion(renderer: BatchedParticleRenderer, textures: Tex
         startColor: new ConstantColor(new Vector4(1, 1, 1, 1)),
         worldSpace: false,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -69,7 +69,7 @@ export function createExplosion(renderer: BatchedParticleRenderer, textures: Tex
         startColor: new ConstantColor(mainColor),
         worldSpace: false,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -106,7 +106,7 @@ export function createExplosion(renderer: BatchedParticleRenderer, textures: Tex
         startColor: new ConstantColor(new Vector4(1, 1, 1, .5)),
         worldSpace: false,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -146,7 +146,7 @@ export function createExplosion(renderer: BatchedParticleRenderer, textures: Tex
         startColor: new RandomColor(new Vector4(1, 1, 1, 1), mainColor),
         worldSpace: false,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -184,7 +184,7 @@ export function createExplosion(renderer: BatchedParticleRenderer, textures: Tex
         startColor: new ConstantColor(secColor),
         worldSpace: false,
 
-        maxParticle: 10,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -216,7 +216,7 @@ export function createExplosion(renderer: BatchedParticleRenderer, textures: Tex
         startColor: new ConstantColor(secColor),
         worldSpace: false,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -250,7 +250,7 @@ export function createExplosion(renderer: BatchedParticleRenderer, textures: Tex
         startColor: new ConstantColor(secColor),
         worldSpace: false,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,

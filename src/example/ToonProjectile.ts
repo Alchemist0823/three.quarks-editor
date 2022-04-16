@@ -27,7 +27,7 @@ export function createToonProjectile(renderer: BatchedParticleRenderer, textures
         startColor: new ConstantColor(new Vector4(1, 1, 1, .5)),
         worldSpace: true,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(40),
 
         shape: new SphereEmitter({
@@ -56,7 +56,7 @@ export function createToonProjectile(renderer: BatchedParticleRenderer, textures
         startColor: new ConstantColor(new Vector4(1, 0.1509503, 0.07352942, .5)),
         worldSpace: true,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(40),
 
         shape: new SphereEmitter({
@@ -86,7 +86,7 @@ export function createToonProjectile(renderer: BatchedParticleRenderer, textures
         startColor: new RandomColor(new Vector4(1, 1, 1, .5), new Vector4(1, 0.1509503, 0.07352942, .5)),
         worldSpace: true,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(60),
 
         shape: new ConeEmitter({
@@ -118,7 +118,7 @@ export function createToonProjectile(renderer: BatchedParticleRenderer, textures
         startColor: new ConstantColor(new Vector4(1, 1, 1, .5)),
         worldSpace: true,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(20),
         shape: new SphereEmitter({
             radius: .2,

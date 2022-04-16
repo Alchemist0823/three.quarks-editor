@@ -58,12 +58,13 @@
     "react": "^17.0.2",
     "react-color": "2.19.3",
     "react-dom": "^17.0.2",
+    "react-linear-gradient-picker": "^2.0.3",
     "react-redux": "^7.2.5",
     "react-scripts": "^4.0.3",
     "react-simple-code-editor": "^0.11.0",
     "stats.js": "^0.17.0",
-    "three": "^0.139.2",
-    "three.quarks": "^0.7.0"
+    "three": "^0.139.3",
+    "three.quarks": "^0.7.1"
   },
   "devDependencies": {
     "@types/jest": "26.0.13",

@@ -404,7 +404,6 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
             case 'particle': {
                 const texture = this.state.textures[0].texture;
                 const particleSystem = new ParticleSystem(this.state.batchedRenderer!, {
-                    maxParticle: 10000,
                     shape: new ConeEmitter(),
                     emissionOverTime: new ConstantValue(10),
                     startLife: new ConstantValue(5),
@@ -467,7 +466,6 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
 
 /*
         this.particleSystem = new ParticleSystem(renderer, {
-            maxParticle: 10000,
             shape: new ConeEmitter(),
             emissionOverTime: new ConstantValue(100),
             startLife: new ConstantValue(30),

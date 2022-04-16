@@ -28,7 +28,7 @@ export function createShipSmoke(renderer: BatchedParticleRenderer, textures: Tex
         startSize: new IntervalValue(10, 15),
         startColor: new ConstantColor(grey),
         worldSpace: true,
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(20),
         shape: new ConeEmitter({
             radius: 10,

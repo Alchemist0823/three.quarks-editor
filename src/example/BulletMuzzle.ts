@@ -37,7 +37,7 @@ export function createBulletMuzzle(renderer: BatchedParticleRenderer, textures: 
         startColor: new ConstantColor(new Vector4(1, 0.585716, 0.1691176, 1)),
         worldSpace: false,
 
-        maxParticle: 10,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -68,7 +68,7 @@ export function createBulletMuzzle(renderer: BatchedParticleRenderer, textures: 
         startColor: new ConstantColor(new Vector4(1, 1, 1, 1)),
         worldSpace: false,
 
-        maxParticle: 5,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -116,7 +116,7 @@ export function createBulletMuzzle(renderer: BatchedParticleRenderer, textures: 
         startColor: new ConstantColor(new Vector4(1, 1, 1, 1)),
         worldSpace: false,
 
-        maxParticle: 5,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -150,7 +150,7 @@ export function createBulletMuzzle(renderer: BatchedParticleRenderer, textures: 
         startColor: new RandomColor(new Vector4(0.6323, 0.6323, 0.6323, .31), new Vector4(1, 1, 1, 0.54)),
         worldSpace: true,
 
-        maxParticle: 10,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -190,7 +190,7 @@ export function createBulletMuzzle(renderer: BatchedParticleRenderer, textures: 
         startColor: new RandomColor(new Vector4(1, 0.91, 0.51, 1), new Vector4(1, 0.44, 0.16, 1)),
         worldSpace: true,
 
-        maxParticle: 10,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,

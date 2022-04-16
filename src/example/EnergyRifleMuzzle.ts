@@ -44,7 +44,7 @@ export function createEnergyRifleMuzzle(renderer: BatchedParticleRenderer, textu
         startColor: new ConstantColor(new Vector4(0.5, 0.5, 0.5, 1)),
         worldSpace: false,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -79,7 +79,7 @@ export function createEnergyRifleMuzzle(renderer: BatchedParticleRenderer, textu
         startColor: new ConstantColor(new Vector4(0, 0.3, 0.3, 1)),
         worldSpace: false,
 
-        maxParticle: 5,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -116,7 +116,7 @@ export function createEnergyRifleMuzzle(renderer: BatchedParticleRenderer, textu
         startColor: new ConstantColor(new Vector4(0, 0.2, 0.2, 1)),
         worldSpace: false,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -154,7 +154,7 @@ export function createEnergyRifleMuzzle(renderer: BatchedParticleRenderer, textu
         startColor: new RandomColor(new Vector4(0.6323, 0.6323, 0.6323, .31), new Vector4(1, 1, 1, 0.54)),
         worldSpace: true,
 
-        maxParticle: 10,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -201,7 +201,7 @@ export function createEnergyRifleMuzzle(renderer: BatchedParticleRenderer, textu
         startColor: new ConstantColor(new Vector4(0, 1, 1, 1)),
         worldSpace: false,
 
-        maxParticle: 10,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,

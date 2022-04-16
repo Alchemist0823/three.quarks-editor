@@ -29,7 +29,7 @@ export function createElectricBall(renderer: BatchedParticleRenderer, textures: 
         startColor: new ConstantColor(new Vector4(0.5220588 * 0.772549, 0.6440161 * 0.772549, 1 * 0.772549, 0.772549)),
         worldSpace: false,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(1),
         emissionBursts: [],
         shape: new PointEmitter(),
@@ -52,7 +52,7 @@ export function createElectricBall(renderer: BatchedParticleRenderer, textures: 
         startColor: new RandomColor(new Vector4(0.1397059 * 0.8, 0.3592291 * 0.8, 1 * 0.8, 1), new Vector4(1 * 0.8, 0.9275356 * 0.8, 0.1029412 * 0.8, 1)),
         worldSpace: true,
 
-        maxParticle: 100,
+        
         emissionOverTime: new IntervalValue(5, 10),
         emissionBursts: [],
         shape: new SphereEmitter({
@@ -82,7 +82,7 @@ export function createElectricBall(renderer: BatchedParticleRenderer, textures: 
         startColor: new RandomColor(new Vector4(0.1397059, 0.3592291, 1, 1), new Vector4(1, 0.9275356, 0.1029412, 1)),
         worldSpace: true,
 
-        maxParticle: 100,
+        
         emissionOverTime: new IntervalValue(5, 10),
         emissionBursts: [],
 
@@ -111,7 +111,7 @@ export function createElectricBall(renderer: BatchedParticleRenderer, textures: 
         startColor: new RandomColor(new Vector4(0.1397059, 0.3592291, 1, 1), new Vector4(1, 0.9275356, 0.1029412, 1)),
         worldSpace: false,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(3),
         emissionBursts: [],
 
@@ -137,7 +137,7 @@ export function createElectricBall(renderer: BatchedParticleRenderer, textures: 
         startColor: new ConstantColor(new Vector4(1,1,1,.5)),
         worldSpace: true,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -174,7 +174,7 @@ export function createElectricBall(renderer: BatchedParticleRenderer, textures: 
         startColor: new RandomColor(new Vector4(1,1,1,1), new Vector4(1, 0.1509503, 0.07352942, 1)),
         worldSpace: true,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -213,7 +213,7 @@ export function createElectricBall(renderer: BatchedParticleRenderer, textures: 
         startColor: new ConstantColor(new Vector4(1, 0.3059356, 0.2426471, 1)),
         worldSpace: true,
 
-        maxParticle: 10,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -244,7 +244,7 @@ export function createElectricBall(renderer: BatchedParticleRenderer, textures: 
         startColor: new ConstantColor(new Vector4(1, 0.3059356, 0.2426471, 1)),
         worldSpace: true,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,

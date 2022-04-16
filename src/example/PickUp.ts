@@ -29,7 +29,7 @@ export function createPickUp(renderer: BatchedParticleRenderer, textures: Textur
         startColor: new ConstantColor(new Vector4(1, 1, 1, .5)),
         worldSpace: false,
 
-        maxParticle: 2000,
+        
         emissionOverTime: new ConstantValue(40),
 
         emissionBursts: [{
@@ -70,7 +70,7 @@ export function createPickUp(renderer: BatchedParticleRenderer, textures: Textur
         startColor: new ConstantColor(yellowColor),
         worldSpace: false,
 
-        maxParticle: 10,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -102,7 +102,7 @@ export function createPickUp(renderer: BatchedParticleRenderer, textures: Textur
         startColor: new RandomColor(darkOrangeColor, redColor),
         worldSpace: false,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0.4,
@@ -140,7 +140,7 @@ export function createPickUp(renderer: BatchedParticleRenderer, textures: Textur
         startColor: new RandomColor(new Vector4(1, 0.2, 0, 1), redColor),
         worldSpace: false,
 
-        maxParticle: 100,
+        
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0.4,

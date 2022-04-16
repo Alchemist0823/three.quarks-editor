@@ -1,4 +1,4 @@
-import {AdditiveBlending, Group, NormalBlending, TextureLoader, Vector4} from "three";
+import {AdditiveBlending, Group, NormalBlending, Vector4} from "three";
 import {BatchedParticleRenderer, ColorOverLife, ParticleSystem, PointEmitter, RenderMode} from "three.quarks";
 import {ConeEmitter} from "three.quarks";
 import {IntervalValue} from "three.quarks";
@@ -7,10 +7,8 @@ import {PiecewiseBezier} from "three.quarks";
 import {ColorRange} from "three.quarks";
 import {ConstantColor} from "three.quarks";
 import {SphereEmitter} from "three.quarks";
-import {RotationOverLife} from "three.quarks";
 import {ConstantValue} from "three.quarks";
 import {Bezier} from "three.quarks";
-import {Gradient} from "three.quarks";
 import {RandomColor} from "three.quarks";
 import {TextureImage} from "../components/ApplicationContext";
 
@@ -28,7 +26,7 @@ export function createShipTrail(renderer: BatchedParticleRenderer, textures: Tex
         startColor: new ConstantColor(new Vector4(0.5220588 * 0.772549, 0.6440161 * 0.772549, 1 * 0.772549, 0.772549)),
         worldSpace: false,
 
-        maxParticle: 100,
+
         emissionOverTime: new ConstantValue(1),
         emissionBursts: [],
         shape: new PointEmitter(),
@@ -53,7 +51,7 @@ export function createShipTrail(renderer: BatchedParticleRenderer, textures: Tex
         startColor: new ConstantColor(new Vector4(0.5220588 * 0.772549, 0.6440161 * 0.772549, 1 * 0.772549, 0.772549)),
         worldSpace: true,
 
-        maxParticle: 500,
+
         emissionOverTime: new ConstantValue(120),
 
         shape: new SphereEmitter({
@@ -84,7 +82,7 @@ export function createShipTrail(renderer: BatchedParticleRenderer, textures: Tex
         startColor: new RandomColor(new Vector4(1, 1, 1, .5), new Vector4(0.5220588, 0.6440161, 1, 0.772549)),
         worldSpace: false,
 
-        maxParticle: 100,
+
         emissionOverTime: new ConstantValue(60),
 
         shape: new ConeEmitter({
