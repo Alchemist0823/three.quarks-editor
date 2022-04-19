@@ -15,6 +15,7 @@ interface HandleProps extends TransformProps {
     onMouseEnter: (event: React.MouseEvent)=>void,
     onMouseLeave: (event: React.MouseEvent)=>void,
     onMouseDown: (event: React.MouseEvent)=>void,
+    onMouseUp: (event: React.MouseEvent)=>void,
 }
 
 export class HandleComponent extends TransformComponent<HandleProps> {
@@ -33,7 +34,8 @@ export class HandleComponent extends TransformComponent<HandleProps> {
             yval,
             onMouseEnter,
             onMouseLeave,
-            onMouseDown
+            onMouseDown,
+            onMouseUp
         } = this.props;
         return nextProps.xstart !== xstart ||
             nextProps.ystart !== ystart ||
@@ -47,7 +49,8 @@ export class HandleComponent extends TransformComponent<HandleProps> {
             nextProps.yval !== yval ||
             nextProps.onMouseDown !== onMouseDown ||
             nextProps.onMouseLeave !== onMouseLeave ||
-            nextProps.onMouseEnter !== onMouseEnter;
+            nextProps.onMouseEnter !== onMouseEnter ||
+            nextProps.onMouseUp !== onMouseUp;
     }
 
     render() {
@@ -65,7 +68,8 @@ export class HandleComponent extends TransformComponent<HandleProps> {
             yval,
             onMouseEnter,
             onMouseLeave,
-            onMouseDown
+            onMouseDown,
+            onMouseUp
         } = this.props;
 
         const sx = x(xstart);
@@ -93,7 +97,8 @@ export class HandleComponent extends TransformComponent<HandleProps> {
                 fill={down ? background: handleColor}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
-                onMouseDown={onMouseDown} />
+                onMouseDown={onMouseDown}
+                onMouseUp={onMouseUp}/>
         </g>;
     }
 }

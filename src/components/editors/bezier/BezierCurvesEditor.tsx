@@ -2,11 +2,11 @@ import * as React from "react";
 import {CurveComponent} from "./CurveComponent";
 import {PiecewiseBezier} from "three.quarks";
 import {HandleComponent} from "./HandleComponent";
-import {createRef} from "react";
+import {createRef, useCallback, useRef, useState} from "react";
 
 interface BezierCurvesEditorProps {
     value: PiecewiseBezier
-    onChange?: (value:PiecewiseBezier) => void,
+    onChange?: (value: PiecewiseBezier) => void,
     width: number,
     height: number,
     padding?: Array<number>,
@@ -15,6 +15,7 @@ interface BezierCurvesEditorProps {
     gridColor?: string,
     curveColor?: string,
     handleColor?: string,
+    controlHandleColor?: string,
     curveWidth?: number,
     handleRadius?: number,
     handleStroke?: number,
@@ -24,250 +25,340 @@ interface BezierCurvesEditorProps {
     textStyle?: React.CSSProperties,
 }
 
-interface BezierCurvesEditorState {
-    curve: number,
-    hover: number,
-    down: number,
-}
 
-export class BezierCurvesEditor extends React.PureComponent<BezierCurvesEditorProps, BezierCurvesEditorState> {
+const defaultP = {
+    padding: [0, 0, 0, 0],
+    handleRadius: 4,
+}; //[25, 5, 25, 18]
 
+export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => {
 
-    static defaultP = {
-        padding: [0, 0, 0, 0],
-        handleRadius: 4,
-    }; //[25, 5, 25, 18]
+    const {
+        width,
+        height,
+        value,
+        curveWidth = 1,
+        curveColor = "#000",
+        handleRadius = defaultP.handleRadius,
+        handleColor = "#f00",
+        controlHandleColor = "#a0f",
+        handleStroke = 1,
+        background = "#fff",
+    } = props;
 
-    constructor(props: Readonly<BezierCurvesEditorProps>) {
-        super(props);
-        this.state = {
-            curve: -1,
-            down: -1,
-            hover: -1,
-        };
-    }
+    const [curveIndex, setCurveIndex] = useState(-1);
+    const [hoverHandle, setHoverHandle] = useState(-1);
+    const [downHandle, setDownHandle] = useState(-1);
+    const [viewBox, setViewBox] = useState({x: 0, y: 0, w: width, h: height});
+    const [lastMousePos, setLastMousePos] = useState<{x:number, y:number} | null>(null);
 
-    rootRef = createRef<HTMLDivElement>();
+    const rootRef = useRef<HTMLDivElement>(null);
 
-    positionForEvent = (e: React.MouseEvent) => {
-        if (this.rootRef.current) {
-            const rect = this.rootRef.current.getBoundingClientRect();
-            return [e.clientX - rect.left, e.clientY - rect.top];
+    const getViewportPositionFromEvent = useCallback((e: React.MouseEvent) => {
+        if (rootRef.current) {
+            const rect = rootRef.current.getBoundingClientRect();
+            return [(e.clientX - rect.left), (e.clientY - rect.top)];
         } else {
             return [0, 0];
         }
-    };
+    }, []);
 
-    x = (value:number) => {
-    };
-
-    y = (value:number) => {
-    };
-
-    inversex = (x:number) => {
-    };
-
-    inversey = (y:number) => {
-    };
-
-    onDownLeave = (e: React.MouseEvent) => {
-        if (this.state.down) {
-            this.onDownMove(e);
-            this.setState({
-                down: -1,
-                hover: -1
-            });
+    const getPositionFromEvent = useCallback((e: React.MouseEvent) => {
+        if (rootRef.current) {
+            const rect = rootRef.current.getBoundingClientRect();
+            return [(e.clientX - rect.left) + viewBox.x, (e.clientY - rect.top) + viewBox.y];
+        } else {
+            return [0, 0];
         }
+    },[viewBox]);
+
+    const x = (value: number) => {
     };
-    onDownMove = (e: React.MouseEvent) => {
-        if (this.state.down >= 0) {
+
+    const y = (value: number) => {
+    };
+
+    const inversex = (x: number) => {
+    };
+
+    const inversey = (y: number) => {
+    };
+
+    const onDownLeave = useCallback((e: React.MouseEvent) => {
+        if (downHandle) {
+            onDownMove(e);
+            setDownHandle(-1);
+            setHoverHandle(-1);
+        }
+    }, [downHandle]);
+
+    const onMouseDown = useCallback((e: React.MouseEvent) => {
+        if (e.button !== 2 && curveIndex === -1) {
+            const [x, y] = getViewportPositionFromEvent(e);
+            //if (e.button === 1) {
+            setLastMousePos({x, y});
+        }
+        //}
+    }, [curveIndex]);
+
+    const onDownMove = useCallback((e: React.MouseEvent) => {
+        if (lastMousePos) {
             e.preventDefault();
-            const [x, y] = this.positionForEvent(e);
-            const value = new PiecewiseBezier(this.props.value.functions);
+            const [x, y] = getViewportPositionFromEvent(e);
+            viewBox.x -= x - lastMousePos.x;
+            viewBox.y -= y - lastMousePos.y;
+            setViewBox(viewBox);
+            setLastMousePos({x, y});
 
-            const valueX = x / this.props.width;
-            const curveIndex = this.state.curve;
+        } else if (downHandle >= 0) {
+            e.preventDefault();
+            const [x, y] = getPositionFromEvent(e);
+            const value = new PiecewiseBezier(props.value.functions);
+
+            const valueX = x / props.width;
+            const valueY = (props.height - y) / props.height;
+
             const curve = value.getFunction(curveIndex);
-
-            if (this.state.down === 0) {
+            if (downHandle === 0) {
                 const old = curve.p[0];
-                curve.p[0] = (this.props.height - y) / this.props.height;
+                curve.p[0] = valueY;
                 curve.p[1] += curve.p[0] - old;
-                value.setStartX(curveIndex, x / this.props.width);
+                value.setStartX(curveIndex, x / props.width);
                 if (curveIndex - 1 >= 0) {
                     const pCurve = value.getFunction(curveIndex - 1);
-                    pCurve.p[3] = (this.props.height - y) / this.props.height;
+                    pCurve.p[3] = valueY;
                     pCurve.p[2] += curve.p[0] - old;
                     value.setFunction(curveIndex - 1, value.getFunction(curveIndex - 1).clone());
                 }
                 value.setFunction(curveIndex, curve.clone());
             }
-            if (this.state.down === 3) {
+            if (downHandle === 3) {
                 const old = curve.p[3];
-                curve.p[3] = (this.props.height - y) / this.props.height;
+                curve.p[3] = valueY;
                 curve.p[2] += curve.p[3] - old;
-                value.setEndX(curveIndex, x / this.props.width);
+                value.setEndX(curveIndex, x / props.width);
                 if (curveIndex + 1 < value.numOfFunctions) {
                     const nCurve = value.getFunction(curveIndex + 1);
-                    nCurve.p[0] = (this.props.height - y) / this.props.height;
+                    nCurve.p[0] = valueY;
                     nCurve.p[1] += curve.p[3] - old;
                     value.setFunction(curveIndex + 1, value.getFunction(curveIndex + 1).clone());
                 }
                 value.setFunction(curveIndex, curve.clone());
             }
-            if (this.state.down === 1) {
-                curve.p[1] = (this.props.height - y) / this.props.height;
+            if (downHandle === 1) {
+                curve.p[1] = valueY;
                 value.setFunction(curveIndex, curve.clone());
             }
-            if (this.state.down === 2) {
-                curve.p[2] = (this.props.height - y) / this.props.height;
+            if (downHandle === 2) {
+                curve.p[2] = valueY;
                 value.setFunction(curveIndex, curve.clone());
             }
-            //value[i] = this.inversex(x);
-            //value[i + 1] = this.inversey(y);
-            if (this.props.onChange)
-                this.props.onChange(value);
+            //value[i] = inversex(x);
+            //value[i + 1] = inversey(y);
+            if (props.onChange)
+                props.onChange(value);
         }
-    };
+    }, [curveIndex, downHandle, lastMousePos]);
 
-    onDownUp = () => {
-        // this.onDownMove(e);
-        this.setState({
-            down: -1,
-        });
-    };
-
-
-    onEnterHandle(curve: number, h: number) {
-        if (!this.state.down) {
-            this.setState({
-                hover: h,
-                curve: curve,
-            });
-        }
-    }
-    onDownHandle(curve: number, h: number, e: React.MouseEvent) {
+    const onMouseUp = useCallback((e: React.MouseEvent) => {
+        // onDownMove(e);
         e.preventDefault();
-        this.setState({
-            hover: -1,
-            down: h,
-            curve: curve,
-        });
-    }
+        if (e.button === 2 && hoverHandle === -1) {
+            const [posX, posY] = getPositionFromEvent(e);
+            const x = posX / props.width;
+            const y = (props.height - posY) / props.height;
 
-    onLeaveHandle() {
-        if (!this.state.down) {
-            this.setState({
-                hover: -1,
-            });
+            const cIndex = value.findFunction(x);
+            const curve = value.getFunction(cIndex);
+            const endX = value.getEndX(cIndex), startX = value.getStartX(cIndex);
+            const d = curve.getSlope(x) * (endX - x) / 3;
+            const nCurve1 = curve.clone();
+            const nCurve2 = curve.clone();
+
+            nCurve1.p[1] = curve.p[0] + curve.getSlope(startX) / (endX - startX) * (x - startX) / 3;
+            nCurve1.p[2] = y - curve.getSlope(x) / (endX - startX) * (x - startX) / 3;
+            nCurve1.p[3] = y;
+            nCurve2.p[0] = y;
+            nCurve2.p[1] = y + curve.getSlope(x) / (endX - startX) * (endX - x) / 3;
+            nCurve2.p[2] = curve.p[3] - curve.getSlope(endX)  / (endX - startX) * (endX - x) / 3;
+            value.insertFunction(x, nCurve2);
+            value.setFunction(cIndex, nCurve1);
+
+            setCurveIndex(cIndex + 1);
+            setHoverHandle(0);
+            if (props.onChange) {
+                const value = new PiecewiseBezier(props.value.functions);
+                props.onChange(value);
+            }
+            //value.
+        } else {
+            setDownHandle(-1);
+            setLastMousePos(null);
+        }
+    }, [hoverHandle, value]);
+
+
+    const onEnterHandle = (c: number, h: number) => {
+        if (!downHandle) {
+            setHoverHandle(h);
+            setCurveIndex(c);
         }
     }
 
-    render() {
+    const onUpHandle = (c: number, h: number, e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.button === 2) {
+            if (h === 0 && c > 0) {
+                const nextC = value.removeFunction(c);
+                const curve = value.getFunction(c - 1);
+                curve.p[2] = nextC.p[2];
+                curve.p[3] = nextC.p[3];
+                value.setFunction(c - 1, curve.clone());
 
-        const {
-            width,
-            height,
-            value,
-            curveWidth = 1,
-            curveColor = "#000",
-            handleRadius = BezierCurvesEditor.defaultP.handleRadius,
-            handleColor = "#f00",
-            handleStroke = 1,
-            background = "#fff",
-        } = this.props;
-
-        const {
-            curve: curveIndex,
-            down,
-            hover
-        } = this.state;
-
-        const curves = [];
-        for (let i = 0; i < value.numOfFunctions; i ++) {
-            const x1 = value.getStartX(i);
-            const x2 = value.getEndX(i);
-            const curve = value.getFunction(i);
-            const slope0 = curve.getSlope(0);
-            const slope1 = curve.getSlope(1);
-
-            curves.push(
-                <g key={i}>
-                    <CurveComponent xFrom={x1 * width} xTo={x2 * width} yFrom={height} yTo={0}
-                        curveColor={curveColor} curveWidth={curveWidth} value={curve}/>
-                    <HandleComponent
-                        xFrom={x1 * width} xTo={x2 * width} yFrom={height} yTo={0}
-                        onMouseDown={(e)=>this.onDownHandle(i, 0, e)}
-                        onMouseEnter={(e)=>this.onEnterHandle(i, 0)}
-                        onMouseLeave={(e)=>this.onLeaveHandle()}
-                        xstart={0}
-                        ystart={curve.p[0]}
-                        xval={0}
-                        yval={curve.p[0]}
-                        handleRadius={handleRadius}
-                        handleColor={handleColor}
-                        down={curveIndex === i && down === 0}
-                        hover={curveIndex === i && hover === 0}
-                        handleStroke={handleStroke}
-                        background={background}
-                    />
-                    <HandleComponent
-                        xFrom={x1 * width} xTo={x2 * width} yFrom={height} yTo={0}
-                        onMouseDown={(e)=>this.onDownHandle(i, 1, e)}
-                        onMouseEnter={(e)=>this.onEnterHandle(i, 1)}
-                        onMouseLeave={(e)=>this.onLeaveHandle()}
-                        xstart={0}
-                        ystart={curve.p[0]}
-                        xval={1.0 / 3}
-                        yval={1.0 / 3 * slope0 + curve.p[0]}
-                        handleRadius={handleRadius}
-                        handleColor={handleColor}
-                        down={curveIndex === i && down === 1}
-                        hover={curveIndex === i && hover === 1}
-                        handleStroke={handleStroke}
-                        background={background}
-                    />
-                    <HandleComponent
-                        xFrom={x1 * width} xTo={x2 * width} yFrom={height} yTo={0}
-                        onMouseDown={(e)=>this.onDownHandle(i, 2, e)}
-                        onMouseEnter={(e)=>this.onEnterHandle(i, 2)}
-                        onMouseLeave={(e)=>this.onLeaveHandle()}
-                        xstart={1}
-                        ystart={curve.p[3]}
-                        xval={1 - 1.0 / 3}
-                        yval={curve.p[3] - 1.0 / 3 * slope1}
-                        handleRadius={handleRadius}
-                        handleColor={handleColor}
-                        down={curveIndex === i && down === 2}
-                        hover={curveIndex === i && hover === 2}
-                        handleStroke={handleStroke}
-                        background={background}
-                    />
-                    <HandleComponent
-                        xFrom={x1 * width} xTo={x2 * width} yFrom={height} yTo={0}
-                        onMouseDown={(e)=>this.onDownHandle(i, 3, e)}
-                        onMouseEnter={(e)=>this.onEnterHandle(i, 3)}
-                        onMouseLeave={(e)=>this.onLeaveHandle()}
-                        xstart={1}
-                        ystart={curve.p[3]}
-                        xval={1}
-                        yval={curve.p[3]}
-                        handleRadius={handleRadius}
-                        handleColor={handleColor}
-                        down={curveIndex === i && down === 3}
-                        hover={curveIndex === i && hover === 3}
-                        handleStroke={handleStroke}
-                        background={background}
-                    />
-                </g>);
+                if (props.onChange) {
+                    const value = new PiecewiseBezier(props.value.functions);
+                    props.onChange(value);
+                }
+            } else if (h === 3 && c < value.numOfFunctions - 1) {
+                const nextC = value.removeFunction(c + 1);
+                const curve = value.getFunction(c);
+                curve.p[2] = nextC.p[2];
+                curve.p[3] = nextC.p[3];
+                value.setFunction(c, curve.clone());
+                if (props.onChange) {
+                    const value = new PiecewiseBezier(props.value.functions);
+                    props.onChange(value);
+                }
+            }
+        } else {
+            setDownHandle(-1);
+            setLastMousePos(null);
         }
-        return <div ref={this.rootRef}
-                    onMouseMove={this.onDownMove}
-                    onMouseUp={this.onDownUp}
-                    onMouseLeave={this.onDownLeave}>
-            <svg width={width} height={height}>
-                {curves}
-            </svg>
-        </div>;
     }
+
+    const onDownHandle = (c: number, h: number, e: React.MouseEvent) => {
+        e.preventDefault();
+        console.log("down");
+        if (e.button === 2) {
+            //x
+        } else {
+            e.preventDefault();
+            e.stopPropagation();
+            setDownHandle(h);
+            setHoverHandle(-1);
+            setCurveIndex(c);
+        }
+    }
+
+    const onLeaveHandle = () => {
+        if (!downHandle) {
+            setHoverHandle(-1);
+        }
+        if (!lastMousePos) {
+            setLastMousePos(null);
+        }
+    }
+
+    const curves = [];
+    for (let i = 0; i < value.numOfFunctions; i++) {
+        const x1 = value.getStartX(i);
+        const x2 = value.getEndX(i);
+        const curve = value.getFunction(i);
+        const slope0 = curve.getSlope(0);
+        const slope1 = curve.getSlope(1);
+
+        curves.push(
+            <g key={i}>
+                <CurveComponent xFrom={x1 * width} xTo={x2 * width} yFrom={height} yTo={0}
+                                curveColor={curveColor} curveWidth={curveWidth} value={curve}/>
+                <HandleComponent
+                    xFrom={x1 * width} xTo={x2 * width} yFrom={height} yTo={0}
+                    onMouseDown={(e) => onDownHandle(i, 0, e)}
+                    onMouseUp={(e) => onUpHandle(i, 0, e)}
+                    onMouseEnter={(e) => onEnterHandle(i, 0)}
+                    onMouseLeave={(e) => onLeaveHandle()}
+                    xstart={0}
+                    ystart={curve.p[0]}
+                    xval={0}
+                    yval={curve.p[0]}
+                    handleRadius={handleRadius}
+                    handleColor={handleColor}
+                    down={curveIndex === i && downHandle === 0}
+                    hover={curveIndex === i && hoverHandle === 0}
+                    handleStroke={handleStroke}
+                    background={background}
+                />
+                <HandleComponent
+                    xFrom={x1 * width} xTo={x2 * width} yFrom={height} yTo={0}
+                    onMouseDown={(e) => onDownHandle(i, 1, e)}
+                    onMouseUp={(e) => onUpHandle(i, 1, e)}
+                    onMouseEnter={(e) => onEnterHandle(i, 1)}
+                    onMouseLeave={(e) => onLeaveHandle()}
+                    xstart={0}
+                    ystart={curve.p[0]}
+                    xval={1.0 / 3}
+                    yval={1.0 / 3 * slope0 + curve.p[0]}
+                    handleRadius={handleRadius}
+                    handleColor={controlHandleColor}
+                    down={curveIndex === i && downHandle === 1}
+                    hover={curveIndex === i && hoverHandle === 1}
+                    handleStroke={handleStroke}
+                    background={background}
+                />
+                <HandleComponent
+                    xFrom={x1 * width} xTo={x2 * width} yFrom={height} yTo={0}
+                    onMouseDown={(e) => onDownHandle(i, 2, e)}
+                    onMouseUp={(e) => onUpHandle(i, 2, e)}
+                    onMouseEnter={(e) => onEnterHandle(i, 2)}
+                    onMouseLeave={(e) => onLeaveHandle()}
+                    xstart={1}
+                    ystart={curve.p[3]}
+                    xval={1 - 1.0 / 3}
+                    yval={curve.p[3] - 1.0 / 3 * slope1}
+                    handleRadius={handleRadius}
+                    handleColor={controlHandleColor}
+                    down={curveIndex === i && downHandle === 2}
+                    hover={curveIndex === i && hoverHandle === 2}
+                    handleStroke={handleStroke}
+                    background={background}
+                />
+                <HandleComponent
+                    xFrom={x1 * width} xTo={x2 * width} yFrom={height} yTo={0}
+                    onMouseDown={(e) => onDownHandle(i, 3, e)}
+                    onMouseUp={(e) => onUpHandle(i, 3, e)}
+                    onMouseEnter={(e) => onEnterHandle(i, 3)}
+                    onMouseLeave={(e) => onLeaveHandle()}
+                    xstart={1}
+                    ystart={curve.p[3]}
+                    xval={1}
+                    yval={curve.p[3]}
+                    handleRadius={handleRadius}
+                    handleColor={handleColor}
+                    down={curveIndex === i && downHandle === 3}
+                    hover={curveIndex === i && hoverHandle === 3}
+                    handleStroke={handleStroke}
+                    background={background}
+                />
+            </g>);
+    }
+    return <div ref={rootRef} onContextMenu={(e) => {e.preventDefault();}}>
+        <svg width={width} height={height} viewBox={viewBox.x + " " + viewBox.y + " " + viewBox.w + " " + viewBox.h}
+             onMouseDown={onMouseDown}
+             onMouseMove={onDownMove}
+             onMouseUp={onMouseUp}
+             onMouseLeave={onDownLeave}>
+            <defs>
+                <pattern id="smallGrid" width="8" height="8" patternUnits="userSpaceOnUse">
+                    <path d="M 8 0 L 0 0 0 8" fill="none" stroke="gray" strokeWidth="0.5"/>
+                </pattern>
+                <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+                    <rect width="80" height="80" fill="url(#smallGrid)"/>
+                    <path d="M 80 0 L 0 0 0 80" fill="none" stroke="gray" strokeWidth="1"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)"/>
+            {curves}
+        </svg>
+    </div>;
 }
