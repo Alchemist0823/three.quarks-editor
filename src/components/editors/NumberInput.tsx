@@ -41,6 +41,10 @@ export const NumberInput : React.FC<NumberInputProps> = (props) => {
     // calculate the diff in positions of the cursor.
     const [startPos, setStartPos] = useState(0);
 
+    useEffect(() => {
+        setInputValue(displayValue + "");
+    }, [props.value]);
+
     // Start the drag to change operation when the mouse button is down.
     const onStart = useCallback(
         (event) => {
