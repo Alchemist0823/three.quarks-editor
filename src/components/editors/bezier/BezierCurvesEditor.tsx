@@ -36,7 +36,6 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
     const {
         width,
         height,
-        value,
         curveWidth = 1,
         curveColor = "#000",
         handleRadius = defaultP.handleRadius,
@@ -46,10 +45,11 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
         background = "#fff",
     } = props;
 
+    const [currentValue, setCurrentValue] = useState(new PiecewiseBezier(props.value.functions));
     const [curveIndex, setCurveIndex] = useState(-1);
     const [hoverHandle, setHoverHandle] = useState(-1);
     const [downHandle, setDownHandle] = useState(-1);
-    const [viewBox, setViewBox] = useState({x: 0, y: 0, w: width, h: height});
+    const [viewBox, setViewBox] = useState({x: 0, y: -height, w: width, h: height});
     const [lastMousePos, setLastMousePos] = useState<{x:number, y:number} | null>(null);
 
     const rootRef = useRef<HTMLDivElement>(null);
@@ -71,18 +71,6 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
             return [0, 0];
         }
     },[viewBox]);
-
-    const x = (value: number) => {
-    };
-
-    const y = (value: number) => {
-    };
-
-    const inversex = (x: number) => {
-    };
-
-    const inversey = (y: number) => {
-    };
 
     const onDownLeave = useCallback((e: React.MouseEvent) => {
         if (downHandle) {
@@ -113,50 +101,50 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
         } else if (downHandle >= 0) {
             e.preventDefault();
             const [x, y] = getPositionFromEvent(e);
-            const value = new PiecewiseBezier(props.value.functions);
 
             const valueX = x / props.width;
-            const valueY = (props.height - y) / props.height;
+            const valueY = -y / props.height;
 
-            const curve = value.getFunction(curveIndex);
+            const curve = currentValue.getFunction(curveIndex);
             if (downHandle === 0) {
                 const old = curve.p[0];
                 curve.p[0] = valueY;
                 curve.p[1] += curve.p[0] - old;
-                value.setStartX(curveIndex, x / props.width);
+                currentValue.setStartX(curveIndex, x / props.width);
                 if (curveIndex - 1 >= 0) {
-                    const pCurve = value.getFunction(curveIndex - 1);
+                    const pCurve = currentValue.getFunction(curveIndex - 1);
                     pCurve.p[3] = valueY;
                     pCurve.p[2] += curve.p[0] - old;
-                    value.setFunction(curveIndex - 1, value.getFunction(curveIndex - 1).clone());
+                    currentValue.setFunction(curveIndex - 1, currentValue.getFunction(curveIndex - 1).clone());
                 }
-                value.setFunction(curveIndex, curve.clone());
+                currentValue.setFunction(curveIndex, curve.clone());
             }
             if (downHandle === 3) {
                 const old = curve.p[3];
                 curve.p[3] = valueY;
                 curve.p[2] += curve.p[3] - old;
-                value.setEndX(curveIndex, x / props.width);
-                if (curveIndex + 1 < value.numOfFunctions) {
-                    const nCurve = value.getFunction(curveIndex + 1);
+                currentValue.setEndX(curveIndex, x / props.width);
+                if (curveIndex + 1 < currentValue.numOfFunctions) {
+                    const nCurve = currentValue.getFunction(curveIndex + 1);
                     nCurve.p[0] = valueY;
                     nCurve.p[1] += curve.p[3] - old;
-                    value.setFunction(curveIndex + 1, value.getFunction(curveIndex + 1).clone());
+                    currentValue.setFunction(curveIndex + 1, currentValue.getFunction(curveIndex + 1).clone());
                 }
-                value.setFunction(curveIndex, curve.clone());
+                currentValue.setFunction(curveIndex, curve.clone());
             }
             if (downHandle === 1) {
                 curve.p[1] = valueY;
-                value.setFunction(curveIndex, curve.clone());
+                currentValue.setFunction(curveIndex, curve.clone());
             }
             if (downHandle === 2) {
                 curve.p[2] = valueY;
-                value.setFunction(curveIndex, curve.clone());
+                currentValue.setFunction(curveIndex, curve.clone());
             }
+            setCurrentValue(new PiecewiseBezier(currentValue.functions));
             //value[i] = inversex(x);
             //value[i + 1] = inversey(y);
             if (props.onChange)
-                props.onChange(value);
+                props.onChange(currentValue);
         }
     }, [curveIndex, downHandle, lastMousePos]);
 
@@ -166,11 +154,11 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
         if (e.button === 2 && hoverHandle === -1) {
             const [posX, posY] = getPositionFromEvent(e);
             const x = posX / props.width;
-            const y = (props.height - posY) / props.height;
+            const y = -posY / props.height;
 
-            const cIndex = value.findFunction(x);
-            const curve = value.getFunction(cIndex);
-            const endX = value.getEndX(cIndex), startX = value.getStartX(cIndex);
+            const cIndex = currentValue.findFunction(x);
+            const curve = currentValue.getFunction(cIndex);
+            const endX = currentValue.getEndX(cIndex), startX = currentValue.getStartX(cIndex);
             const d = curve.getSlope(x) * (endX - x) / 3;
             const nCurve1 = curve.clone();
             const nCurve2 = curve.clone();
@@ -181,21 +169,24 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
             nCurve2.p[0] = y;
             nCurve2.p[1] = y + curve.getSlope(x) / (endX - startX) * (endX - x) / 3;
             nCurve2.p[2] = curve.p[3] - curve.getSlope(endX)  / (endX - startX) * (endX - x) / 3;
-            value.insertFunction(x, nCurve2);
-            value.setFunction(cIndex, nCurve1);
+            currentValue.insertFunction(x, nCurve2);
+            currentValue.setFunction(cIndex, nCurve1);
 
             setCurveIndex(cIndex + 1);
             setHoverHandle(0);
+            setCurrentValue(currentValue);
             if (props.onChange) {
-                const value = new PiecewiseBezier(props.value.functions);
-                props.onChange(value);
+                //const value = new PiecewiseBezier(props.value.functions);
+                props.onChange(currentValue);
             }
             //value.
         } else {
+            setHoverHandle(-1);
             setDownHandle(-1);
+            setCurveIndex(-1);
             setLastMousePos(null);
         }
-    }, [hoverHandle, value]);
+    }, [hoverHandle, currentValue]);
 
 
     const onEnterHandle = (c: number, h: number) => {
@@ -210,25 +201,27 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
         e.stopPropagation();
         if (e.button === 2) {
             if (h === 0 && c > 0) {
-                const nextC = value.removeFunction(c);
-                const curve = value.getFunction(c - 1);
+                const nextC = currentValue.removeFunction(c);
+                const curve = currentValue.getFunction(c - 1);
                 curve.p[2] = nextC.p[2];
                 curve.p[3] = nextC.p[3];
-                value.setFunction(c - 1, curve.clone());
+                currentValue.setFunction(c - 1, curve.clone());
+                setCurrentValue(currentValue);
 
                 if (props.onChange) {
-                    const value = new PiecewiseBezier(props.value.functions);
-                    props.onChange(value);
+                    //const value = new PiecewiseBezier(props.value.functions);
+                    props.onChange(currentValue);
                 }
-            } else if (h === 3 && c < value.numOfFunctions - 1) {
-                const nextC = value.removeFunction(c + 1);
-                const curve = value.getFunction(c);
+            } else if (h === 3 && c < currentValue.numOfFunctions - 1) {
+                const nextC = currentValue.removeFunction(c + 1);
+                const curve = currentValue.getFunction(c);
                 curve.p[2] = nextC.p[2];
                 curve.p[3] = nextC.p[3];
-                value.setFunction(c, curve.clone());
+                currentValue.setFunction(c, curve.clone());
+                setCurrentValue(currentValue);
                 if (props.onChange) {
-                    const value = new PiecewiseBezier(props.value.functions);
-                    props.onChange(value);
+                    //const value = new PiecewiseBezier(props.value.functions);
+                    props.onChange(currentValue);
                 }
             }
         } else {
@@ -261,19 +254,19 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
     }
 
     const curves = [];
-    for (let i = 0; i < value.numOfFunctions; i++) {
-        const x1 = value.getStartX(i);
-        const x2 = value.getEndX(i);
-        const curve = value.getFunction(i);
+    for (let i = 0; i < currentValue.numOfFunctions; i++) {
+        const x1 = currentValue.getStartX(i);
+        const x2 = currentValue.getEndX(i);
+        const curve = currentValue.getFunction(i);
         const slope0 = curve.getSlope(0);
         const slope1 = curve.getSlope(1);
 
         curves.push(
             <g key={i}>
-                <CurveComponent xFrom={x1 * width} xTo={x2 * width} yFrom={height} yTo={0}
+                <CurveComponent xFrom={x1 * width} xTo={x2 * width} yFrom={0} yTo={-height}
                                 curveColor={curveColor} curveWidth={curveWidth} value={curve}/>
                 <HandleComponent
-                    xFrom={x1 * width} xTo={x2 * width} yFrom={height} yTo={0}
+                    xFrom={x1 * width} xTo={x2 * width} yFrom={0} yTo={-height}
                     onMouseDown={(e) => onDownHandle(i, 0, e)}
                     onMouseUp={(e) => onUpHandle(i, 0, e)}
                     onMouseEnter={(e) => onEnterHandle(i, 0)}
@@ -290,7 +283,7 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
                     background={background}
                 />
                 <HandleComponent
-                    xFrom={x1 * width} xTo={x2 * width} yFrom={height} yTo={0}
+                    xFrom={x1 * width} xTo={x2 * width} yFrom={0} yTo={-height}
                     onMouseDown={(e) => onDownHandle(i, 1, e)}
                     onMouseUp={(e) => onUpHandle(i, 1, e)}
                     onMouseEnter={(e) => onEnterHandle(i, 1)}
@@ -307,7 +300,7 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
                     background={background}
                 />
                 <HandleComponent
-                    xFrom={x1 * width} xTo={x2 * width} yFrom={height} yTo={0}
+                    xFrom={x1 * width} xTo={x2 * width} yFrom={0} yTo={-height}
                     onMouseDown={(e) => onDownHandle(i, 2, e)}
                     onMouseUp={(e) => onUpHandle(i, 2, e)}
                     onMouseEnter={(e) => onEnterHandle(i, 2)}
@@ -324,7 +317,7 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
                     background={background}
                 />
                 <HandleComponent
-                    xFrom={x1 * width} xTo={x2 * width} yFrom={height} yTo={0}
+                    xFrom={x1 * width} xTo={x2 * width} yFrom={0} yTo={-height}
                     onMouseDown={(e) => onDownHandle(i, 3, e)}
                     onMouseUp={(e) => onUpHandle(i, 3, e)}
                     onMouseEnter={(e) => onEnterHandle(i, 3)}
@@ -352,12 +345,13 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
                 <pattern id="smallGrid" width="8" height="8" patternUnits="userSpaceOnUse">
                     <path d="M 8 0 L 0 0 0 8" fill="none" stroke="gray" strokeWidth="0.5"/>
                 </pattern>
-                <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+                <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse" y={-800 + height}>
                     <rect width="80" height="80" fill="url(#smallGrid)"/>
                     <path d="M 80 0 L 0 0 0 80" fill="none" stroke="gray" strokeWidth="1"/>
                 </pattern>
             </defs>
-            <rect width="100%" height="100%" fill="url(#grid)"/>
+            <rect y={-800} width="100%" height="1600" fill="url(#grid)"/>
+            <path d={"M 0 0 L " + width + " 0"} fill="none" stroke="black" strokeWidth="2"/>
             {curves}
         </svg>
     </div>;

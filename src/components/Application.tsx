@@ -5,6 +5,7 @@ import PropertiesEditor from "./PropertiesEditor";
 import './layout.scss';
 import {ApplicationContextConsumer, ApplicationContextProvider} from "./ApplicationContext";
 import {SceneGraphDraggableView} from "./SceneGraphDraggableView";
+import {BezierCurveDialog} from "./editors/BezierCurveDialog";
 
 export interface ApplicationProps {
 
@@ -35,6 +36,7 @@ export const Application: React.FC<ApplicationProps> = (props) => {
                                 <PropertiesEditor object3d={context.selection[0]}/>
                             }
                         </ApplicationContextConsumer>
+                        <BezierCurveDialog/>
                     </div>
                 </div>
             </div>

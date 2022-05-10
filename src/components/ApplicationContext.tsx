@@ -8,7 +8,7 @@ import {
     Scene,
     Texture,
 } from "three";
-import {ParticleEmitter, QuarksLoader} from "three.quarks";
+import {ParticleEmitter, PiecewiseBezier, QuarksLoader} from "three.quarks";
 import {TextureLoader} from "three";
 import {ParticleSystem} from "three.quarks";
 import {ConeEmitter} from "three.quarks";
@@ -60,7 +60,7 @@ export const listObjects = (obj: Object3D, list: Object3D[], traversableTypes: s
 }
 
 export interface AppContext {
-    scene: THREE.Scene;
+    scene: Scene;
     script: (delta: number) => void;
     selection: Array<Object3D>;
     textures: Array<TextureImage>;
@@ -70,6 +70,8 @@ export interface AppContext {
     viewPortControlType: string;
     transformControls?: TransformControls;
     cameraControls?: OrbitControls;
+    bezierCurve?: PiecewiseBezier;
+    onChangeBezierCurve?: (value: PiecewiseBezier) => void;
 
     actions: {
         onOpenDemo: (id: string) => void;
@@ -87,6 +89,7 @@ export interface AppContext {
         updateEmitterShape: (particleSystem: ParticleSystem) => void;
         setViewPortControlType: (type: string) => void;
         toggleGUI:()=>void;
+        setEditableBezier: (bezier?: PiecewiseBezier) => void;
     }
     updateProperties: () => void;
 }
@@ -288,6 +291,9 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                         list.forEach(obj => obj.visible = false);
                     }
                     this.setState({showGUI: !this.state.showGUI});
+                },
+                setEditableBezier: (beizer) => {
+                    this.setState({bezierCurve: beizer});
                 }
             },
             updateProperties: this.updateProperties1,

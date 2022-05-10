@@ -6,6 +6,7 @@ import {createTheme, ThemeProvider} from "@mui/material/styles";
 import "./Global.scss";
 import {BezierCurvesEditor} from "./components/editors/bezier/BezierCurvesEditor";
 import {Bezier, PiecewiseBezier} from "three.quarks";
+import {BezierCurvesViewer} from "./components/editors/bezier/BezierCurvesViewer";
 
 const theme = createTheme({
     palette: {
@@ -31,11 +32,11 @@ const App: React.FC = () => {
 
   return <div className="App">
         <header className="App-header">
-            <BezierCurvesEditor width={200} height={100} value={bezierCurves} onChange={(bezierCurves) => {setBezierCurves(bezierCurves)}}/>
+            <BezierCurvesViewer width={200} height={100} value={bezierCurves} onChange={(bezierCurves) => {setBezierCurves(bezierCurves)}}/>
         </header>
     </div>;*/
 
-    return (<ThemeProvider theme={theme}><Application /></ThemeProvider>);
+  return (<ThemeProvider theme={theme}><Application /></ThemeProvider>);
 };
 
 export default App;

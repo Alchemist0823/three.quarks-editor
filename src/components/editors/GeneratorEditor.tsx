@@ -14,6 +14,7 @@ import "./GeneratorEditor.scss";
 import {BezierCurvesEditor} from "./bezier/BezierCurvesEditor";
 import {Typography} from "@mui/material";
 import {SelectInput} from "./SelectInput";
+import {BezierCurvesViewer} from "./bezier/BezierCurvesViewer";
 
 type EditorType =
     'constant'
@@ -176,7 +177,7 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
                 break;
             case "piecewiseBezier":
                 editor = <React.Fragment>
-                    <BezierCurvesEditor height={40} width={240} value={(value as PiecewiseBezier)} onChange={this.changeCurve}/>
+                    <BezierCurvesViewer height={40} width={240} value={(value as PiecewiseBezier)} onChange={this.changeCurve}/>
                 </React.Fragment>;
                 break;
             case "colorRange":
