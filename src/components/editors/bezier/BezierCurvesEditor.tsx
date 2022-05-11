@@ -171,7 +171,7 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
 
             setCurveIndex(cIndex + 1);
             setHoverHandle(0);
-            setCurrentValue(currentValue);
+            setCurrentValue(new PiecewiseBezier(currentValue.functions));
             if (props.onChange) {
                 //const value = new PiecewiseBezier(props.value.functions);
                 props.onChange(currentValue);
@@ -187,8 +187,6 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
 
     const onMouseWheel = useCallback((e: React.WheelEvent) => {
         e.preventDefault();
-        console.log(e.deltaY);
-        console.log(zoom);
         setZoom({x: zoom.x, y: zoom.y * Math.pow(1.1, e.deltaY / 100)});
     }, [zoom]);
 
@@ -210,7 +208,7 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
                 curve.p[2] = nextC.p[2];
                 curve.p[3] = nextC.p[3];
                 currentValue.setFunction(c - 1, curve.clone());
-                setCurrentValue(currentValue);
+                setCurrentValue(new PiecewiseBezier(currentValue.functions));
 
                 if (props.onChange) {
                     //const value = new PiecewiseBezier(props.value.functions);
@@ -222,7 +220,7 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
                 curve.p[2] = nextC.p[2];
                 curve.p[3] = nextC.p[3];
                 currentValue.setFunction(c, curve.clone());
-                setCurrentValue(currentValue);
+                setCurrentValue(new PiecewiseBezier(currentValue.functions));
                 if (props.onChange) {
                     //const value = new PiecewiseBezier(props.value.functions);
                     props.onChange(currentValue);
@@ -236,7 +234,6 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
 
     const onDownHandle = (c: number, h: number, e: React.MouseEvent) => {
         e.preventDefault();
-        console.log("down");
         if (e.button === 2) {
             //x
         } else {
