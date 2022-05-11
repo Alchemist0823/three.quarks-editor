@@ -2,7 +2,8 @@ import * as React from "react";
 import {CurveComponent} from "./CurveComponent";
 import {PiecewiseBezier} from "three.quarks";
 import {HandleComponent} from "./HandleComponent";
-import {createRef, useCallback, useRef, useState} from "react";
+import {createRef, UIEvent, useCallback, useMemo, useRef, useState, WheelEvent} from "react";
+import {yellow} from "@mui/material/colors";
 
 interface BezierCurvesEditorProps {
     value: PiecewiseBezier
@@ -50,6 +51,7 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
     const [hoverHandle, setHoverHandle] = useState(-1);
     const [downHandle, setDownHandle] = useState(-1);
     const [viewBox, setViewBox] = useState({x: 0, y: -height, w: width, h: height});
+    const [zoom, setZoom] = useState({x: 1, y: 1});
     const [lastMousePos, setLastMousePos] = useState<{x:number, y:number} | null>(null);
 
     const rootRef = useRef<HTMLDivElement>(null);
@@ -66,11 +68,11 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
     const getPositionFromEvent = useCallback((e: React.MouseEvent) => {
         if (rootRef.current) {
             const rect = rootRef.current.getBoundingClientRect();
-            return [(e.clientX - rect.left) + viewBox.x, (e.clientY - rect.top) + viewBox.y];
+            return [((e.clientX - rect.left) + viewBox.x) / viewBox.w, -((e.clientY - rect.top) + viewBox.y) / viewBox.h / zoom.y];
         } else {
             return [0, 0];
         }
-    },[viewBox]);
+    },[viewBox, zoom]);
 
     const onDownLeave = useCallback((e: React.MouseEvent) => {
         if (downHandle) {
@@ -102,18 +104,15 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
             e.preventDefault();
             const [x, y] = getPositionFromEvent(e);
 
-            const valueX = x / props.width;
-            const valueY = -y / props.height;
-
             const curve = currentValue.getFunction(curveIndex);
             if (downHandle === 0) {
                 const old = curve.p[0];
-                curve.p[0] = valueY;
+                curve.p[0] = y;
                 curve.p[1] += curve.p[0] - old;
-                currentValue.setStartX(curveIndex, x / props.width);
+                currentValue.setStartX(curveIndex, x);
                 if (curveIndex - 1 >= 0) {
                     const pCurve = currentValue.getFunction(curveIndex - 1);
-                    pCurve.p[3] = valueY;
+                    pCurve.p[3] = y;
                     pCurve.p[2] += curve.p[0] - old;
                     currentValue.setFunction(curveIndex - 1, currentValue.getFunction(curveIndex - 1).clone());
                 }
@@ -121,23 +120,23 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
             }
             if (downHandle === 3) {
                 const old = curve.p[3];
-                curve.p[3] = valueY;
+                curve.p[3] = y;
                 curve.p[2] += curve.p[3] - old;
-                currentValue.setEndX(curveIndex, x / props.width);
+                currentValue.setEndX(curveIndex, x);
                 if (curveIndex + 1 < currentValue.numOfFunctions) {
                     const nCurve = currentValue.getFunction(curveIndex + 1);
-                    nCurve.p[0] = valueY;
+                    nCurve.p[0] = y;
                     nCurve.p[1] += curve.p[3] - old;
                     currentValue.setFunction(curveIndex + 1, currentValue.getFunction(curveIndex + 1).clone());
                 }
                 currentValue.setFunction(curveIndex, curve.clone());
             }
             if (downHandle === 1) {
-                curve.p[1] = valueY;
+                curve.p[1] = y;
                 currentValue.setFunction(curveIndex, curve.clone());
             }
             if (downHandle === 2) {
-                curve.p[2] = valueY;
+                curve.p[2] = y;
                 currentValue.setFunction(curveIndex, curve.clone());
             }
             setCurrentValue(new PiecewiseBezier(currentValue.functions));
@@ -152,9 +151,7 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
         // onDownMove(e);
         e.preventDefault();
         if (e.button === 2 && hoverHandle === -1) {
-            const [posX, posY] = getPositionFromEvent(e);
-            const x = posX / props.width;
-            const y = -posY / props.height;
+            const [x, y] = getPositionFromEvent(e);
 
             const cIndex = currentValue.findFunction(x);
             const curve = currentValue.getFunction(cIndex);
@@ -187,6 +184,13 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
             setLastMousePos(null);
         }
     }, [hoverHandle, currentValue]);
+
+    const onMouseWheel = useCallback((e: React.WheelEvent) => {
+        e.preventDefault();
+        console.log(e.deltaY);
+        console.log(zoom);
+        setZoom({x: zoom.x, y: zoom.y * Math.pow(1.1, e.deltaY / 100)});
+    }, [zoom]);
 
 
     const onEnterHandle = (c: number, h: number) => {
@@ -263,10 +267,10 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
 
         curves.push(
             <g key={i}>
-                <CurveComponent xFrom={x1 * width} xTo={x2 * width} yFrom={0} yTo={-height}
+                <CurveComponent xFrom={x1 * width} xTo={x2 * width} yFrom={0} yTo={-height * zoom.y}
                                 curveColor={curveColor} curveWidth={curveWidth} value={curve}/>
                 <HandleComponent
-                    xFrom={x1 * width} xTo={x2 * width} yFrom={0} yTo={-height}
+                    xFrom={x1 * width} xTo={x2 * width} yFrom={0} yTo={-height * zoom.y}
                     onMouseDown={(e) => onDownHandle(i, 0, e)}
                     onMouseUp={(e) => onUpHandle(i, 0, e)}
                     onMouseEnter={(e) => onEnterHandle(i, 0)}
@@ -283,7 +287,7 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
                     background={background}
                 />
                 <HandleComponent
-                    xFrom={x1 * width} xTo={x2 * width} yFrom={0} yTo={-height}
+                    xFrom={x1 * width} xTo={x2 * width} yFrom={0} yTo={-height * zoom.y}
                     onMouseDown={(e) => onDownHandle(i, 1, e)}
                     onMouseUp={(e) => onUpHandle(i, 1, e)}
                     onMouseEnter={(e) => onEnterHandle(i, 1)}
@@ -300,7 +304,7 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
                     background={background}
                 />
                 <HandleComponent
-                    xFrom={x1 * width} xTo={x2 * width} yFrom={0} yTo={-height}
+                    xFrom={x1 * width} xTo={x2 * width} yFrom={0} yTo={-height * zoom.y}
                     onMouseDown={(e) => onDownHandle(i, 2, e)}
                     onMouseUp={(e) => onUpHandle(i, 2, e)}
                     onMouseEnter={(e) => onEnterHandle(i, 2)}
@@ -317,7 +321,7 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
                     background={background}
                 />
                 <HandleComponent
-                    xFrom={x1 * width} xTo={x2 * width} yFrom={0} yTo={-height}
+                    xFrom={x1 * width} xTo={x2 * width} yFrom={0} yTo={-height * zoom.y}
                     onMouseDown={(e) => onDownHandle(i, 3, e)}
                     onMouseUp={(e) => onUpHandle(i, 3, e)}
                     onMouseEnter={(e) => onEnterHandle(i, 3)}
@@ -335,22 +339,34 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
                 />
             </g>);
     }
+
+    const scaleText = useMemo(() => {
+        const texts = [];
+        for (let i = 0; i < 10; i ++) {
+            texts.push(<text x={-40} y={ - i * 80}> {Math.round(i * 80 / height / zoom.y * 100) / 100}</text>);
+        }
+        return texts;
+    }, [zoom, height]);
+
     return <div ref={rootRef} onContextMenu={(e) => {e.preventDefault();}}>
         <svg width={width} height={height} viewBox={viewBox.x + " " + viewBox.y + " " + viewBox.w + " " + viewBox.h}
+             preserveAspectRatio={"none"}
              onMouseDown={onMouseDown}
              onMouseMove={onDownMove}
              onMouseUp={onMouseUp}
+             onWheel={onMouseWheel}
              onMouseLeave={onDownLeave}>
             <defs>
                 <pattern id="smallGrid" width="8" height="8" patternUnits="userSpaceOnUse">
                     <path d="M 8 0 L 0 0 0 8" fill="none" stroke="gray" strokeWidth="0.5"/>
                 </pattern>
-                <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse" y={-800 + height}>
+                <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse" y={0}>
                     <rect width="80" height="80" fill="url(#smallGrid)"/>
                     <path d="M 80 0 L 0 0 0 80" fill="none" stroke="gray" strokeWidth="1"/>
                 </pattern>
             </defs>
             <rect y={-800} width="100%" height="1600" fill="url(#grid)"/>
+            {scaleText}
             <path d={"M 0 0 L " + width + " 0"} fill="none" stroke="black" strokeWidth="2"/>
             {curves}
         </svg>
