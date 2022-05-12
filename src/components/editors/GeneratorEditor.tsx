@@ -15,6 +15,7 @@ import {BezierCurvesEditor} from "./bezier/BezierCurvesEditor";
 import {Typography} from "@mui/material";
 import {SelectInput} from "./SelectInput";
 import {BezierCurvesViewer} from "./bezier/BezierCurvesViewer";
+import {GradientEditor} from "./GradientEditor";
 
 type EditorType =
     'constant'
@@ -76,6 +77,10 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
             case "randomColor":
                 generator = new RandomColor(new Vector4(0,0,0,1), new Vector4(1,1,1,1));
                 break;
+            case "gradient":
+                generator = new Gradient([[new ColorRange(new Vector4(0,0,0,1), new Vector4(1,1,1,1)), 0],
+                    [new ColorRange(new Vector4(1,1,1,1), new Vector4(1,1,1,1)), 1]]);
+                break;
             case "piecewiseBezier":
                 generator = new PiecewiseBezier();
                 break;
@@ -118,7 +123,9 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
         const randomColor = this.props.value as RandomColor;
         this.props.onChange(new RandomColor(randomColor.a, x));
     };
-
+    changeGradient = (x: Gradient) => {
+        this.props.onChange(x);
+    }
     changeCurve = (x: PiecewiseBezier) => {
         this.props.onChange(new PiecewiseBezier(x.functions));
     }
@@ -191,6 +198,9 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
                     <ColorEditor color={(value as RandomColor).a} onChange={this.changeRandomColorA}/>-
                     <ColorEditor color={(value as RandomColor).b} onChange={this.changeRandomColorB}/>
                 </React.Fragment>);
+                break;
+            case "gradient":
+                editor = (<GradientEditor gradient={(value as Gradient)} onChange={this.changeGradient}/>);
                 break;
         }
         return <div className="property">

@@ -63,7 +63,7 @@
     "react-scripts": "^4.0.3",
     "react-simple-code-editor": "^0.11.0",
     "stats.js": "^0.17.0",
-    "three": "^0.139.3",
+    "three": "^0.140.2",
     "three.quarks": "^0.7.1"
   },
   "devDependencies": {
