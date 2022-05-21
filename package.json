@@ -74,7 +74,7 @@
     "@types/stats.js": "^0.17.0",
     "@types/three": "^0.140.0",
     "gh-pages": "^3.2.3",
-    "node-sass": "^6.0.1",
+    "node-sass": "^7.0.0",
     "typescript": "^4.6.2"
   }
 }
