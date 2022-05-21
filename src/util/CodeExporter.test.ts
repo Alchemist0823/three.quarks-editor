@@ -1,6 +1,7 @@
 import {CodeExporter} from "./CodeExporter";
-import {LevelUp} from "../example/LevelUp";
+import {createLevelUp} from "../example/LevelUp";
 import {TextureLoader} from "three";
+import { BatchedParticleRenderer } from "three.quarks";
 
 
 it('camelize', () => {
@@ -9,11 +10,11 @@ it('camelize', () => {
 });
 
 it('export', () => {
+    const renderer = new BatchedParticleRenderer();
     const texture1 = new TextureLoader().load("textures/texture1.png");
     texture1.name = "textures/texture1.png";
     const textures = [{img: "", texture: texture1}]
-    const levelUp = new LevelUp(textures);
+    const levelUp = createLevelUp(renderer, textures);
     const result = CodeExporter.exportCode(levelUp);
-    console.log(result);
     // expect(result).toBe("sadFaceMother");
 });

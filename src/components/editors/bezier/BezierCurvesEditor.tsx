@@ -32,6 +32,8 @@ const defaultP = {
     handleRadius: 4,
 }; //[25, 5, 25, 18]
 
+const ZOOM_POW = Math.sqrt(Math.sqrt(2));
+
 export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => {
 
     const {
@@ -187,7 +189,7 @@ export const BezierCurvesEditor: React.FC<BezierCurvesEditorProps> = (props) => 
 
     const onMouseWheel = useCallback((e: React.WheelEvent) => {
         e.preventDefault();
-        setZoom({x: zoom.x, y: zoom.y * Math.pow(1.1, e.deltaY / 100)});
+        setZoom({x: zoom.x, y: zoom.y * Math.pow(ZOOM_POW, e.deltaY / 100)});
     }, [zoom]);
 
 

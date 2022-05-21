@@ -1,5 +1,5 @@
 import * as React from "react";
-import {AdditiveBlending, Blending, NormalBlending, Texture} from "three";
+import {AdditiveBlending, Blending, BufferGeometry, Mesh, NormalBlending, Object3D, Texture} from "three";
 import {AppContext, ApplicationContext, ApplicationContextConsumer, TextureImage} from "./ApplicationContext";
 import {ParticleSystem, RenderMode, ValueGenerator} from "three.quarks";
 import {NumberInput} from "./editors/NumberInput";
@@ -8,6 +8,8 @@ import {Button, SelectChangeEvent, Typography} from "@mui/material";
 import {SelectInput} from "./editors/SelectInput";
 import {GeneratorEditor, GenericGenerator} from "./editors/GeneratorEditor";
 import {useContext, useState} from "react";
+import {Object3DSelect} from "./editors/Object3DSelect";
+import {GeometrySelect} from "./editors/GeometrySelect";
 
 
 interface ParticleRendererPropertiesProps {
@@ -82,6 +84,11 @@ export const ParticleRendererProperties: React.FC<ParticleRendererPropertiesProp
         context.updateProperties();
     }
 
+    const onChangeGeometry = (value: BufferGeometry) => {
+        props.particleSystem.instancingGeometry = value;
+        context.updateProperties();
+    }
+
     const onChangeWorldSpace = (value: string) => {
         switch (value) {
             case "True":
@@ -150,6 +157,12 @@ export const ParticleRendererProperties: React.FC<ParticleRendererPropertiesProp
                 <div className="property">
                     <Typography component={"label"} className="name">SpeedFactor</Typography>
                     <NumberInput value={props.particleSystem.speedFactor} onChange={onChangeSpeedFactor}/>
+                </div>
+            }
+            {props.particleSystem.renderMode === RenderMode.LocalSpace &&
+                <div className="property">
+                    <Typography component={"label"} className="name">Mesh</Typography>
+                    <GeometrySelect onChange={onChangeGeometry} value={props.particleSystem.instancingGeometry}/>
                 </div>
             }
             <div className="property">
