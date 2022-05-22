@@ -27,7 +27,7 @@ export function createToonProjectile(renderer: BatchedParticleRenderer, textures
         startColor: new ConstantColor(new Vector4(1, 1, 1, .5)),
         worldSpace: true,
 
-        
+
         emissionOverTime: new ConstantValue(40),
 
         shape: new SphereEmitter({
@@ -56,7 +56,7 @@ export function createToonProjectile(renderer: BatchedParticleRenderer, textures
         startColor: new ConstantColor(new Vector4(1, 0.1509503, 0.07352942, .5)),
         worldSpace: true,
 
-        
+
         emissionOverTime: new ConstantValue(40),
 
         shape: new SphereEmitter({
@@ -86,7 +86,7 @@ export function createToonProjectile(renderer: BatchedParticleRenderer, textures
         startColor: new RandomColor(new Vector4(1, 1, 1, .5), new Vector4(1, 0.1509503, 0.07352942, .5)),
         worldSpace: true,
 
-        
+
         emissionOverTime: new ConstantValue(60),
 
         shape: new ConeEmitter({
@@ -118,7 +118,7 @@ export function createToonProjectile(renderer: BatchedParticleRenderer, textures
         startColor: new ConstantColor(new Vector4(1, 1, 1, .5)),
         worldSpace: true,
 
-        
+
         emissionOverTime: new ConstantValue(20),
         shape: new SphereEmitter({
             radius: .2,
@@ -134,7 +134,7 @@ export function createToonProjectile(renderer: BatchedParticleRenderer, textures
     });
     smoke.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.95, 0.75, 0), 0]])));
     smoke.addBehavior(new ColorOverLife(new ColorRange(new Vector4(1, 0.1509503, 0.07352942, 1), new Vector4(0, 0, 0, 0))));
-    smoke.addBehavior(new RotationOverLife(new IntervalValue(-Math.PI * 2, Math.PI * 2)));
+    smoke.addBehavior(new RotationOverLife(new IntervalValue(-Math.PI * 2, Math.PI * 2), false));
     smoke.emitter.name = 'smoke';
 
     group.add(smoke.emitter);

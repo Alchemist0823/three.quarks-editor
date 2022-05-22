@@ -1,8 +1,8 @@
 import * as React from "react";
 import {FunctionValueGenerator, ValueGenerator} from "three.quarks";
-import {ColorGenerator, ConstantColor, FunctionColorGenerator} from "three.quarks";
+import {ColorGenerator, ConstantColor, FunctionColorGenerator, AxisAngleGenerator, RandomQuatGenerator, RotationGenerator} from "three.quarks";
 import {ConstantValue} from "three.quarks";
-import {Vector4} from "three";
+import {Vector3, Vector4} from "three";
 import {IntervalValue} from "three.quarks";
 import {PiecewiseBezier} from "three.quarks";
 import {ColorRange} from "three.quarks";
@@ -16,6 +16,7 @@ import {Typography} from "@mui/material";
 import {SelectInput} from "./SelectInput";
 import {BezierCurvesViewer} from "./bezier/BezierCurvesViewer";
 import {GradientEditor} from "./GradientEditor";
+import {Vector3Editor} from "./Vector3Editor";
 
 type EditorType =
     'constant'
@@ -25,18 +26,21 @@ type EditorType =
     | 'randomColor'
     | 'colorRange'
     | 'gradient'
-    | 'vec3';
-export type ValueType = 'value' | 'valueFunc' | 'color' | 'colorFunc' | 'vec3';
+    | 'vec3'
+    | 'randomQuat'
+    | 'axisAngle';
+export type ValueType = 'value' | 'valueFunc' | 'color' | 'colorFunc' | 'vec3' | 'rotationFunc';
 
 const ValueToEditor: { [a: string]: Array<EditorType> } = {
     'value': ['constant', 'intervalValue'],
     'valueFunc': ['piecewiseBezier'],
     'color': ['color', 'randomColor'],
     'colorFunc': ['colorRange', 'gradient'],
+    'rotationFunc': ['randomQuat', 'axisAngle'],
     'vec3': ['vec3'],
 };
 
-export type GenericGenerator = ValueGenerator | FunctionValueGenerator | ColorGenerator | FunctionColorGenerator;
+export type GenericGenerator = ValueGenerator | FunctionValueGenerator | ColorGenerator | FunctionColorGenerator | RotationGenerator;
 
 interface GeneratorEditorProps {
     allowedType: Array<ValueType>;
@@ -84,6 +88,12 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
             case "piecewiseBezier":
                 generator = new PiecewiseBezier();
                 break;
+            case "randomQuat":
+                generator = new RandomQuatGenerator();
+                break;
+            case "axisAngle":
+                generator = new AxisAngleGenerator(new Vector3(0, 1, 0), new ConstantValue(Math.PI / 2));
+                break;
         }
         if (generator)
             this.props.onChange(generator);
@@ -129,6 +139,12 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
     changeCurve = (x: PiecewiseBezier) => {
         this.props.onChange(new PiecewiseBezier(x.functions));
     }
+    changeAxis = (x: number, y: number, z: number) => {
+        this.props.onChange(new AxisAngleGenerator(new Vector3(x, y, z), (this.props.value as AxisAngleGenerator).angle));
+    }
+    changeAngle = (x: GenericGenerator) => {
+        this.props.onChange(new AxisAngleGenerator((this.props.value as AxisAngleGenerator).axis, x as ValueGenerator));
+    }
 
     getEditorType(generator: GenericGenerator): EditorType {
         if (generator instanceof ConstantValue) {
@@ -145,6 +161,10 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
             return 'colorRange';
         } else if (generator instanceof Gradient) {
             return 'gradient';
+        } else if (generator instanceof RandomQuatGenerator) {
+            return 'randomQuat';
+        } else if (generator instanceof AxisAngleGenerator) {
+            return 'axisAngle';
         }
         return 'constant';
     }
@@ -184,7 +204,8 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
                 break;
             case "piecewiseBezier":
                 editor = <React.Fragment>
-                    <BezierCurvesViewer height={40} width={240} value={(value as PiecewiseBezier)} onChange={this.changeCurve}/>
+                    <BezierCurvesViewer height={40} width={240} value={(value as PiecewiseBezier)}
+                                        onChange={this.changeCurve}/>
                 </React.Fragment>;
                 break;
             case "colorRange":
@@ -202,6 +223,18 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
             case "gradient":
                 editor = (<GradientEditor gradient={(value as Gradient)} onChange={this.changeGradient}/>);
                 break;
+            case "randomQuat":
+                editor = <div/>;
+                break;
+            case "axisAngle": {
+                const vec3 = (value as AxisAngleGenerator).axis;
+                editor = <>
+                    <Vector3Editor name={"axis"} x={vec3.x} y={vec3.y} z={vec3.z} onChange={this.changeAxis}/>
+                    <GeneratorEditor allowedType={['value', 'valueFunc']} name={"angle"} onChange={this.changeAngle}
+                                     value={(value as AxisAngleGenerator).angle}/>
+                </>;
+                break;
+            }
         }
         return <div className="property">
             <Typography component={"label"} className="name">{name}</Typography>

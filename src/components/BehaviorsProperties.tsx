@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+    AxisAngleGenerator,
     Behavior, BehaviorTypes, Bezier,
     ColorRange, ConstantValue, Constructable, ParticleSystem,
     PiecewiseBezier,
@@ -17,6 +18,8 @@ interface BehaviorsPropertiesProps {
     behaviors: Array<Behavior>,
     updateProperties: ()=>void,
 }
+
+
 
 function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -48,6 +51,9 @@ function BehaviorsPropertiesFunc(props: BehaviorsPropertiesProps) {
                         break;
                     case "vec3":
                         args.push(new Vector3(1, 1, 1));
+                        break;
+                    case "rotationFunc":
+                        args.push(new AxisAngleGenerator(new Vector3(0, 1, 0), new ConstantValue(0)));
                         break;
                     case "valueFunc":
                         args.push(genDefaultBezier());

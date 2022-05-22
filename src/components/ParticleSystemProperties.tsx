@@ -42,6 +42,7 @@ export const ParticleSystemProperties: React.FC<ParticleSystemPropertiesProps> =
         props.updateProperties();
     };
     const valueFunctionTypes: ValueType[] = ['value', 'valueFunc'];
+    const rotationFunctionTypes: ValueType[] = ['rotationFunc'];
     const colorValueFunctionTypes: ValueType[] = ['color', 'colorFunc'];
     return (
         <div className="property-container">
@@ -61,10 +62,15 @@ export const ParticleSystemProperties: React.FC<ParticleSystemPropertiesProps> =
                              allowedType={colorValueFunctionTypes}
                              value={props.particleSystem.startColor}
                              onChange={onChangeStartColor}/>
-            <GeneratorEditor name="Start Rotation"
-                             allowedType={valueFunctionTypes}
-                             value={props.particleSystem.startRotation}
-                             onChange={onChangeStartRotation}/>
+            {props.particleSystem.renderMode === RenderMode.LocalSpace ?
+                <GeneratorEditor name="Start Rotation"
+                                 allowedType={rotationFunctionTypes}
+                                 value={props.particleSystem.startRotation}
+                                 onChange={onChangeStartRotation}/> :
+                <GeneratorEditor name="Start Rotation"
+                                 allowedType={valueFunctionTypes}
+                                 value={props.particleSystem.startRotation}
+                                 onChange={onChangeStartRotation}/>}
             {props.particleSystem.renderMode === RenderMode.Trail &&
                 <GeneratorEditor name="Start Length"
                                  allowedType={valueFunctionTypes}
@@ -76,7 +82,7 @@ export const ParticleSystemProperties: React.FC<ParticleSystemPropertiesProps> =
                     <Typography component={"label"} className="name">Follow Local Origin</Typography>
                     <SelectInput onChange={onChangeFollowLocalOrigin}
                                  value={(props.particleSystem.rendererEmitterSettings as TrailSettings).followLocalOrigin ? "True" : "False"}
-                                 options={["True", "False"]} />
+                                 options={["True", "False"]}/>
                 </div>}
         </div>
     );

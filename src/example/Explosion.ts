@@ -30,7 +30,7 @@ export function createBigExplosion(renderer: BatchedParticleRenderer, textures: 
         startSize: new IntervalValue(1, 3),
         startColor: new ConstantColor(new Vector4(1, 1, 1, 1)),
         worldSpace: false,
-        
+
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -66,7 +66,7 @@ export function createBigExplosion(renderer: BatchedParticleRenderer, textures: 
         startColor: new ConstantColor(new Vector4(1, 1, 1, 1)),
         worldSpace: false,
 
-        
+
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0.4,
@@ -103,7 +103,7 @@ export function createBigExplosion(renderer: BatchedParticleRenderer, textures: 
         startColor: new ConstantColor(mainColor),
         worldSpace: false,
 
-        
+
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0.4,
@@ -140,7 +140,7 @@ export function createBigExplosion(renderer: BatchedParticleRenderer, textures: 
         startColor: new ConstantColor(new Vector4(1, 1, 1, .5)),
         worldSpace: false,
 
-        
+
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0.4,
@@ -165,7 +165,7 @@ export function createBigExplosion(renderer: BatchedParticleRenderer, textures: 
     });
     smoke.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.95, 0.75, 0), 0]])));
     smoke.addBehavior(new ColorOverLife(new ColorRange(mainColor, new Vector4(0, 0, 0, 0))));
-    smoke.addBehavior(new RotationOverLife(new IntervalValue(-Math.PI * 2, Math.PI * 2)));
+    smoke.addBehavior(new RotationOverLife(new IntervalValue(-Math.PI * 2, Math.PI * 2), false));
     smoke.emitter.name = 'smoke';
     group.add(smoke.emitter);
 
@@ -178,7 +178,7 @@ export function createBigExplosion(renderer: BatchedParticleRenderer, textures: 
         startColor: new RandomColor(new Vector4(1, 1, 1, 1), mainColor),
         worldSpace: false,
 
-        
+
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0.4,
@@ -216,7 +216,7 @@ export function createBigExplosion(renderer: BatchedParticleRenderer, textures: 
         startColor: new ConstantColor(secColor),
         worldSpace: false,
 
-        
+
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0.35,
@@ -248,7 +248,7 @@ export function createBigExplosion(renderer: BatchedParticleRenderer, textures: 
         startColor: new ConstantColor(secColor),
         worldSpace: false,
 
-        
+
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0.4,

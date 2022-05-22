@@ -77,6 +77,7 @@ export const FieldEditor = <T, > (props: PropsWithChildren<FieldEditorProps<T>>)
                                     value={target[fieldName] as any}
                                     onChange={onChangeBehaviorFunc}/>
         case 'colorFunc':
+        case 'rotationFunc':
         case 'value':
             return <GeneratorEditor key={fieldName} name={fieldName}
                                     allowedType={[type]}
