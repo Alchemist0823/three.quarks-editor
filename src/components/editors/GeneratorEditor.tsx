@@ -184,6 +184,7 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
         //console.log(currentEditor);
 
         let editor;
+        let postEditor;
         switch (currentEditor) {
             case "constant":
                 editor = <React.Fragment>
@@ -228,7 +229,7 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
                 break;
             case "axisAngle": {
                 const vec3 = (value as AxisAngleGenerator).axis;
-                editor = <>
+                postEditor = <>
                     <Vector3Editor name={"axis"} x={vec3.x} y={vec3.y} z={vec3.z} onChange={this.changeAxis}/>
                     <GeneratorEditor allowedType={['value', 'valueFunc']} name={"angle"} onChange={this.changeAngle}
                                      value={(value as AxisAngleGenerator).angle}/>
@@ -236,11 +237,29 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
                 break;
             }
         }
-        return <div className="property">
-            <Typography component={"label"} className="name">{name}</Typography>
-            {editor}
-            <SelectInput onChange={this.changeEditor} value={currentEditor}
-                options={editorTypes} />
-        </div>;
+        /*const content =
+            <div className="property">
+                <Typography component={"label"} className="name">{name}</Typography>
+                {editor}
+                <SelectInput onChange={this.changeEditor} value={currentEditor}
+                             options={editorTypes} />
+            </div>;*/
+        if (postEditor) {
+            return <div>
+                <div className="property">
+                    <Typography component={"label"} className="name">{name}</Typography>
+                    {editor}
+                    <SelectInput onChange={this.changeEditor} value={currentEditor}
+                                 options={editorTypes} />
+                </div>;
+                {postEditor}
+            </div>;
+        } else
+            return <div className="property">
+                <Typography component={"label"} className="name">{name}</Typography>
+                {editor}
+                <SelectInput onChange={this.changeEditor} value={currentEditor}
+                             options={editorTypes} />
+            </div>;
     }
 }
