@@ -67,6 +67,7 @@ export interface AppContext {
     batchedRenderer?: BatchedParticleRenderer;
 
     showGUI: boolean;
+    playSpeed: number;
     viewPortControlType: string;
     transformControls?: TransformControls;
     cameraControls?: OrbitControls;
@@ -89,6 +90,7 @@ export interface AppContext {
         updateEmitterShape: (particleSystem: ParticleSystem) => void;
         setViewPortControlType: (type: string) => void;
         toggleGUI:()=>void;
+        changePlaySpeed: (speed: number) => void;
         setEditableBezier: (bezier?: PiecewiseBezier) => void;
     }
     updateProperties: () => void;
@@ -219,6 +221,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
             selection: [],
             viewPortControlType: "camera",
             showGUI: true,
+            playSpeed: 1,
             textures: [
                 {img: process.env.PUBLIC_URL + '/textures/texture1.png', texture: texture1},
                 {img: process.env.PUBLIC_URL + '/textures/texture2.png', texture: texture2},
@@ -291,6 +294,9 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                         list.forEach(obj => obj.visible = false);
                     }
                     this.setState({showGUI: !this.state.showGUI});
+                },
+                changePlaySpeed: (speed: number) => {
+                    this.setState({playSpeed: speed});
                 },
                 setEditableBezier: (beizer) => {
                     this.setState({bezierCurve: beizer});
@@ -445,7 +451,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
     };
 
 
-    update = 0;
+    //update = 0;
     animate = (delta: number) => {
         /*this.toonProjectile!.position.x += delta * 30;
         if (this.toonProjectile!.position.x > 20)
@@ -453,11 +459,11 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
 
         this.selectBox?.update();
 
-        this.update += delta;
+        /*this.update += delta * context.playSpeed;
         if (this.update > 0.1) {
             //this.state
             this.update = 0;
-        }
+        }*/
     };
 
     render() {

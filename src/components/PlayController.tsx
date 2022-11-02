@@ -5,10 +5,11 @@ import {
     ParticleEmitter
 } from "three.quarks";
 import {Object3D} from "three";
-import {Box, ButtonGroup, Checkbox, FormControlLabel} from "@mui/material";
+import {Box, ButtonGroup, Checkbox, FormControlLabel, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import {useContext} from "react";
+import {NumberInput} from "./editors/NumberInput";
 
 interface PlayControllerProps {
     object3d?: Object3D,
@@ -81,6 +82,7 @@ export const PlayController: React.FC<PlayControllerProps> = (props) => {
         <ToggleButtonGroup color="primary" aria-label="primary button group">
         </ToggleButtonGroup>
         <FormControlLabel control={<Checkbox checked={context.showGUI} onChange={context.actions.toggleGUI} />} label="Show GUI" />
+        <NumberInput label="Speed" onChange={context.actions.changePlaySpeed} value={context.playSpeed}/>
         <ButtonGroup color="primary" aria-label="primary button group" sx={{backgroundColor: "white"}}>
             <Button disabled={systems.length === 0} onClick={togglePause}> {isPaused ? "Play" : "Pause" } </Button>
             <Button disabled={systems.length === 0} onClick={onRestart}>Restart</Button>

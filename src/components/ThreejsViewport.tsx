@@ -6,7 +6,7 @@ import {
     WebGLRenderer,
     Clock, Color, AxesHelper, PointLight, AmbientLight, Raycaster, Vector2, Object3D,
 } from "three";
-import {RefObject, useContext, useEffect, useRef} from "react";
+import {RefObject, useCallback, useContext, useEffect, useRef, useState} from "react";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {BatchedParticleRenderer, ParticleEmitter} from "three.quarks";
 import {
@@ -27,23 +27,26 @@ interface ThreejsViewportProps {
     height: number;
 }
 
+// TODO: useRef on them
+let renderer: WebGLRenderer;
+let stats: Stats;
+let camera: PerspectiveCamera;
+let raycaster: Raycaster;
+let batchedRenderer: BatchedParticleRenderer;
+let transformControls: TransformControls;
+let clock: Clock;
+let cameraControls: OrbitControls;
+
 export const ThreejsViewport: React.FC<ThreejsViewportProps> = (props) => {
     const context = useContext(ApplicationContext)!;
     const container = useRef<HTMLDivElement>(null);
-    let render: WebGLRenderer;
-    let stats: Stats;
-    let camera: PerspectiveCamera;
-    let renderer: WebGLRenderer;
-    let raycaster: Raycaster;
-    let batchedRenderer: BatchedParticleRenderer;
-    let transformControls: TransformControls;
-    let clock: Clock;
-    let cameraControls: OrbitControls;
-
+    const animationHandlerRef = useRef(-1);
 
     useEffect(() => {
         if ( init() ) {
             animate();
+        }
+        return ()=> {
         }
     }, []);
 
@@ -53,7 +56,39 @@ export const ThreejsViewport: React.FC<ThreejsViewportProps> = (props) => {
         renderer!.setSize( props.width, props.height );
     }, [props.width, props.height]);
 
-    const init = () => {
+
+    const playSpeedRef = useRef(context.playSpeed);
+
+
+    useEffect(() => {
+        playSpeedRef.current = context.playSpeed;
+    }, [context.playSpeed]);
+
+    const renderScene = useCallback(() => {
+        cameraControls!.update();
+        const delta = clock!.getDelta();
+
+        context.script(delta * playSpeedRef.current);
+
+        context.scene.traverse(object => {
+            if (object.userData && object.userData.func) {
+                object.userData.func.call(object, delta * playSpeedRef.current);
+            }
+        });
+
+        batchedRenderer!.update(delta * playSpeedRef.current);
+        renderer!.render(context.scene, camera!);
+    }, []);
+
+    const animate =  useCallback(() => {
+        animationHandlerRef.current = requestAnimationFrame( animate );
+
+        onResize(null);
+        renderScene();
+        stats!.update();
+    }, []);
+
+    const init = useCallback(() => {
         if (!container.current) {
             return false;
         }
@@ -121,9 +156,9 @@ export const ThreejsViewport: React.FC<ThreejsViewportProps> = (props) => {
 
         return true;
 
-    }
+    }, []);
 
-    const onPointerUp = (event: MouseEvent) => {
+    const onPointerUp = useCallback((event: MouseEvent) => {
         if (/*context.viewPortControlType !== 'camera'*/event.button === 2) {
             const rect = (event.target! as HTMLDivElement).getBoundingClientRect();
             const x = event.clientX - rect.left; //x position within the element.
@@ -160,53 +195,23 @@ export const ThreejsViewport: React.FC<ThreejsViewportProps> = (props) => {
             }
         }
 
-    }
+    },[]);
 
-    const onResize = (event: any ) => {
+    const onResize = useCallback((event: any ) => {
 
-        if (renderer!.domElement.parentElement!.clientWidth - 10 !== renderer!.domElement.width ||
-            renderer!.domElement.parentElement!.clientHeight - 10 !== renderer!.domElement.height) {
+        if (renderer && camera && renderer.domElement.parentElement!.clientWidth - 10 !== renderer.domElement.width ||
+            renderer.domElement.parentElement!.clientHeight - 10 !== renderer.domElement.height) {
 
-            const newWidth = renderer!.domElement.parentElement!.clientWidth - 10;
-            const newHeight = renderer!.domElement.parentElement!.clientHeight - 10;
+            const newWidth = renderer.domElement.parentElement!.clientWidth - 10;
+            const newHeight = renderer.domElement.parentElement!.clientHeight - 10;
 
-            camera!.aspect = newWidth / newHeight;
-            camera!.updateProjectionMatrix();
-            renderer!.domElement.style.width = '100%';
-            renderer!.domElement.style.height = '100%';
-            renderer!.setSize(newWidth, newHeight);
+            camera.aspect = newWidth / newHeight;
+            camera.updateProjectionMatrix();
+            renderer.domElement.style.width = '100%';
+            renderer.domElement.style.height = '100%';
+            renderer.setSize(newWidth, newHeight);
         }
-    };
-
-    const animate = () => {
-        requestAnimationFrame( animate );
-
-        onResize(null);
-        renderScene();
-        stats!.update();
-    };
-
-    const renderScene = () => {
-        cameraControls!.update();
-        const delta = clock!.getDelta();
-        //console.log(delta);
-        //let time = performance.now() * 0.0005;
-        //particleSystem!.update(clock!.getDelta());
-        context.script(delta);
-        //particleSystem!.emitter.rotation.y = clock!.getElapsedTime();
-        //particleSystem!.emitter.position.set(Math.cos(clock!.getElapsedTime()) * 20, 0, Math.sin(clock!.getElapsedTime()) * 20);
-        //console.log(particleSystem!.emitter.modelViewMatrix);
-
-        context.scene.traverse(object => {
-            if (object.userData && object.userData.func) {
-                object.userData.func.call(object, delta);
-            }
-        });
-
-        batchedRenderer!.update(delta);
-        renderer!.render(context.scene, camera!);
-    }
-
+    },[]);
     return <div ref={container} style={{width: '100%', height: '100%', position: 'relative'}}>
         <ViewPortControls controlType={context.viewPortControlType}
                           setControlType={context.actions.setViewPortControlType}/>
