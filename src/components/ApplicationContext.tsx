@@ -17,7 +17,7 @@ import {ConstantColor} from "three.quarks";
 import {Vector4} from "three";
 import {AdditiveBlending} from "three";
 import {Mesh} from "three";
-import {BoxBufferGeometry} from "three";
+import {BoxGeometry} from "three";
 import {MeshStandardMaterial} from "three";
 import {createBulletMuzzle} from "../example/BulletMuzzle";
 import {createElectricBall} from "../example/ElectricBall";
@@ -84,7 +84,7 @@ export interface AppContext {
         addObject3d: (type: string, parent: Object3D) => void;
         removeObject3d: (object: Object3D) => void;
         duplicateObject3d: (object: Object3D) => void;
-        updateParticleSystem: (object: ParticleEmitter) => void;
+        updateParticleSystem: (object: ParticleEmitter<Event>) => void;
         addTexture: (textureImage: TextureImage) => void;
         setRenderer: (transformControls: TransformControls, cameraControls: OrbitControls) => void;
         updateEmitterShape: (particleSystem: ParticleSystem) => void;
@@ -144,7 +144,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                 break;
         }
         if (demoObject) {
-            /*const geometry = new BoxBufferGeometry( 10, 10, 10 );
+            /*const geometry = new BoxGeometry( 10, 10, 10 );
             const material = new MeshBasicMaterial( {color: 0x00ff00} );
             const cube = new Mesh( geometry, material );
             demoObject.add(cube);*/
@@ -166,7 +166,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
     processParticleSystems = (object3d: Object3D) => {
         object3d.traverse(obj => {
             if (obj.type === "ParticleEmitter") {
-                const particleSystem = (obj as ParticleEmitter).system;
+                const particleSystem = (obj as ParticleEmitter<Event>).system;
                 const mesh = new ParticleSystemPreviewObject(particleSystem);
                 obj.add(mesh);
             }
@@ -190,9 +190,9 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                 }
                     break;
                 case "json": {
-                    const loader = new QuarksLoader();
+                    const loader = new QuarksLoader(this.state.batchedRenderer!);
                     loader.setCrossOrigin("");
-                    loader.load(fileURL, this.state.batchedRenderer!, (object3D: Object3D) => {
+                    loader.load(fileURL, (object3D: Object3D) => {
                         this.state.scene.add(object3D);
                         this.processParticleSystems(object3D);
                     }, () => {
@@ -393,7 +393,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
             object3D.parent.remove(object3D);
             object3D.traverse((obj) => {
                 if (obj.type === 'ParticleEmitter') {
-                    this.state.batchedRenderer!.deleteSystem((obj as ParticleEmitter).system);
+                    this.state.batchedRenderer!.deleteSystem((obj as ParticleEmitter<Event>).system);
                 }
             });
             if (this.state.transformControls && this.state.transformControls.object === object3D) {
@@ -435,7 +435,7 @@ export class ApplicationContextProvider extends React.Component<ApplicationConte
                 break;
             }
             case 'box':
-                object = new Mesh(new BoxBufferGeometry(10, 10, 10), new MeshStandardMaterial({color: 0xcccccc}));
+                object = new Mesh(new BoxGeometry(10, 10, 10), new MeshStandardMaterial({color: 0xcccccc}));
                 this.state.scene.add(object);
                 break;
             case 'group':

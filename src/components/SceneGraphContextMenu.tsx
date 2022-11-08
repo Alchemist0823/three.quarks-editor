@@ -117,7 +117,8 @@ export const SceneGraphContextMenu: React.FC<SceneGraphContextMenuProps> = (prop
                     >
                         <NestedMenuItem
                             label={"Add"}
-                            parentMenuOpen={props.open}>
+                            parentMenuOpen={props.open}
+                            nonce={undefined}>
                             <MenuItem onClick={onContextMenuAddGroup}>Group</MenuItem>
                             <MenuItem onClick={onContextMenuAddParticleSystem}>Particle System</MenuItem>
                         </NestedMenuItem>

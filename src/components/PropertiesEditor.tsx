@@ -111,7 +111,7 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                     <StyledHeading>Emitter Shape</StyledHeading>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <EmitterShapeProperties particleSystem={(props.object3d as ParticleEmitter).system}/>
+                    <EmitterShapeProperties particleSystem={(props.object3d as ParticleEmitter<Event>).system}/>
                 </AccordionDetails>
             </Accordion>
             }
@@ -124,7 +124,7 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                     <StyledHeading>Particle Renderer</StyledHeading>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <ParticleRendererProperties particleSystem={(props.object3d as ParticleEmitter).system}/>
+                    <ParticleRendererProperties particleSystem={(props.object3d as ParticleEmitter<Event>).system}/>
                 </AccordionDetails>
             </Accordion>
             }
@@ -137,7 +137,7 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                         <StyledHeading>Emission</StyledHeading>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <EmissionProperties particleSystem={(props.object3d as ParticleEmitter).system}
+                        <EmissionProperties particleSystem={(props.object3d as ParticleEmitter<Event>).system}
                                             updateProperties={context.updateProperties}/>
                     </AccordionDetails>
                 </Accordion>
@@ -151,7 +151,7 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                         <StyledHeading>Particle Initialization</StyledHeading>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <ParticleSystemProperties particleSystem={(props.object3d as ParticleEmitter).system}
+                        <ParticleSystemProperties particleSystem={(props.object3d as ParticleEmitter<Event>).system}
                                                   updateProperties={context.updateProperties}/>
                     </AccordionDetails>
                 </Accordion>
@@ -165,8 +165,8 @@ export default function PropertiesEditor(props: PropertiesEditorProps) {
                     <StyledHeading>Behaviors</StyledHeading>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <BehaviorsProperties behaviors={(props.object3d as ParticleEmitter).system.behaviors}
-                                                updateProperties={context.updateProperties} system={(props.object3d as ParticleEmitter).system}/>
+                    <BehaviorsProperties behaviors={(props.object3d as ParticleEmitter<Event>).system.behaviors}
+                                                updateProperties={context.updateProperties} system={(props.object3d as ParticleEmitter<Event>).system}/>
                 </AccordionDetails>
             </Accordion>
             }

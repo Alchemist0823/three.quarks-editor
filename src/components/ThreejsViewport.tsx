@@ -102,7 +102,7 @@ export const ThreejsViewport: React.FC<ThreejsViewportProps> = (props) => {
             return false;
         }
 
-        renderer = new WebGLRenderer();
+        renderer = new WebGLRenderer({preserveDrawingBuffer: true});
 
         const scene = context.scene;
         batchedRenderer = context.batchedRenderer;

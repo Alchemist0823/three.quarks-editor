@@ -1,7 +1,7 @@
 {
   "name": "three.quarks-editor",
   "description": "A Editor for three.quarks",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "private": false,
   "homepage": "http://Alchemist0823.github.io/three.quarks-editor",
   "repository": {
@@ -47,33 +47,34 @@
     ]
   },
   "dependencies": {
-    "@emotion/react": "^11.8.2",
-    "@emotion/styled": "^11.8.1",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
     "@minoru/react-dnd-treeview": "^1.6.1",
-    "@mui/icons-material": "^5.5.0",
-    "@mui/lab": "^5.0.0-alpha.72",
-    "@mui/material": "^5.5.0",
+    "@mui/icons-material": "^5.10.9",
+    "@mui/lab": "^5.0.0-alpha.107",
+    "@mui/material": "^5.10.13",
     "mui-nested-menu": "^2.0.0",
-    "prismjs": "^1.25.0",
+    "prismjs": "^1.29.0",
     "react": "^17.0.2",
     "react-color": "2.19.3",
     "react-dom": "^17.0.2",
     "react-linear-gradient-picker": "^2.0.3",
     "react-redux": "^7.2.5",
-    "react-scripts": "^4.0.3",
-    "react-simple-code-editor": "^0.11.0",
+    "react-scripts": "^5.0.1",
+    "react-simple-code-editor": "^0.13.1",
     "stats.js": "^0.17.0",
-    "three.quarks": "^0.7.2"
+    "three.quarks": "^0.7.3",
+    "three": "^0.146.0"
   },
   "devDependencies": {
     "@types/jest": "26.0.13",
-    "@types/prismjs": "^1.16.0",
+    "@types/prismjs": "^1.26.0",
     "@types/react": "17.0.30",
     "@types/react-color": "^3.0.5",
     "@types/react-dom": "17.0.9",
     "@types/stats.js": "^0.17.0",
-    "@types/three": "^0.140.0",
-    "gh-pages": "^3.2.3",
+    "@types/three": "^0.146.0",
+    "gh-pages": "^4.0.0",
     "node-sass": "^6.0.1",
     "typescript": "^4.6.2"
   }

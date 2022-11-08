@@ -1,10 +1,7 @@
 import {
     AdditiveBlending,
-    ConeBufferGeometry,
-    CylinderBufferGeometry,
+    CylinderGeometry,
     Group,
-    NormalBlending,
-    TextureLoader,
     Vector4
 } from "three";
 import {
@@ -13,7 +10,6 @@ import {
     ParticleSystem,
     PointEmitter,
     RenderMode,
-    RotationOverLife
 } from "three.quarks";
 import {ConeEmitter} from "three.quarks";
 import {IntervalValue} from "three.quarks";
@@ -21,12 +17,9 @@ import {SizeOverLife} from "three.quarks";
 import {PiecewiseBezier} from "three.quarks";
 import {ColorRange} from "three.quarks";
 import {ConstantColor} from "three.quarks";
-import {SphereEmitter} from "three.quarks";
-import {FrameOverLife} from "three.quarks";
 import {ConstantValue} from "three.quarks";
 import {Bezier} from "three.quarks";
 import {Gradient} from "three.quarks";
-import {RandomColor} from "three.quarks";
 import {TextureImage} from "../components/ApplicationContext";
 
 export function createEnergyRifleMuzzle(renderer: BatchedParticleRenderer, textures: TextureImage[]) {
@@ -44,7 +37,7 @@ export function createEnergyRifleMuzzle(renderer: BatchedParticleRenderer, textu
         startColor: new ConstantColor(new Vector4(0.5, 0.5, 0.5, 1)),
         worldSpace: false,
 
-        
+
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -79,7 +72,7 @@ export function createEnergyRifleMuzzle(renderer: BatchedParticleRenderer, textu
         startColor: new ConstantColor(new Vector4(0, 0.3, 0.3, 1)),
         worldSpace: false,
 
-        
+
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -116,7 +109,7 @@ export function createEnergyRifleMuzzle(renderer: BatchedParticleRenderer, textu
         startColor: new ConstantColor(new Vector4(0, 0.2, 0.2, 1)),
         worldSpace: false,
 
-        
+
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -154,7 +147,7 @@ export function createEnergyRifleMuzzle(renderer: BatchedParticleRenderer, textu
         startColor: new RandomColor(new Vector4(0.6323, 0.6323, 0.6323, .31), new Vector4(1, 1, 1, 0.54)),
         worldSpace: true,
 
-        
+
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -185,7 +178,7 @@ export function createEnergyRifleMuzzle(renderer: BatchedParticleRenderer, textu
     ringTop.emitter.rotation.y = Math.PI / 2;
     group.add(ringTop.emitter);
 */
-    const coneBufferGeometry = new CylinderBufferGeometry(10, 6, 4, 16, 1, true);
+    const coneBufferGeometry = new CylinderGeometry(10, 6, 4, 16, 1, true);
     coneBufferGeometry.rotateX(Math.PI / 2);
     /*console.log(coneBufferGeometry.getIndex()!.array);
     console.log(coneBufferGeometry.getAttribute('position').array);
@@ -201,7 +194,7 @@ export function createEnergyRifleMuzzle(renderer: BatchedParticleRenderer, textu
         startColor: new ConstantColor(new Vector4(0, 1, 1, 1)),
         worldSpace: false,
 
-        
+
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,

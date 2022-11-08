@@ -1,9 +1,9 @@
 import {
     BufferGeometry,
-    CylinderBufferGeometry,
+    CylinderGeometry,
     LineBasicMaterial, LineSegments, Quaternion,
-    SphereBufferGeometry,
-    TorusBufferGeometry, Vector3, WireframeGeometry
+    SphereGeometry,
+    TorusGeometry, Vector3, WireframeGeometry
 } from "three";
 import {ConeEmitter, DonutEmitter, ParticleSystem, SphereEmitter} from "three.quarks";
 
@@ -14,24 +14,24 @@ function generateEmitterGeometry(particleSystem: ParticleSystem) {
     switch (particleSystem.emitterShape.type) {
         case "cone": {
             const cone = (particleSystem.emitterShape as ConeEmitter);
-            geo = new CylinderBufferGeometry(cone.radius, cone.radius * (1 + Math.tan(cone.angle)), cone.radius, 8, 1, true);
+            geo = new CylinderGeometry(cone.radius, cone.radius * (1 + Math.tan(cone.angle)), cone.radius, 8, 1, true);
             geo.translate(0, -cone.radius / 2, 0);
             break;
         }
         case "sphere":
-            geo = new SphereBufferGeometry((particleSystem.emitterShape as SphereEmitter).radius, 8, 6);
+            geo = new SphereGeometry((particleSystem.emitterShape as SphereEmitter).radius, 8, 6);
             break;
         case "point":
-            geo = new SphereBufferGeometry(1, 8, 6);
+            geo = new SphereGeometry(1, 8, 6);
             break;
         case "donut": {
             const emitterShape = particleSystem.emitterShape as DonutEmitter;
-            geo = new TorusBufferGeometry(emitterShape.radius, emitterShape.thickness, 8, 12, emitterShape.arc);
+            geo = new TorusGeometry(emitterShape.radius, emitterShape.thickness, 8, 12, emitterShape.arc);
             geo.applyQuaternion(new Quaternion().setFromAxisAngle(new Vector3(1, 0, 0), 90 * Math.PI / 180));
             break;
         }
         default:
-            geo = new SphereBufferGeometry(1);
+            geo = new SphereGeometry(1);
             break;
     }
     return geo;

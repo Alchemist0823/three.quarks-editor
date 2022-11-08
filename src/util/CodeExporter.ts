@@ -69,7 +69,7 @@ export class CodeExporter {
         throw new Error();
     }
 
-    static exportParticleEmitter(emitter: ParticleEmitter): string {
+    static exportParticleEmitter(emitter: ParticleEmitter<Event>): string {
 
         const name = CodeExporter.camelize(emitter.name);
         const system = emitter.system;
@@ -173,7 +173,7 @@ export class CodeExporter {
 
         for (let i = 0; i < root.children.length; i ++) {
             if (root.children[i] instanceof ParticleEmitter) {
-                code += CodeExporter.exportParticleEmitter(root.children[i] as ParticleEmitter);
+                code += CodeExporter.exportParticleEmitter(root.children[i] as ParticleEmitter<Event>);
             }
         }
 
