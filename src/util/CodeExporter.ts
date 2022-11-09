@@ -128,7 +128,7 @@ export class CodeExporter {
         let func;
         switch (behavior.type) {
             case 'ApplyForce':
-                func = CodeExporter.exportFunction((behavior as ApplyForce).force);
+                func = CodeExporter.exportFunction((behavior as ApplyForce).magnitude);
                 break;
             case 'ColorOverLife':
                 func = CodeExporter.exportFunction((behavior as ColorOverLife).color);

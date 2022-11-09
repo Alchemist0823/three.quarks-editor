@@ -12,7 +12,7 @@ const rgbaToVec4 = (color: string, opacity: number) => {
 
 const rgbToObj = (color: string, opacity: number) => {
     const values = color.substring(4, color.length - 1).split(',');
-    const obj = {r: parseInt(values[0]), g: parseInt(values[1]), b: parseInt(values[2]), opacity};
+    const obj = {r: parseInt(values[0]), g: parseInt(values[1]), b: parseInt(values[2]), a: opacity};
     return obj;
 };
 
