@@ -55,7 +55,7 @@ export const listObjects = (obj: Object3D, list: Object3D[], traversableTypes: s
         if (listableTypes.indexOf(children[i].type) !== -1)
             list.push(children[i]);
         if (traversableTypes.indexOf(children[i].type) !== -1)
-            listObjects(children[ i ], list, traversableTypes, listableTypes);
+            listObjects(children[i], list, traversableTypes, listableTypes);
     }
 }
 

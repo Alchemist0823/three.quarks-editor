@@ -60,7 +60,7 @@ export const EmissionProperties: React.FC<BurstEmitterPropertiesProps> = React.m
             <Typography component={"label"} className="name">Looping</Typography>
             <SelectInput onChange={onChangeLooping}
                          value={props.particleSystem.looping}
-                         options={[true, false]} />
+                         options={[[true, "true"], [false, "false"]]} />
         </div>
         <div className="property">
             <Typography component={"label"} className="name">Duration</Typography>
@@ -72,7 +72,7 @@ export const EmissionProperties: React.FC<BurstEmitterPropertiesProps> = React.m
             <Typography component={"label"} className="name">Used by other system</Typography>
             <SelectInput onChange={onChangeOnlyUsedByOther}
                          value={props.particleSystem.onlyUsedByOther}
-                         options={[true, false]} />
+                         options={[[true, "true"], [false, "false"]]} />
         </div>
         <GeneratorEditor name="Emit Over Time"
                          allowedType={valueFunctionTypes}

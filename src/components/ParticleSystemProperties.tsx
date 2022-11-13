@@ -37,8 +37,8 @@ export const ParticleSystemProperties: React.FC<ParticleSystemPropertiesProps> =
         (props.particleSystem.rendererEmitterSettings as TrailSettings).startLength = g as ValueGenerator | FunctionValueGenerator;
         props.updateProperties();
     };
-    const onChangeFollowLocalOrigin = (value: string) => {
-        (props.particleSystem.rendererEmitterSettings as TrailSettings).followLocalOrigin = (value === 'True');
+    const onChangeFollowLocalOrigin = (value: boolean) => {
+        (props.particleSystem.rendererEmitterSettings as TrailSettings).followLocalOrigin = value;
         props.updateProperties();
     };
     const valueFunctionTypes: ValueType[] = ['value', 'valueFunc'];
@@ -81,8 +81,8 @@ export const ParticleSystemProperties: React.FC<ParticleSystemPropertiesProps> =
                 <div className="property">
                     <Typography component={"label"} className="name">Follow Local Origin</Typography>
                     <SelectInput onChange={onChangeFollowLocalOrigin}
-                                 value={(props.particleSystem.rendererEmitterSettings as TrailSettings).followLocalOrigin ? "True" : "False"}
-                                 options={["True", "False"]}/>
+                                 value={(props.particleSystem.rendererEmitterSettings as TrailSettings).followLocalOrigin}
+                                 options={[[true, "true"], [false, "False"]]}/>
                 </div>}
         </div>
     );

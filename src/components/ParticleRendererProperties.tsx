@@ -151,7 +151,7 @@ export const ParticleRendererProperties: React.FC<ParticleRendererPropertiesProp
             <div className="property">
                 <Typography component={"label"} className="name">RenderMode</Typography>
                 <SelectInput onChange={onChangeRenderMode} value={RenderMode[props.particleSystem.renderMode]}
-                             options={Object.keys(RenderMode).map((key: any) => RenderMode[key]).filter(value => typeof value === 'string')}/>
+                             options={Object.keys(RenderMode).map((key: any) => RenderMode[key]).filter(value => typeof value === 'string').map(name => [name, name])}/>
             </div>
             {props.particleSystem.renderMode === RenderMode.StretchedBillBoard &&
                 <div className="property">
@@ -168,12 +168,12 @@ export const ParticleRendererProperties: React.FC<ParticleRendererPropertiesProp
             <div className="property">
                 <Typography component={"label"} className="name">World Space</Typography>
                 <SelectInput onChange={onChangeWorldSpace} value={getValueOfBoolean(props.particleSystem.worldSpace)}
-                             options={["True", "False"]}/>
+                             options={[["True", "True"], ["False", "False"]]}/>
             </div>
             <div className="property">
                 <Typography component={"label"} className="name">Blend Mode</Typography>
                 <SelectInput onChange={onChangeBlending} value={getValueOfBlending(props.particleSystem.blending)}
-                             options={["Normal", "Additive"]}/>
+                             options={[["Normal", "Normal"], ["Additive", "Additive"]]}/>
             </div>
             <div className="property">
                 <Typography component={"label"} className="name">RenderOrder:</Typography><NumberInput

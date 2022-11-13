@@ -60,7 +60,7 @@ export const FieldEditor = <T, > (props: PropsWithChildren<FieldEditorProps<T>>)
         case 'boolean':
             return <div className="property" key={fieldName}>
                 <Typography component={"label"} className="name">{fieldName}</Typography>
-                <SelectInput key={fieldName} value={target[fieldName] as boolean} onChange={onChangeBoolean} options={[true, false]}/>
+                <SelectInput key={fieldName} value={target[fieldName] as boolean} onChange={onChangeBoolean} options={[[true, "true"], [false, "false"]]}/>
             </div>;
         case 'vec3':
             return <Vector3Editor key={fieldName} name={fieldName}
@@ -68,7 +68,7 @@ export const FieldEditor = <T, > (props: PropsWithChildren<FieldEditorProps<T>>)
                                   y={(target[fieldName] as Vector3).y}
                                   z={(target[fieldName] as Vector3).z} onChange={onChangeVec3} />
         case 'mesh':
-            return <Object3DSelect key={fieldName} name={fieldName} listableTypes={["Mesh"]} onChange={onChangeObject3D} value={target[fieldName] as Object3D}/>
+            return <Object3DSelect key={fieldName} name={fieldName} listableTypes={["Mesh", "ParticleEmitter"]} onChange={onChangeObject3D} value={target[fieldName] as Object3D}/>
         case 'particleSystem':
             return <Object3DSelect key={fieldName} name={fieldName} listableTypes={["ParticleEmitter"]} onChange={onChangeObject3D} value={target[fieldName] as Object3D}/>
         case 'valueFunc':

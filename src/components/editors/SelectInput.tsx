@@ -9,8 +9,8 @@ interface SelectInputProps<T>{
     label?: string;
     value: T;
     onChange: (value: T)=>void;
-    options: T[];
-    optionToStr?: (a: T) => string;
+    onOpen?: ()=>void;
+    options: [T, string][];
 }
 
 const CustomizedSelect: StyledComponent<SelectProps<any>> = styled(Select)<SelectProps>(({ theme }) => ({
@@ -21,14 +21,17 @@ const CustomizedSelect: StyledComponent<SelectProps<any>> = styled(Select)<Selec
 }));
 
 export const SelectInput = <T,> (props: PropsWithChildren<SelectInputProps<T>>) => {
-
     const onInputChange = (e: SelectChangeEvent<T>) => {
         props.onChange(e.target.value as T);
+    };
+    const onOpen = (event: React.SyntheticEvent) => {
+        if (props.onOpen)
+            props.onOpen();
     };
 
     return <CustomizedSelect label={props.label ?? ""} value={props.value}
                                 size={"small"} variant="outlined"
-                                onChange={onInputChange}>
-        {props.options.map((option, index) => <MenuItem key={index} value={option as any}>{props.optionToStr ? props.optionToStr(option): option + ""}</MenuItem>)}
+                                onChange={onInputChange} onOpen={onOpen}>
+        {props.options.map((option, index) => <MenuItem key={index} value={option[0] as any}>{option[1]}</MenuItem>)}
     </CustomizedSelect>;
 };

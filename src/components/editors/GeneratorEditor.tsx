@@ -250,7 +250,7 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
                     <Typography component={"label"} className="name">{name}</Typography>
                     {editor}
                     <SelectInput onChange={this.changeEditor} value={currentEditor}
-                                 options={editorTypes} />
+                                 options={editorTypes.map(editorType => [editorType, editorType])} />
                 </div>;
                 {postEditor}
             </div>;
@@ -259,7 +259,7 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
                 <Typography component={"label"} className="name">{name}</Typography>
                 {editor}
                 <SelectInput onChange={this.changeEditor} value={currentEditor}
-                             options={editorTypes} />
+                             options={editorTypes.map(editorType => [editorType, editorType])} />
             </div>;
     }
 }

@@ -78,7 +78,7 @@ export const EmitterShapeProperties: React.FC<EmitterShapePropertiesProps> = (pr
                 <Typography className="name">Shape</Typography>
                 <SelectInput onChange={onChangeShape}
                              value={props.particleSystem.emitterShape.type}
-                             options={Object.keys(EmitterShapes)} />
+                             options={Object.keys(EmitterShapes).map(shape => [shape, shape])} />
             </div>
             {renderShapeProperties()}
         </div>
