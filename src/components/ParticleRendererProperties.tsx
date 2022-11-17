@@ -69,8 +69,8 @@ export const ParticleRendererProperties: React.FC<ParticleRendererPropertiesProp
                 props.particleSystem.renderMode = RenderMode.BillBoard;
                 props.particleSystem.speedFactor = 0;
                 break;
-            case "LocalSpace":
-                props.particleSystem.renderMode = RenderMode.LocalSpace;
+            case "Mesh":
+                props.particleSystem.renderMode = RenderMode.Mesh;
                 props.particleSystem.speedFactor = 0;
                 break;
             case "StretchedBillBoard":
@@ -159,7 +159,7 @@ export const ParticleRendererProperties: React.FC<ParticleRendererPropertiesProp
                     <NumberInput value={props.particleSystem.speedFactor} onChange={onChangeSpeedFactor}/>
                 </div>
             }
-            {props.particleSystem.renderMode === RenderMode.LocalSpace &&
+            {props.particleSystem.renderMode === RenderMode.Mesh &&
                 <div className="property">
                     <Typography component={"label"} className="name">Mesh</Typography>
                     <GeometrySelect onChange={onChangeGeometry} value={props.particleSystem.instancingGeometry}/>

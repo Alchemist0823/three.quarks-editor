@@ -4,7 +4,7 @@ import {NumberInput} from "./NumberInput";
 import {Vector3Editor} from "./Vector3Editor";
 import {Mesh, Object3D, Vector3} from "three";
 import {GeneratorEditor, GenericGenerator} from "./GeneratorEditor";
-import {EditorType, MeshSurfaceEmitter} from "three.quarks";
+import {FieldType, MeshSurfaceEmitter} from "three.quarks";
 import {SelectInput} from "./SelectInput";
 import {listObjects, SelectableSearchable} from "../ApplicationContext";
 import {Object3DSelect} from "./Object3DSelect";
@@ -13,7 +13,7 @@ export interface FieldEditorProps<T> {
     target: {[k: string]: any};
     onChange: (value: T) => void;
     fieldName: string;
-    type: EditorType;
+    type: FieldType;
 }
 
 export const FieldEditor = <T, > (props: PropsWithChildren<FieldEditorProps<T>>) => {

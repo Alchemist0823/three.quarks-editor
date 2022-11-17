@@ -62,7 +62,7 @@ export const ParticleSystemProperties: React.FC<ParticleSystemPropertiesProps> =
                              allowedType={colorValueFunctionTypes}
                              value={props.particleSystem.startColor}
                              onChange={onChangeStartColor}/>
-            {props.particleSystem.renderMode === RenderMode.LocalSpace ?
+            {props.particleSystem.renderMode === RenderMode.Mesh ?
                 <GeneratorEditor name="Start Rotation"
                                  allowedType={rotationFunctionTypes}
                                  value={props.particleSystem.startRotation}

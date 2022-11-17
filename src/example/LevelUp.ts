@@ -28,7 +28,7 @@ export function createLevelUp(renderer: BatchedParticleRenderer, textures: Textu
         startSize: new IntervalValue(1, 2),
         startColor: new ConstantColor(yellow),
         worldSpace: false,
-        
+
         emissionOverTime: new ConstantValue(100),
         shape: new SphereEmitter({
             radius: 60,
@@ -58,7 +58,7 @@ export function createLevelUp(renderer: BatchedParticleRenderer, textures: Textu
         startColor: new ConstantColor(yellow),
         worldSpace: false,
 
-        
+
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -74,7 +74,7 @@ export function createLevelUp(renderer: BatchedParticleRenderer, textures: Textu
         startTileIndex: new ConstantValue(1),
         uTileCount: 10,
         vTileCount: 10,
-        renderMode: RenderMode.LocalSpace,
+        renderMode: RenderMode.Mesh,
         renderOrder: 0,
     };
 
@@ -98,7 +98,7 @@ export function createLevelUp(renderer: BatchedParticleRenderer, textures: Textu
         startColor: new ConstantColor(yellow),
         worldSpace: false,
 
-        
+
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -135,7 +135,7 @@ export function createLevelUp(renderer: BatchedParticleRenderer, textures: Textu
         startSize: new IntervalValue(2, 4),
         startColor: new ConstantColor(yellow),
         worldSpace: false,
-        
+
         emissionOverTime: new PiecewiseBezier([[new Bezier(0, 0, 0, 0), 0], [new Bezier(50, 80, 80, 50), 0.4]]),
         /*emissionBursts: [{
             time: 0,

@@ -211,7 +211,7 @@ export function createEnergyRifleMuzzle(renderer: BatchedParticleRenderer, textu
         uTileCount: 10,
         vTileCount: 10,
         instancingGeometry: coneBufferGeometry,
-        renderMode: RenderMode.LocalSpace,
+        renderMode: RenderMode.Mesh,
         renderOrder: 1,
     });
     ringBase.addBehavior(new ColorOverLife(new Gradient([

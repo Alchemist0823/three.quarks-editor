@@ -29,7 +29,7 @@ export function createPickUp(renderer: BatchedParticleRenderer, textures: Textur
         startColor: new ConstantColor(new Vector4(1, 1, 1, .5)),
         worldSpace: false,
 
-        
+
         emissionOverTime: new ConstantValue(40),
 
         emissionBursts: [{
@@ -70,7 +70,7 @@ export function createPickUp(renderer: BatchedParticleRenderer, textures: Textur
         startColor: new ConstantColor(yellowColor),
         worldSpace: false,
 
-        
+
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0,
@@ -102,7 +102,7 @@ export function createPickUp(renderer: BatchedParticleRenderer, textures: Textur
         startColor: new RandomColor(darkOrangeColor, redColor),
         worldSpace: false,
 
-        
+
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0.4,
@@ -140,7 +140,7 @@ export function createPickUp(renderer: BatchedParticleRenderer, textures: Textur
         startColor: new RandomColor(new Vector4(1, 0.2, 0, 1), redColor),
         worldSpace: false,
 
-        
+
         emissionOverTime: new ConstantValue(0),
         emissionBursts: [{
             time: 0.4,
@@ -156,7 +156,7 @@ export function createPickUp(renderer: BatchedParticleRenderer, textures: Textur
         startTileIndex: new ConstantValue(10),
         uTileCount: 10,
         vTileCount: 10,
-        renderMode: RenderMode.LocalSpace,
+        renderMode: RenderMode.Mesh,
         renderOrder: 1,
     });
     upflow.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.9, 0.6, 0.3), 0]])));

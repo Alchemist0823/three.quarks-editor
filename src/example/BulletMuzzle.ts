@@ -84,7 +84,7 @@ export function createBulletMuzzle(renderer: BatchedParticleRenderer, textures: 
         startTileIndex: new ConstantValue(91),
         uTileCount: 10,
         vTileCount: 10,
-        renderMode: RenderMode.LocalSpace,
+        renderMode: RenderMode.Mesh,
         renderOrder: 2,
     };
 

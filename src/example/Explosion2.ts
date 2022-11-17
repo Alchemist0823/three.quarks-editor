@@ -266,7 +266,7 @@ export function createExplosion(renderer: BatchedParticleRenderer, textures: Tex
         startTileIndex: new ConstantValue(10),
         uTileCount: 10,
         vTileCount: 10,
-        renderMode: RenderMode.LocalSpace,
+        renderMode: RenderMode.Mesh,
         renderOrder: 2,
     });
     circle2.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(0.3, 0.6, 0.9, 1), 0]])));
