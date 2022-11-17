@@ -27,7 +27,7 @@ export const Application: React.FC<ApplicationProps> = (props) => {
                 </div>
                 <div className="main">
                     <div className="viewport">
-                        <ThreejsViewport width={600} height={600}/>
+                        <ThreejsViewport/>
                     </div>
                     <div className="sidebar">
                         <SceneGraphDraggableView/>

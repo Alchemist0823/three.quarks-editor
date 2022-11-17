@@ -62,6 +62,7 @@
     "react-redux": "^7.2.5",
     "react-scripts": "^5.0.1",
     "react-simple-code-editor": "^0.13.1",
+    "reactflow": "^11.2.0",
     "stats.js": "^0.17.0",
     "three": "^0.146.0",
     "three.quarks": "^0.7.3"

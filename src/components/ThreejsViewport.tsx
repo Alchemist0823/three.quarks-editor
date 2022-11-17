@@ -1,12 +1,12 @@
 import * as React from "react";
 import Stats from "stats.js";
-import {WEBGL} from "../WebGL";
+import {WEBGL} from "../util/WebGL";
 import {
     PerspectiveCamera,
     WebGLRenderer,
-    Clock, Color, AxesHelper, PointLight, AmbientLight, Raycaster, Vector2, Object3D,
+    Clock, Raycaster, Vector2, Object3D,
 } from "three";
-import {RefObject, useCallback, useContext, useEffect, useRef, useState} from "react";
+import {useCallback, useContext, useEffect, useRef, useState} from "react";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {BatchedParticleRenderer, ParticleEmitter} from "three.quarks";
 import {
@@ -23,8 +23,6 @@ import {TutorialHint} from "./TutorialHint";
 import {PlayController} from "./PlayController";
 
 interface ThreejsViewportProps {
-    width: number;
-    height: number;
 }
 
 // TODO: useRef on them
@@ -40,6 +38,7 @@ let cameraControls: OrbitControls;
 export const ThreejsViewport: React.FC<ThreejsViewportProps> = (props) => {
     const context = useContext(ApplicationContext)!;
     const container = useRef<HTMLDivElement>(null);
+    const canvas = useRef<HTMLCanvasElement>(null);
     const animationHandlerRef = useRef(-1);
 
     useEffect(() => {
@@ -49,13 +48,6 @@ export const ThreejsViewport: React.FC<ThreejsViewportProps> = (props) => {
         return ()=> {
         }
     }, []);
-
-    useEffect(() => {
-        camera!.aspect = props.width / props.height;
-        camera!.updateProjectionMatrix();
-        renderer!.setSize( props.width, props.height );
-    }, [props.width, props.height]);
-
 
     const playSpeedRef = useRef(context.playSpeed);
 
@@ -102,7 +94,7 @@ export const ThreejsViewport: React.FC<ThreejsViewportProps> = (props) => {
             return false;
         }
 
-        renderer = new WebGLRenderer({preserveDrawingBuffer: true});
+        renderer = new WebGLRenderer({preserveDrawingBuffer: true, canvas: canvas.current!});
 
         const scene = context.scene;
         batchedRenderer = context.batchedRenderer;
@@ -111,12 +103,9 @@ export const ThreejsViewport: React.FC<ThreejsViewportProps> = (props) => {
             return false;
         }*/
 
-        const width = props.width;
-        const height = props.height;
-
         clock = new Clock();
 
-        camera = new PerspectiveCamera( 50, width / height, 1, 1000 );
+        camera = new PerspectiveCamera( 50, canvas.current!.offsetWidth / canvas.current!.offsetHeight, 1, 1000 );
         camera.position.set(50, 50, 50);
 
         cameraControls = new OrbitControls( camera, renderer.domElement );
@@ -128,8 +117,7 @@ export const ThreejsViewport: React.FC<ThreejsViewportProps> = (props) => {
         cameraControls.update();
 
         renderer.setPixelRatio( window.devicePixelRatio );
-        renderer.setSize( width, height );
-        container.current!.appendChild( renderer.domElement );
+        renderer.setSize(canvas.current!.offsetWidth, canvas.current!.offsetHeight, false);
 
         transformControls = new TransformControls(camera, renderer.domElement);
         transformControls.name = 'TransformControls';
@@ -149,8 +137,8 @@ export const ThreejsViewport: React.FC<ThreejsViewportProps> = (props) => {
         stats.dom.style.bottom = "0";
         container.current!.appendChild( stats.dom );
 
-        container.current!.addEventListener( 'pointerup', onPointerUp );
-        container.current!.addEventListener('contextmenu', event => event.preventDefault());
+        canvas.current!.addEventListener( 'pointerup', onPointerUp );
+        canvas.current!.addEventListener('contextmenu', event => event.preventDefault());
 
         onResize(null);
 
@@ -199,20 +187,16 @@ export const ThreejsViewport: React.FC<ThreejsViewportProps> = (props) => {
 
     const onResize = useCallback((event: any ) => {
 
-        if (renderer && camera && renderer.domElement.parentElement!.clientWidth - 10 !== renderer.domElement.width ||
-            renderer.domElement.parentElement!.clientHeight - 10 !== renderer.domElement.height) {
+        if (renderer && camera) {
 
-            const newWidth = renderer.domElement.parentElement!.clientWidth - 10;
-            const newHeight = renderer.domElement.parentElement!.clientHeight - 10;
-
-            camera.aspect = newWidth / newHeight;
+            camera.aspect = renderer.domElement.clientWidth / renderer.domElement.clientHeight;
             camera.updateProjectionMatrix();
-            renderer.domElement.style.width = '100%';
-            renderer.domElement.style.height = '100%';
-            renderer.setSize(newWidth, newHeight);
+
+            renderer.setSize( renderer.domElement.clientWidth, renderer.domElement.clientHeight, false);
         }
     },[]);
     return <div ref={container} style={{width: '100%', height: '100%', position: 'relative'}}>
+        <canvas style={{width: '100%', height: '100%'}} ref={canvas}/>
         <ViewPortControls controlType={context.viewPortControlType}
                           setControlType={context.actions.setViewPortControlType}/>
         <TutorialHint controlType={context.viewPortControlType}/>
