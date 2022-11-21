@@ -1,0 +1,56 @@
+.react-flow__node-custom {
+  display: flex;
+  flex-direction: row;
+  font-size: 12px;
+  background: #eee;
+  border: 1px solid #555;
+  border-radius: 5px;
+  text-align: center;
+
+  .custom-body {
+    padding: 4px;
+  }
+
+  .right-handles, .left-handles {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .handle-holder {
+    position: relative;
+    margin-top: 4px;
+
+    .default-value {
+      position: absolute;
+      right: 150%;
+      top: 50%;
+      color: #ddd;
+      transform: translate(0, -50%);
+    }
+  }
+
+  .handle-holder:last-child {
+    margin-bottom: 4px;
+  }
+
+  .react-flow__handle-right, .react-flow__handle-left {
+    position: relative;
+    top: auto;
+    //left: auto;
+    transform: translate(0, 0);
+  }
+
+  .react-flow__handle {
+    //margin-bottom: 4px;
+  }
+
+  .react-flow__handle:last-child {
+  }
+}
+
+/*
+.react-flow__handle-right, .react-flow__handle-left {
+top: auto;
+bottom: auto;
+}*/

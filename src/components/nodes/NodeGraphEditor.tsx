@@ -1,14 +1,26 @@
-import ReactFlow, {addEdge, Background, Controls, MiniMap, Position, useEdgesState, useNodesState} from "reactflow";
-import React, {useCallback, useMemo} from "react";
-import {NodeGraph} from "three.quarks";
+import ReactFlow, {
+    addEdge,
+    Node,
+    Edge,
+    Connection,
+    Background,
+    Controls,
+    MiniMap,
+    Position,
+    useEdgesState,
+    useNodesState,
+    updateEdge
+} from "reactflow";
+import React, {useCallback, useMemo, useRef} from "react";
+import {NodeGraph, Wire} from "three.quarks";
+import CustomNode from "./CustomNode";
 
 import 'reactflow/dist/style.css';
-//import './overview.css';
+import './node-graph.scss';
 
-/*
 const nodeTypes = {
     custom: CustomNode,
-};*/
+};
 
 const minimapStyle = {
     height: 120,
@@ -25,10 +37,8 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = (props) => {
         return props.nodeGraph.nodes.map(node => {
             return {
                 id: node.id,
-                //type: 'input',
-                data: {
-                    label: node.type.name,
-                },
+                type: 'custom',
+                data: node,
                 position: node.position,
 
                 sourcePosition: Position.Right,
@@ -44,30 +54,64 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = (props) => {
                 id: 'e' + wire.input.id + '_' + wire.inputIndex + '-' + wire.output.id + '_' + wire.outputIndex,
                 source: wire.input.id,
                 target: wire.output.id,
-                type: 'bezier',
-                sourceHandle: 'handle-' + wire.inputIndex,
-                targetHandle: 'handle-' + wire.outputIndex,
-                data: {
-                    selectIndex: 0,
-                },
+                //type: 'bezier',
+                sourceHandle: 'handle-s' + wire.inputIndex,
+                targetHandle: 'handle-t' + wire.outputIndex,
+                data: wire,
             };
         });
     }, [props.nodeGraph]);
 
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-    const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
+    const onConnect = useCallback((params: Connection) => {
+        props.nodeGraph.addWire(new Wire(props.nodeGraph.getNode(params.source!)!, parseInt(params.sourceHandle!.substring(8)), props.nodeGraph.getNode(params.target!)!, parseInt(params.targetHandle!.substring(8))));
+        setEdges((eds) => addEdge(params, eds));
+    }, [props.nodeGraph]);
 
-    // we are using a bit of a shortcut here to adjust the edge type
-    // this could also be done with a custom edge for example
-    /*const edgesWithUpdatedTypes = edges.map((edge) => {
-        if (edge.sourceHandle) {
-            const edgeType = nodes.find((node) => node.type === 'custom').data.selects[edge.sourceHandle];
-            edge.type = edgeType;
+    const onNodeDragStop = useCallback(
+        (_, node: Node) => {
+            node.data.position.set(node.position.x, node.position.y);
+            /*const closeEdge = getClosestEdge(node);
+            setEdges((es) => {
+                const nextEdges = es.filter((e) => e.className !== 'temp');
+                if (closeEdge) {
+                    nextEdges.push(closeEdge);
+                }
+                return nextEdges;
+            });*/
+        },
+        []
+    );
+
+    const edgeUpdateSuccessful = useRef(true);
+
+    const onEdgeUpdateStart = useCallback(() => {
+        edgeUpdateSuccessful.current = false;
+    }, []);
+
+    const onEdgeUpdate = useCallback((oldEdge: Edge<Wire>, newConnection: Connection) => {
+        edgeUpdateSuccessful.current = true;
+        const wire = oldEdge.data!;
+        props.nodeGraph.deleteWire(wire);
+        wire.input = props.nodeGraph.getNode(newConnection.source!)!;
+        wire.inputIndex = parseInt(newConnection.sourceHandle!.substring(8));
+        wire.output = props.nodeGraph.getNode(newConnection.target!)!;
+        wire.outputIndex = parseInt(newConnection.targetHandle!.substring(8));
+        props.nodeGraph.addWire(wire);
+
+        setEdges((els) => updateEdge(oldEdge, newConnection, els));
+    }, [props.nodeGraph]);
+
+    const onEdgeUpdateEnd = useCallback((_, edge) => {
+        if (!edgeUpdateSuccessful.current) {
+            props.nodeGraph.deleteWire(edge.data!);
+            setEdges((eds) => eds.filter((e) => e.id !== edge.id));
         }
 
-        return edge;
-    });*/
+        edgeUpdateSuccessful.current = true;
+    }, [props.nodeGraph]);
+
 
     return (
         <ReactFlow
@@ -75,11 +119,15 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = (props) => {
             edges={edges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
+            onEdgeUpdate={onEdgeUpdate}
+            onEdgeUpdateStart={onEdgeUpdateStart}
+            onEdgeUpdateEnd={onEdgeUpdateEnd}
+            onNodeDragStop={onNodeDragStop}
             onConnect={onConnect}
             onInit={onInit}
             fitView
             attributionPosition="top-right"
-            //nodeTypes={nodeTypes}
+            nodeTypes={nodeTypes}
         >
             <MiniMap style={minimapStyle} zoomable pannable />
             <Controls />

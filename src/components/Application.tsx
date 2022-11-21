@@ -39,7 +39,7 @@ export const Application: React.FC<ApplicationProps> = (props) => {
                         </ApplicationContextConsumer>
                     </div>
                     <BezierCurveDialog/>
-                    {/*<NodeGraphDialog/>*/}
+                    <NodeGraphDialog/>
                 </div>
             </div>
         </ApplicationContextProvider>);
