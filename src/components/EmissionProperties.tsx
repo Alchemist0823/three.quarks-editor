@@ -53,6 +53,11 @@ export const EmissionProperties: React.FC<BurstEmitterPropertiesProps> = React.m
         props.updateProperties();
     };
 
+    const onChangeEmissionOverDistance = (g: GenericGenerator) => {
+        props.particleSystem.emissionOverDistance = g as ValueGenerator | FunctionValueGenerator;
+        props.updateProperties();
+    };
+
     const valueFunctionTypes: ValueType[] = ['value', 'valueFunc'];
 
     return <Box sx={{width: '100%'}}>
@@ -78,6 +83,10 @@ export const EmissionProperties: React.FC<BurstEmitterPropertiesProps> = React.m
                          allowedType={valueFunctionTypes}
                          value={props.particleSystem.emissionOverTime}
                          onChange={onChangeEmissionOverTime}/>
+        <GeneratorEditor name="Emit Over Distance"
+                         allowedType={valueFunctionTypes}
+                         value={props.particleSystem.emissionOverDistance}
+                         onChange={onChangeEmissionOverDistance}/>
         <div className="property">
             <Typography component={"label"} className="name">Bursts
                 <IconButton color="inherit" aria-controls="simple-menu" size="small"
