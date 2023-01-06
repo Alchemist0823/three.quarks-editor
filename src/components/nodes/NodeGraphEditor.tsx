@@ -34,7 +34,7 @@ interface NodeGraphEditorProps {
 
 const NodeGraphEditor: React.FC<NodeGraphEditorProps> = (props) => {
     const initialNodes = useMemo(() => {
-        return props.nodeGraph.nodes.map(node => {
+        return Array.from(props.nodeGraph.allNodes.values()).map(node => {
             return {
                 id: node.id,
                 type: 'custom',

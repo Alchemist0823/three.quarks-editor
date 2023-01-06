@@ -1,6 +1,6 @@
 import * as React from "react";
 import {FunctionValueGenerator, ValueGenerator} from "three.quarks";
-import {ColorGenerator, ConstantColor, FunctionColorGenerator, AxisAngleGenerator, RandomQuatGenerator, RotationGenerator} from "three.quarks";
+import {ColorGenerator, ConstantColor, FunctionColorGenerator, AxisAngleGenerator, RandomQuatGenerator, RotationGenerator, EulerGenerator} from "three.quarks";
 import {ConstantValue} from "three.quarks";
 import {Vector3, Vector4} from "three";
 import {IntervalValue} from "three.quarks";
@@ -28,7 +28,8 @@ type EditorType =
     | 'gradient'
     | 'vec3'
     | 'randomQuat'
-    | 'axisAngle';
+    | 'axisAngle'
+    | 'euler';
 export type ValueType = 'value' | 'valueFunc' | 'color' | 'colorFunc' | 'vec3' | 'rotationFunc';
 
 const ValueToEditor: { [a: string]: Array<EditorType> } = {
@@ -36,7 +37,7 @@ const ValueToEditor: { [a: string]: Array<EditorType> } = {
     'valueFunc': ['piecewiseBezier'],
     'color': ['color', 'randomColor'],
     'colorFunc': ['colorRange', 'gradient'],
-    'rotationFunc': ['randomQuat', 'axisAngle'],
+    'rotationFunc': ['randomQuat', 'axisAngle', 'euler'],
     'vec3': ['vec3'],
 };
 
@@ -94,6 +95,9 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
             case "axisAngle":
                 generator = new AxisAngleGenerator(new Vector3(0, 1, 0), new ConstantValue(Math.PI / 2));
                 break;
+            case "euler":
+                generator = new EulerGenerator(new ConstantValue(0), new ConstantValue(0), new ConstantValue(0));
+                break;
         }
         if (generator)
             this.props.onChange(generator);
@@ -146,6 +150,21 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
         this.props.onChange(new AxisAngleGenerator((this.props.value as AxisAngleGenerator).axis, x as ValueGenerator));
     }
 
+    changeEulerAngle = (pos: number) => (changedValue: GenericGenerator) => {
+        const value = this.props.value as EulerGenerator;
+        switch (pos) {
+            case 0:
+                this.props.onChange(new EulerGenerator(changedValue as ValueGenerator, value.angleY, value.angleZ));
+                break;
+            case 1:
+                this.props.onChange(new EulerGenerator(value.angleX, changedValue as ValueGenerator, value.angleZ));
+                break;
+            case 2:
+                this.props.onChange(new EulerGenerator(value.angleX, value.angleY, changedValue as ValueGenerator));
+                break;
+        }
+    }
+
     getEditorType(generator: GenericGenerator): EditorType {
         if (generator instanceof ConstantValue) {
             return 'constant';
@@ -165,6 +184,8 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
             return 'randomQuat';
         } else if (generator instanceof AxisAngleGenerator) {
             return 'axisAngle';
+        } else if (generator instanceof EulerGenerator) {
+            return 'euler';
         }
         return 'constant';
     }
@@ -234,6 +255,17 @@ export class GeneratorEditor extends React.PureComponent<GeneratorEditorProps, G
                     <GeneratorEditor allowedType={['value', 'valueFunc']} name={"angle"} onChange={this.changeAngle}
                                      value={(value as AxisAngleGenerator).angle}/>
                 </>;
+                break;
+            }
+            case "euler": {
+                    postEditor = <>
+                        <GeneratorEditor allowedType={['value', 'valueFunc']} name={"angleX"} onChange={this.changeEulerAngle(0)}
+                                         value={(value as EulerGenerator).angleX}/>
+                        <GeneratorEditor allowedType={['value', 'valueFunc']} name={"angleY"} onChange={this.changeEulerAngle(1)}
+                                         value={(value as EulerGenerator).angleY}/>
+                        <GeneratorEditor allowedType={['value', 'valueFunc']} name={"angleZ"} onChange={this.changeEulerAngle(2)}
+                                         value={(value as EulerGenerator).angleZ}/>
+                    </>;
                 break;
             }
         }
