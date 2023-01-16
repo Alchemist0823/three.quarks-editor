@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/three.quarks-editor/static/css/main.7684811f.css",
-    "main.js": "/three.quarks-editor/static/js/main.e1fd9b74.js",
+    "main.css": "/three.quarks-editor/static/css/main.f2ef8217.css",
+    "main.js": "/three.quarks-editor/static/js/main.bbf8db3f.js",
     "index.html": "/three.quarks-editor/index.html",
-    "main.7684811f.css.map": "/three.quarks-editor/static/css/main.7684811f.css.map",
-    "main.e1fd9b74.js.map": "/three.quarks-editor/static/js/main.e1fd9b74.js.map"
+    "main.f2ef8217.css.map": "/three.quarks-editor/static/css/main.f2ef8217.css.map",
+    "main.bbf8db3f.js.map": "/three.quarks-editor/static/js/main.bbf8db3f.js.map"
   },
   "entrypoints": [
-    "static/css/main.7684811f.css",
-    "static/js/main.e1fd9b74.js"
+    "static/css/main.f2ef8217.css",
+    "static/js/main.bbf8db3f.js"
   ]
 }
