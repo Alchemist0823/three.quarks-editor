@@ -2,9 +2,9 @@
 
 Three.quarks is a fast powerful and general purpose particle engine for [three.js](https://threejs.org).
 
-### Demo
+This Repo is Archived.
 
-The particle system editor is **[Here](https://forrestsun.com/three.quarks-editor/)**.
+Access the latest update from **[Here](https://3quarks.org/editor)**.
 
 ### Install
 
@@ -25,12 +25,8 @@ It has a lookup table for best performance.
 
 #### Editor
 
-```
-npm install three.quarks-editor
-```
-
 The particle system has an in-house bezier editor and WYSIWYG particle system viewport.
 
 #### Thanks
 
-powered by Three.js, React, Semantic.UI
+powered by Three.js, React, mui
