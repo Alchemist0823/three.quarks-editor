@@ -4,7 +4,7 @@ Three.quarks is a fast powerful and general purpose particle engine for [three.j
 
 This Repo is Archived.
 
-Access the latest update from **[Here](https://3quarks.org/editor)**.
+Access the latest update from **[Here](https://quarks.art)**.
 
 ### Install
 
